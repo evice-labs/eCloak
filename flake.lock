@@ -320,15 +320,15 @@
       "locked": {
         "lastModified": 1788870624,
         "narHash": "sha256-nmyq9+x5yTCAfpO0c87qn4Vd8OvJUX/WvTczafQxWlY=",
-        "ref": "refs/heads/main",
+        "owner": "evice-labs",
+        "repo": "el-anon-chat-core",
         "rev": "233bc67332ec66a9e587ec05befd434dd71aa67b",
-        "revCount": 2,
-        "type": "git",
-        "url": "file:///home/namauser/logos-ecosystem/project/el-anon-chat-core"
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/namauser/logos-ecosystem/project/el-anon-chat-core"
+        "owner": "evice-labs",
+        "repo": "el-anon-chat-core",
+        "type": "github"
       }
     },
     "logos-capability-module": {

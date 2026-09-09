@@ -1,0 +1,268 @@
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import "../components"
+
+Dialog {
+    id: modal
+    width: 520
+    height: 520
+    modal: true
+    anchors.centerIn: parent
+    padding: 24
+
+    property string commitmentHex: ""
+    property string nskHex: ""
+    property string currentUsername: ""
+    property bool isRevealed: false
+    property int blockHeight: 0
+    property int collateralAmount: 0
+    property bool isLezConnected: false
+
+    signal updateUsernameRequested(string newUsername)
+    signal generateNewIdentityRequested()
+
+    Theme { id: theme }
+
+    background: Rectangle {
+        color: theme.bgModal
+        radius: theme.radiusLarge
+        border.color: theme.borderSubtle
+        border.width: 1
+    }
+
+    ColumnLayout {
+        anchors.fill: parent
+        spacing: 14
+
+        // Title
+        RowLayout {
+            spacing: 10
+            Rectangle {
+                width: 36
+                height: 36
+                radius: 18
+                color: theme.accentLogos
+                Text {
+                    anchors.centerIn: parent
+                    text: "ZK"
+                    font.bold: true
+                    font.pixelSize: 14
+                    color: "#12151c"
+                }
+            }
+            ColumnLayout {
+                spacing: 2
+                Text {
+                    text: "Zero-Knowledge Identity Vault"
+                    font.bold: true
+                    font.pixelSize: 18
+                    color: theme.textHeader
+                }
+                Text {
+                    text: "Backed by 32-byte Nullifier Secret Key (NSK) & Shamir Secret Sharing."
+                    font.pixelSize: 11
+                    color: theme.textMuted
+                }
+            }
+        }
+
+        // Username Field
+        ColumnLayout {
+            Layout.fillWidth: true
+            spacing: 4
+
+            Text {
+                text: "PSEUDONYMOUS USERNAME"
+                font.bold: true
+                font.pixelSize: 11
+                color: theme.textMuted
+            }
+
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: 8
+
+                TextField {
+                    id: userField
+                    Layout.fillWidth: true
+                    text: modal.currentUsername
+                    color: theme.textHeader
+                    font.pixelSize: 14
+                    background: Rectangle {
+                        color: theme.bgInput
+                        radius: theme.radiusSmall
+                    }
+                }
+
+                Button {
+                    text: "Save"
+                    contentItem: Text {
+                        text: "Save"
+                        font.bold: true
+                        color: "#ffffff"
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+                    background: Rectangle {
+                        color: theme.accentBlurple
+                        radius: theme.radiusSmall
+                    }
+                    onClicked: modal.updateUsernameRequested(userField.text.trim())
+                }
+            }
+        }
+
+        // Public Commitment Field
+        ColumnLayout {
+            Layout.fillWidth: true
+            spacing: 4
+
+            Text {
+                text: "PUBLIC COMMITMENT (SHA256(NSK))"
+                font.bold: true
+                font.pixelSize: 11
+                color: theme.textMuted
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 38
+                radius: theme.radiusSmall
+                color: theme.bgInput
+
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: 8
+                    spacing: 8
+
+                    Text {
+                        Layout.fillWidth: true
+                        text: modal.commitmentHex || "0x0000000000000000000000000000000000000000000000000000000000000000"
+                        color: theme.accentLogos
+                        font.family: "monospace"
+                        font.pixelSize: 11
+                        elide: Text.ElideMiddle
+                    }
+                }
+            }
+        }
+
+        // Nullifier Secret Key (NSK) Field
+        ColumnLayout {
+            Layout.fillWidth: true
+            spacing: 4
+
+            RowLayout {
+                Text {
+                    text: "NULLIFIER SECRET KEY (NSK) — PRIVATE"
+                    font.bold: true
+                    font.pixelSize: 11
+                    color: theme.accentDanger
+                }
+                Item { Layout.fillWidth: true }
+                Text {
+                    text: modal.isRevealed ? "Hide" : "Reveal"
+                    font.pixelSize: 11
+                    color: theme.accentBlurple
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: modal.isRevealed = !modal.isRevealed
+                    }
+                }
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 38
+                radius: theme.radiusSmall
+                color: theme.bgInput
+                border.color: theme.accentDanger
+                border.width: 1
+
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: 8
+                    spacing: 8
+
+                    Text {
+                        Layout.fillWidth: true
+                        text: modal.isRevealed ? (modal.nskHex || "Not generated") : "••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••"
+                        color: modal.isRevealed ? theme.textHeader : theme.textMuted
+                        font.family: "monospace"
+                        font.pixelSize: 11
+                        elide: Text.ElideMiddle
+                    }
+                }
+            }
+        }
+
+        // LEZ Status Card
+        Rectangle {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 44
+            radius: theme.radiusSmall
+            color: modal.isLezConnected ? "#1a382e" : "#382e1a"
+
+            RowLayout {
+                anchors.fill: parent
+                anchors.margins: 8
+                spacing: 8
+                Text { text: modal.isLezConnected ? "●" : "○"; font.pixelSize: 14; color: modal.isLezConnected ? theme.accentLogos : "#e6a84a" }
+                ColumnLayout {
+                    spacing: 1
+                    Text {
+                        text: modal.isLezConnected ? "Logos Execution Zone (LEZ) — Connected" : "Logos Execution Zone (LEZ) — Connecting..."
+                        font.bold: true
+                        font.pixelSize: 11
+                        color: modal.isLezConnected ? theme.accentLogos : "#e6a84a"
+                    }
+                    Text {
+                        text: modal.isLezConnected
+                              ? "Block Height: #" + modal.blockHeight + " • Collateral Active: " + (modal.collateralAmount > 0 ? modal.collateralAmount + " LEZ" : "Not Staked")
+                              : "Block Height: — • Waiting for testnet..."
+                        font.pixelSize: 10
+                        color: modal.isLezConnected ? "#a8e6cf" : "#d4a574"
+                    }
+                }
+            }
+        }
+
+        Item { Layout.fillHeight: true }
+
+        // Bottom Actions
+        RowLayout {
+            Layout.fillWidth: true
+            spacing: 12
+
+            Button {
+                text: "Generate New Identity"
+                contentItem: Text {
+                    text: "Generate New Identity"
+                    color: theme.accentDanger
+                    horizontalAlignment: Text.AlignHCenter
+                }
+                background: Rectangle { color: "transparent" }
+                onClicked: modal.generateNewIdentityRequested()
+            }
+
+            Item { Layout.fillWidth: true }
+
+            Button {
+                text: "Done"
+                Layout.preferredWidth: 100
+                contentItem: Text {
+                    text: "Done"
+                    font.bold: true
+                    color: "#ffffff"
+                    horizontalAlignment: Text.AlignHCenter
+                }
+                background: Rectangle {
+                    color: theme.accentBlurple
+                    radius: theme.radiusSmall
+                }
+                onClicked: modal.accept()
+            }
+        }
+    }
+}
