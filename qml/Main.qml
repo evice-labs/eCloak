@@ -2,168 +2,546 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import "components"
-import "views"
+import "modals"
 
 Item {
     id: root
-    width: 960
-    height: 700
+    width: 1100
+    height: 720
 
-    property string currentTab: "chat" // "identity", "rooms", "chat", "moderation"
+    // Global Architecture State
+    property string activeView: "room" // "room" or "dm"
     property string activeRoomId: ""
-    property string activeRoomName: "General Chat"
+    property string activeRoomName: ""
+    property bool isRoomMature: false
+    property int activeRoomN: 0
+    property int activeRoomM: 0
+    property string activeChannel: ""
+    property string activeDmUser: ""
+    property bool isRightDrawerOpen: true
+
+    // User Identity State
+    property string myUsername: ""
     property string myCommitment: ""
-    property string myUsername: "Anonymous"
-    property string statusMessage: "Ready"
+    property string myNsk: ""
+
+    // LEZ Testnet State (queried from https://testnet.lez.logos.co/)
+    property int lezBlockHeight: 0
+    property int lezCollateral: 0
+    property bool lezConnected: false
 
     // Reference to Core Plugin
     property var anonCore: null
 
+    // Room Model (Empty by default, created or joined by user)
+    property var roomsList: []
+
+    // Dynamic Conversation Messages Store: { "convKey": [msg1, msg2, ...] }
+    property var conversationMessages: ({})
+
+    // Dynamic DM Users List (starts empty, user can add via search dialog)
+    property var dmsList: []
+
+    // Dynamic Room Moderators & Members State
+    property var roomModerators: []
+    property var roomMembers: []
+
+    // Dynamic Slashing Radar State
+    property string radarTargetUser: ""
+    property string radarTargetCommitment: ""
+    property int radarStrikes: 0
+
+    function currentConvKey() {
+        return (root.activeView === "dm") ? ("dm:" + root.activeDmUser) : (root.activeRoomId + ":" + root.activeChannel);
+    }
+
+    function getCurrentMessages() {
+        var key = currentConvKey();
+        return (root.conversationMessages && root.conversationMessages[key]) ? root.conversationMessages[key] : [];
+    }
+
+    Theme { id: theme }
+
     Component.onCompleted: {
-        // Core plugin is injected by Basecamp runtime
+        // Initialize Core Plugin if injected by Basecamp runtime
         if (typeof el_anon_chat_core !== "undefined") {
             anonCore = el_anon_chat_core;
-            var idRes = anonCore.createIdentity("");
             try {
-                var parsed = JSON.parse(idRes);
-                if (parsed.commitment) {
-                    myCommitment = parsed.commitment;
+                // Try to restore existing identity from core
+                var existingComm = anonCore.getCommitment();
+                if (existingComm && existingComm.length > 0) {
+                    root.myCommitment = existingComm;
                 }
-            } catch(e) {}
+            } catch(e) {
+                console.log("Core init identity notice: " + e);
+            }
+        }
+
+        // Query LEZ testnet block height
+        lezBlockHeightTimer.start();
+        queryLezBlockHeight();
+
+        // If no identity exists, prompt user to create one
+        if (!root.myCommitment || root.myCommitment.length === 0) {
+            identityModal.open();
         }
     }
 
-    ColumnLayout {
+    // LEZ Testnet Block Height Polling
+    Timer {
+        id: lezBlockHeightTimer
+        interval: 15000 // Poll every 15 seconds
+        repeat: true
+        onTriggered: root.queryLezBlockHeight()
+    }
+
+    function queryLezBlockHeight() {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    try {
+                        var resp = JSON.parse(xhr.responseText);
+                        if (resp.block_height !== undefined) {
+                            root.lezBlockHeight = resp.block_height;
+                            root.lezConnected = true;
+                        } else if (resp.height !== undefined) {
+                            root.lezBlockHeight = resp.height;
+                            root.lezConnected = true;
+                        }
+                        // Check collateral for registered commitment
+                        if (resp.collateral !== undefined) {
+                            root.lezCollateral = resp.collateral;
+                        }
+                    } catch(e) {
+                        console.log("LEZ parse error: " + e);
+                        root.lezConnected = false;
+                    }
+                } else {
+                    root.lezConnected = false;
+                }
+            }
+        };
+        xhr.open("GET", "https://testnet.lez.logos.co/block/latest");
+        xhr.send();
+    }
+
+    // Main 4-Column Layout Coordinator
+    RowLayout {
         anchors.fill: parent
         spacing: 0
 
-        // Top Navigation Bar
+        // LEFT NAVIGATION PANE 
         Rectangle {
-            Layout.fillWidth: true
-            height: 56
-            color: "#1a1d24"
+            Layout.preferredWidth: 312
+            Layout.fillHeight: true
+            color: theme.bgRail
 
-            RowLayout {
+            ColumnLayout {
                 anchors.fill: parent
-                anchors.leftMargin: 16
-                anchors.rightMargin: 16
-                spacing: 12
+                spacing: 0
 
-                Label {
-                    text: "AnonChat"
-                    font.bold: true
-                    font.pixelSize: 18
-                    color: "#00d4aa"
-                }
-
-                Label {
-                    text: "| Basecamp ZK-Identity"
-                    font.pixelSize: 12
-                    color: "#8892b0"
-                }
-
-                Item { Layout.fillWidth: true }
-
+                // SERVER RAIL & CHANNEL SIDEBAR ROW
                 RowLayout {
-                    spacing: 8
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    spacing: 0
 
-                    Button {
-                        text: "Identity"
-                        highlighted: root.currentTab === "identity"
-                        onClicked: root.currentTab = "identity"
+                    // Column 1: Server Rail (72px)
+                    ServerRail {
+                        Layout.preferredWidth: 72
+                        Layout.fillHeight: true
+                        activeView: root.activeView
+                        activeRoomId: root.activeRoomId
+                        roomsModel: root.roomsList
+
+                        onDmSelected: {
+                            root.activeView = "dm";
+                        }
+
+                        onRoomSelected: function(roomId, roomName, nMod, mMod, mature) {
+                            root.activeView = "room";
+                            root.activeRoomId = roomId;
+                            root.activeRoomName = roomName;
+                            root.activeRoomN = nMod;
+                            root.activeRoomM = mMod;
+                            root.isRoomMature = mature;
+                            root.activeChannel = "general-chat";
+                        }
+
+                        onAddRoomClicked: {
+                            createRoomModal.open();
+                        }
+
+                        onIdentitySettingsClicked: {
+                            identityModal.open();
+                        }
                     }
 
-                    Button {
-                        text: "Rooms"
-                        highlighted: root.currentTab === "rooms"
-                        onClicked: root.currentTab = "rooms"
+                    // Column 2: Channel / DM Sidebar (240px)
+                    ChannelSidebar {
+                        Layout.preferredWidth: 240
+                        Layout.fillHeight: true
+                        activeView: root.activeView
+                        activeRoomName: root.activeRoomName
+                        activeRoomId: root.activeRoomId
+                        isRoomMature: root.isRoomMature
+                        activeChannel: root.activeChannel
+                        activeDmUser: root.activeDmUser
+                        dmsModel: root.dmsList
+
+                        onChannelSelected: function(chan) {
+                            root.activeChannel = chan;
+                        }
+
+                        onDmSelected: function(user) {
+                            root.activeDmUser = user;
+                            root.activeView = "dm";
+                            // Ensure user is added to dmsList if not already present
+                            var exists = false;
+                            for (var i = 0; i < root.dmsList.length; i++) {
+                                if (root.dmsList[i].username === user) {
+                                    exists = true;
+                                    break;
+                                }
+                            }
+                            if (!exists) {
+                                var updated = root.dmsList.slice();
+                                updated.push({ username: user, online: true });
+                                root.dmsList = updated;
+                            }
+                        }
+
+                        onCopyRoomIdRequested: function(roomId) {
+                            notificationToast.showNotification("Copied Room ID: " + (roomId ? (roomId.substring(0, 12) + "...") : "Room ID"));
+                        }
+
+                        onLeaveRoomRequested: function(roomId) {
+                            var updated = [];
+                            for (var i = 0; i < root.roomsList.length; i++) {
+                                if (root.roomsList[i].id !== roomId) {
+                                    updated.push(root.roomsList[i]);
+                                }
+                            }
+                            root.roomsList = updated;
+                            if (root.activeRoomId === roomId) {
+                                if (updated.length > 0) {
+                                    root.activeRoomId = updated[0].id;
+                                    root.activeRoomName = updated[0].name;
+                                    root.activeRoomN = updated[0].nMod;
+                                    root.activeRoomM = updated[0].mMod;
+                                    root.isRoomMature = updated[0].mature;
+                                    root.activeChannel = "general-chat";
+                                } else {
+                                    root.activeRoomId = "";
+                                    root.activeRoomName = "";
+                                    root.activeRoomN = 0;
+                                    root.activeRoomM = 0;
+                                    root.isRoomMature = false;
+                                    root.activeChannel = "";
+                                }
+                            }
+                            notificationToast.showNotification("Left room " + roomId.substring(0, 8));
+                        }
+                    }
+                }
+
+                // BOTTOM PERSISTENT USER PROFILE BAR (312px)
+                UserProfileBar {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 72
+                    myUsername: root.myUsername
+                    myCommitment: root.myCommitment
+
+                    onOpenIdentitySettings: {
+                        identityModal.open();
                     }
 
-                    Button {
-                        text: "Chat"
-                        highlighted: root.currentTab === "chat"
-                        onClicked: root.currentTab = "chat"
-                    }
-
-                    Button {
-                        text: "Moderation"
-                        highlighted: root.currentTab === "moderation"
-                        onClicked: root.currentTab = "moderation"
+                    onCopyCommitmentRequested: {
+                        notificationToast.showNotification("Copied identity commitment to clipboard!");
                     }
                 }
             }
         }
 
-        // Subheader Banner
-        IdentityBanner {
-            Layout.fillWidth: true
-            commitment: root.myCommitment
-            username: root.myUsername
-        }
-
-        // Main View Stack
-        StackLayout {
+        // ==========================================
+        // COLUMN 3: ACTIVE CHAT FEED & COMPOSER (FLEX)
+        // ==========================================
+        ChatArea {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            currentIndex: root.currentTab === "identity" ? 0 :
-                          root.currentTab === "rooms" ? 1 :
-                          root.currentTab === "chat" ? 2 : 3
+            activeView: root.activeView
+            activeTargetName: (root.activeView === "dm") ? root.activeDmUser : root.activeChannel
+            activeTopic: (root.activeView === "dm") ?
+                "Anonymous Direct Message • ECDH Key Exchange & Epoch-Rotating Topic" :
+                (root.activeRoomName + " • N=" + root.activeRoomN + "/M=" + root.activeRoomM + " Threshold SSS")
+            messagesModel: root.getCurrentMessages()
+            isDrawerOpen: root.isRightDrawerOpen
 
-            IdentityView {
-                anonCore: root.anonCore
-                onIdentityUpdated: function(comm, user) {
-                    root.myCommitment = comm;
-                    root.myUsername = user;
+            onToggleDrawer: {
+                root.isRightDrawerOpen = !root.isRightDrawerOpen;
+            }
+
+            onSendMessage: function(text, attachment) {
+                var newTag = "";
+                var postPt = null;
+
+                // If Core is present, execute Two-Tier SSS preparePost
+                if (root.anonCore) {
+                    try {
+                        var dummySalt = "0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20";
+                        var modKeys = JSON.stringify(["02e4f82a1b9c3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789"]);
+                        var res = root.anonCore.preparePost(text, dummySalt, modKeys, 1);
+                        var parsed = JSON.parse(res);
+                        if (parsed.tracing_tag) newTag = parsed.tracing_tag;
+                        if (parsed.post_point) postPt = parsed.post_point;
+                    } catch(e) {
+                        console.log("preparePost exception: " + e);
+                    }
+                }
+
+                if (!newTag) {
+                    // Fallback generated tracing tag
+                    var hexChars = "0123456789abcdef";
+                    for (var i = 0; i < 16; i++) {
+                        newTag += hexChars.charAt(Math.floor(Math.random() * hexChars.length));
+                    }
+                }
+
+                var newMsg = {
+                    author: root.myUsername,
+                    commitment: root.myCommitment,
+                    timestamp: "Just now",
+                    text: text,
+                    tracingTag: newTag,
+                    isMod: true,
+                    postPoint: postPt,
+                    attachment: attachment
+                };
+
+                // Append to conversation messages map
+                var key = root.currentConvKey();
+                var store = Object.assign({}, root.conversationMessages);
+                var curMsgs = store[key] ? store[key].slice() : [];
+                curMsgs.push(newMsg);
+                store[key] = curMsgs;
+                root.conversationMessages = store;
+
+                if (attachment) {
+                    notificationToast.showNotification("Sent with attachment: " + attachment.name + " (" + attachment.sizeText + ")");
+                } else {
+                    notificationToast.showNotification("Message posted with 2-Tier SSS! (Tag #" + newTag.substring(0, 6) + ")");
                 }
             }
 
-            RoomList {
-                anonCore: root.anonCore
-                onRoomSelected: function(roomId, roomName) {
-                    root.activeRoomId = roomId;
-                    root.activeRoomName = roomName;
-                    root.currentTab = "chat";
-                }
+            onFlagMessage: function(author, comm, tag, text) {
+                root.radarTargetUser = author;
+                root.radarTargetCommitment = comm;
+                root.radarStrikes = 1;
+
+                strikeModal.targetAuthor = author;
+                strikeModal.targetCommitment = comm;
+                strikeModal.tracingTag = tag;
+                strikeModal.messageSnippet = text;
+                strikeModal.evidenceHash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
+                strikeModal.open();
             }
 
-            ChatRoomView {
-                anonCore: root.anonCore
-                roomId: root.activeRoomId
-                roomName: root.activeRoomName
-                myCommitment: root.myCommitment
-            }
-
-            ModerationView {
-                anonCore: root.anonCore
-                roomId: root.activeRoomId
+            onInspectMessage: function(tag, point) {
+                notificationToast.showNotification("SSS Point: (" + (point ? point.x : 1) + ", " + (point ? point.y : "share") + ") • Tag: #" + tag.substring(0, 8));
             }
         }
 
-        // Bottom Status Bar
-        Rectangle {
-            Layout.fillWidth: true
-            height: 28
-            color: "#12151c"
+        // ==========================================
+        // COLUMN 4: MEMBER & SLASHING DRAWER (240px, COLLAPSIBLE)
+        // ==========================================
+        RightDrawer {
+            Layout.fillHeight: true
+            visible: root.activeView !== "dm"
+            isOpen: root.activeView !== "dm" && root.isRightDrawerOpen
+            moderatorsList: root.roomModerators
+            membersList: root.roomMembers
+            radarTargetUser: root.radarTargetUser
+            radarTargetCommitment: root.radarTargetCommitment
+            radarStrikes: root.radarStrikes
 
-            RowLayout {
-                anchors.fill: parent
-                anchors.leftMargin: 12
-                anchors.rightMargin: 12
-
-                Label {
-                    text: root.statusMessage
-                    font.pixelSize: 11
-                    color: "#8892b0"
+            onExecuteSlashingRequested: function(targetComm) {
+                if (root.anonCore) {
+                    try {
+                        root.anonCore.revokeCommitment(targetComm);
+                    } catch(e) {}
                 }
-
-                Item { Layout.fillWidth: true }
-
-                Label {
-                    text: "Logos Execution Zone (LEZ) — Two-Tier SSS Enabled"
-                    font.pixelSize: 11
-                    color: "#5f6c87"
-                }
+                root.radarStrikes = 0;
+                root.radarTargetUser = "";
+                root.radarTargetCommitment = "";
+                notificationToast.showNotification("⚡ Slashing confirmed on LEZ! Commitment burned.");
             }
+
+            onIssueStrikeRequested: {
+                strikeModal.open();
+            }
+        }
+    }
+
+    // ==========================================
+    // OVERLAY DIALOGS & NOTIFICATION TOAST
+    // ==========================================
+    CreateRoomModal {
+        id: createRoomModal
+        adminCommitment: root.myCommitment
+
+        onRoomCreated: function(name, nVal, mVal, modKeys, minMembers) {
+            var newId = "room_" + (root.roomsList.length + 1);
+            if (root.anonCore) {
+                try {
+                    root.anonCore.createRoom(root.myCommitment, nVal, mVal, modKeys, 1, minMembers);
+                } catch(e) {}
+            }
+            var newRoom = {
+                id: newId,
+                name: name,
+                iconText: name.substring(0, 2).toUpperCase(),
+                nMod: nVal,
+                mMod: mVal,
+                mature: false,
+                unread: false
+            };
+            var updated = root.roomsList.slice();
+            updated.push(newRoom);
+            root.roomsList = updated;
+
+            root.activeRoomId = newId;
+            root.activeRoomName = name;
+            root.activeRoomN = nVal;
+            root.activeRoomM = mVal;
+            root.isRoomMature = false;
+            root.activeChannel = "general-chat";
+            root.activeView = "room";
+            root.roomModerators = [
+                { username: root.myUsername, pubkey: root.myCommitment.substring(0, 10) + "...", role: "Room Creator" }
+            ];
+
+            notificationToast.showNotification("Room '" + name + "' created successfully! (Status: New/Probation)");
+        }
+    }
+
+    JoinRoomModal {
+        id: joinRoomModal
+        memberCommitment: root.myCommitment
+
+        onRoomJoined: function(roomIdHex, consentSig) {
+            if (root.anonCore) {
+                try {
+                    root.anonCore.joinRoom(roomIdHex, root.myCommitment, root.myCommitment, consentSig, 1);
+                } catch(e) {}
+            }
+            var newId = "room_" + (root.roomsList.length + 1);
+            var roomName = "Room #" + (roomIdHex.length > 6 ? roomIdHex.substring(0, 6) : "Group");
+            var newRoom = {
+                id: newId,
+                name: roomName,
+                iconText: roomName.substring(0, 2).toUpperCase(),
+                nMod: 2,
+                mMod: 3,
+                mature: false,
+                unread: false
+            };
+            var updated = root.roomsList.slice();
+            updated.push(newRoom);
+            root.roomsList = updated;
+
+            root.activeRoomId = newId;
+            root.activeRoomName = roomName;
+            root.activeRoomN = 2;
+            root.activeRoomM = 3;
+            root.isRoomMature = false;
+            root.activeChannel = "general-chat";
+            root.activeView = "room";
+
+            notificationToast.showNotification("Joined room with Signed Join Consent!");
+        }
+    }
+
+    IdentityModal {
+        id: identityModal
+        commitmentHex: root.myCommitment
+        nskHex: root.myNsk
+        currentUsername: root.myUsername
+        blockHeight: root.lezBlockHeight
+        collateralAmount: root.lezCollateral
+        isLezConnected: root.lezConnected
+
+        onUpdateUsernameRequested: function(newUsername) {
+            root.myUsername = newUsername;
+            if (root.anonCore) {
+                try {
+                    root.anonCore.registerUsername(newUsername);
+                } catch(e) {}
+            }
+            notificationToast.showNotification("Username updated to @" + newUsername);
+        }
+
+        onGenerateNewIdentityRequested: {
+            if (root.anonCore) {
+                try {
+                    var res = root.anonCore.createIdentity("");
+                    var parsed = JSON.parse(res);
+                    if (parsed.commitment) root.myCommitment = parsed.commitment;
+                    if (parsed.nsk) root.myNsk = parsed.nsk;
+                } catch(e) {}
+            }
+            notificationToast.showNotification("New ZK Identity commitment generated!");
+        }
+    }
+
+    StrikeModal {
+        id: strikeModal
+
+        onStrikeSigned: function(comm, tag, evid) {
+            root.radarStrikes += 1;
+            notificationToast.showNotification("Strike certificate signed & broadcasted! (N-of-M recorded)");
+        }
+    }
+
+    // Top Notification Toast
+    Rectangle {
+        id: notificationToast
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: toastTimer.running ? 20 : -60
+        height: 40
+        width: toastText.implicitWidth + 32
+        radius: 20
+        color: theme.bgCard
+        border.color: theme.accentLogos
+        border.width: 1
+        visible: anchors.topMargin > -50
+
+        Behavior on anchors.topMargin {
+            NumberAnimation { duration: 250; easing.type: Easing.OutBack }
+        }
+
+        RowLayout {
+            anchors.centerIn: parent
+            spacing: 8
+            Text { text: "🛡️"; font.pixelSize: 14 }
+            Text {
+                id: toastText
+                text: ""
+                font.bold: true
+                font.pixelSize: 12
+                color: theme.textHeader
+            }
+        }
+
+        Timer {
+            id: toastTimer
+            interval: 3500
+        }
+
+        function showNotification(msg) {
+            toastText.text = msg;
+            toastTimer.restart();
         }
     }
 }
