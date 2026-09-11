@@ -12,6 +12,7 @@ Dialog {
     padding: 24
 
     property string adminCommitment: ""
+    property bool isIdentityReady: adminCommitment.length > 0
 
     signal roomCreated(string name, int nThreshold, int mTotal, string modKeysJson, int minMembers)
 
@@ -201,14 +202,15 @@ Dialog {
             Button {
                 text: "Create Room"
                 Layout.fillWidth: true
+                enabled: modal.isIdentityReady && nameField.text.trim().length > 0
                 contentItem: Text {
-                    text: "Create Room"
+                    text: modal.isIdentityReady ? "Create Room" : "🔒 Identity Required"
                     font.bold: true
-                    color: "#ffffff"
+                    color: parent.enabled ? "#ffffff" : theme.textMuted
                     horizontalAlignment: Text.AlignHCenter
                 }
                 background: Rectangle {
-                    color: theme.accentBlurple
+                    color: parent.enabled ? theme.accentBlurple : theme.bgInput
                     radius: theme.radiusSmall
                 }
                 onClicked: {

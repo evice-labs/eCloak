@@ -24,14 +24,58 @@ Item {
     property string myUsername: ""
     property string myCommitment: ""
     property string myNsk: ""
+    property bool isIdentityRegistered: false  // true after commitment exists & is valid
 
     // LEZ Testnet State (queried from https://testnet.lez.logos.co/)
     property int lezBlockHeight: 0
     property int lezCollateral: 0
     property bool lezConnected: false
 
-    // Reference to Core Plugin
+    // Reference to Core Plugin (Direct injection or IPC bridge)
     property var anonCore: null
+
+    // Basecamp IPC & Core Module Bridge
+    function callCore(method, args) {
+        if (!args) args = [];
+
+        // 1. Logos Basecamp IPC (logos.callModule)
+        if (typeof logos !== "undefined" && logos && typeof logos.callModule === "function") {
+            try {
+                return logos.callModule("el_anon_chat_core", method, args);
+            } catch(e) {
+                console.log("Logos IPC callModule error (" + method + "): " + e);
+                return JSON.stringify({ error: e.toString() });
+            }
+        }
+
+        // 2. Direct QObject injection (el_anon_chat_core)
+        if (typeof el_anon_chat_core !== "undefined" && el_anon_chat_core) {
+            try {
+                if (typeof el_anon_chat_core[method] === "function") {
+                    return el_anon_chat_core[method].apply(el_anon_chat_core, args);
+                }
+            } catch(e) {
+                console.log("Direct core call error (" + method + "): " + e);
+                return JSON.stringify({ error: e.toString() });
+            }
+        }
+
+        // 3. Fallback when running standalone outside Basecamp
+        console.log("Core backend not connected, method called: " + method);
+        return null;
+    }
+
+    // Local fallback identity generator for standalone / dev testing
+    function generateLocalFallbackIdentity() {
+        var hexChars = "0123456789abcdef";
+        var nsk = "";
+        var comm = "";
+        for (var i = 0; i < 64; i++) {
+            nsk += hexChars.charAt(Math.floor(Math.random() * 16));
+            comm += hexChars.charAt(Math.floor(Math.random() * 16));
+        }
+        return JSON.stringify({ commitment: comm, nsk: nsk });
+    }
 
     // Room Model (Empty by default, created or joined by user)
     property var roomsList: []
@@ -63,23 +107,29 @@ Item {
     Theme { id: theme }
 
     Component.onCompleted: {
-        // Initialize Core Plugin if injected by Basecamp runtime
-        if (typeof el_anon_chat_core !== "undefined") {
-            anonCore = el_anon_chat_core;
-            try {
-                // Try to restore existing identity from core
-                var existingComm = anonCore.getCommitment();
-                if (existingComm && existingComm.length > 0) {
-                    root.myCommitment = existingComm;
-                }
-            } catch(e) {
-                console.log("Core init identity notice: " + e);
-            }
-        }
-
         // Query LEZ testnet block height
         lezBlockHeightTimer.start();
         queryLezBlockHeight();
+
+        // Restore existing identity from Core if available
+        try {
+            var existingComm = root.callCore("getCommitment", []);
+            if (existingComm && typeof existingComm === "string" && existingComm.length > 0) {
+                var cleanedComm = existingComm.replace(/\"/g, "").trim();
+                if (cleanedComm.length >= 32 && !cleanedComm.startsWith("{")) {
+                    root.myCommitment = cleanedComm;
+                    root.isIdentityRegistered = true;
+                } else {
+                    var parsedComm = JSON.parse(existingComm);
+                    if (parsedComm.commitment) {
+                        root.myCommitment = parsedComm.commitment;
+                        root.isIdentityRegistered = true;
+                    }
+                }
+            }
+        } catch(e) {
+            console.log("Core init identity notice: " + e);
+        }
 
         // If no identity exists, prompt user to create one
         if (!root.myCommitment || root.myCommitment.length === 0) {
@@ -283,16 +333,27 @@ Item {
             }
 
             onSendMessage: function(text, attachment) {
+                // Guard: require identity before sending messages
+                if (!root.myCommitment || root.myCommitment.length === 0) {
+                    notificationToast.showNotification("⚠ Identity required — please generate identity first.");
+                    identityModal.open();
+                    return;
+                }
+
                 var newTag = "";
                 var postPt = null;
 
-                // If Core is present, execute Two-Tier SSS preparePost
-                if (root.anonCore) {
+                // Execute Two-Tier SSS preparePost via Core IPC
+                var dummySalt = "0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20";
+                var modKeys = JSON.stringify(["02e4f82a1b9c3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789"]);
+                var res = root.callCore("preparePost", [text, dummySalt, modKeys, 1]);
+                if (res) {
                     try {
-                        var dummySalt = "0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20";
-                        var modKeys = JSON.stringify(["02e4f82a1b9c3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789"]);
-                        var res = root.anonCore.preparePost(text, dummySalt, modKeys, 1);
                         var parsed = JSON.parse(res);
+                        if (parsed.error) {
+                            notificationToast.showNotification("⚠ " + parsed.error);
+                            return;
+                        }
                         if (parsed.tracing_tag) newTag = parsed.tracing_tag;
                         if (parsed.post_point) postPt = parsed.post_point;
                     } catch(e) {
@@ -366,10 +427,18 @@ Item {
             radarStrikes: root.radarStrikes
 
             onExecuteSlashingRequested: function(targetComm) {
-                if (root.anonCore) {
+                var result = root.callCore("revokeCommitment", [targetComm]);
+                if (result) {
                     try {
-                        root.anonCore.revokeCommitment(targetComm);
-                    } catch(e) {}
+                        var parsed = JSON.parse(result);
+                        if (parsed.error) {
+                            notificationToast.showNotification("⚠ Slashing failed: " + parsed.error);
+                            return;
+                        }
+                    } catch(e) {
+                        notificationToast.showNotification("⚠ Slashing exception: " + e);
+                        return;
+                    }
                 }
                 root.radarStrikes = 0;
                 root.radarTargetUser = "";
@@ -391,12 +460,28 @@ Item {
         adminCommitment: root.myCommitment
 
         onRoomCreated: function(name, nVal, mVal, modKeys, minMembers) {
-            var newId = "room_" + (root.roomsList.length + 1);
-            if (root.anonCore) {
-                try {
-                    root.anonCore.createRoom(root.myCommitment, nVal, mVal, modKeys, 1, minMembers);
-                } catch(e) {}
+            // Guard: require identity
+            if (!root.myCommitment || root.myCommitment.length === 0) {
+                notificationToast.showNotification("⚠ Identity required — please generate identity first.");
+                identityModal.open();
+                return;
             }
+
+            var result = root.callCore("createRoom", [root.myCommitment, nVal, mVal, modKeys, 1, minMembers]);
+            if (result) {
+                try {
+                    var parsed = JSON.parse(result);
+                    if (parsed.error) {
+                        notificationToast.showNotification("⚠ " + parsed.error);
+                        return;
+                    }
+                } catch(e) {
+                    notificationToast.showNotification("⚠ Room creation failed: " + e);
+                    return;
+                }
+            }
+
+            var newId = "room_" + (root.roomsList.length + 1);
             var newRoom = {
                 id: newId,
                 name: name,
@@ -430,11 +515,27 @@ Item {
         memberCommitment: root.myCommitment
 
         onRoomJoined: function(roomIdHex, consentSig) {
-            if (root.anonCore) {
-                try {
-                    root.anonCore.joinRoom(roomIdHex, root.myCommitment, root.myCommitment, consentSig, 1);
-                } catch(e) {}
+            // Guard: require identity
+            if (!root.myCommitment || root.myCommitment.length === 0) {
+                notificationToast.showNotification("⚠ Identity required — please generate identity first.");
+                identityModal.open();
+                return;
             }
+
+            var result = root.callCore("joinRoom", [roomIdHex, root.myCommitment, root.myCommitment, consentSig, 1]);
+            if (result) {
+                try {
+                    var parsed = JSON.parse(result);
+                    if (parsed.error) {
+                        notificationToast.showNotification("⚠ " + parsed.error);
+                        return;
+                    }
+                } catch(e) {
+                    notificationToast.showNotification("⚠ Join room failed: " + e);
+                    return;
+                }
+            }
+
             var newId = "room_" + (root.roomsList.length + 1);
             var roomName = "Room #" + (roomIdHex.length > 6 ? roomIdHex.substring(0, 6) : "Group");
             var newRoom = {
@@ -472,25 +573,58 @@ Item {
         isLezConnected: root.lezConnected
 
         onUpdateUsernameRequested: function(newUsername) {
+            // Guard: require identity before registering username
+            if (!root.myCommitment || root.myCommitment.length === 0) {
+                notificationToast.showNotification("⚠ Identity required — cannot register username.");
+                return;
+            }
+
+            var previousUsername = root.myUsername;
             root.myUsername = newUsername;
-            if (root.anonCore) {
+            var result = root.callCore("registerUsername", [newUsername]);
+            if (result) {
                 try {
-                    root.anonCore.registerUsername(newUsername);
-                } catch(e) {}
+                    var parsed = JSON.parse(result);
+                    if (parsed.error) {
+                        root.myUsername = previousUsername; // rollback
+                        notificationToast.showNotification("⚠ " + parsed.error);
+                        return;
+                    }
+                } catch(e) {
+                    root.myUsername = previousUsername; // rollback
+                    notificationToast.showNotification("⚠ Username registration failed: " + e);
+                    return;
+                }
             }
             notificationToast.showNotification("Username updated to @" + newUsername);
         }
 
         onGenerateNewIdentityRequested: {
-            if (root.anonCore) {
-                try {
-                    var res = root.anonCore.createIdentity("");
-                    var parsed = JSON.parse(res);
-                    if (parsed.commitment) root.myCommitment = parsed.commitment;
-                    if (parsed.nsk) root.myNsk = parsed.nsk;
-                } catch(e) {}
+            var res = root.callCore("createIdentity", [""]);
+            if (!res) {
+                // Fallback for standalone / dev mode
+                res = root.generateLocalFallbackIdentity();
+                notificationToast.showNotification("Generated identity (Standalone fallback)");
+            } else {
+                notificationToast.showNotification("New ZK Identity generated via Core Module!");
             }
-            notificationToast.showNotification("New ZK Identity commitment generated!");
+            if (res) {
+                try {
+                    var parsed = JSON.parse(res);
+                    if (parsed.error) {
+                        notificationToast.showNotification("⚠ " + parsed.error);
+                        return;
+                    }
+                    if (parsed.commitment) {
+                        root.myCommitment = parsed.commitment;
+                        root.isIdentityRegistered = true;
+                    }
+                    if (parsed.nsk) root.myNsk = parsed.nsk;
+                } catch(e) {
+                    notificationToast.showNotification("⚠ Identity generation failed: " + e);
+                    return;
+                }
+            }
         }
     }
 

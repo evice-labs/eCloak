@@ -12,6 +12,7 @@ Dialog {
     padding: 24
 
     property string memberCommitment: ""
+    property bool isIdentityReady: memberCommitment.length > 0
 
     signal roomJoined(string roomIdHex, string consentSig)
 
@@ -125,21 +126,22 @@ Dialog {
             Button {
                 text: "Join Room"
                 Layout.fillWidth: true
+                enabled: modal.isIdentityReady && roomIdInput.text.trim().length > 0
                 contentItem: Text {
-                    text: "Sign & Join Room"
+                    text: modal.isIdentityReady ? "Sign & Join Room" : "🔒 Identity Required"
                     font.bold: true
-                    color: "#ffffff"
+                    color: parent.enabled ? "#ffffff" : theme.textMuted
                     horizontalAlignment: Text.AlignHCenter
                 }
                 background: Rectangle {
-                    color: theme.accentBlurple
+                    color: parent.enabled ? theme.accentBlurple : theme.bgInput
                     radius: theme.radiusSmall
                 }
                 onClicked: {
                     if (roomIdInput.text.trim().length > 0) {
-                        // Generate mock 64-byte signature for consent
-                        var dummySig = "0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f40";
-                        modal.roomJoined(roomIdInput.text.trim(), dummySig);
+                        // Pass empty placeholder — Core Module will auto-sign via ffi_room_sign_join_consent
+                        var consentPlaceholder = "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+                        modal.roomJoined(roomIdInput.text.trim(), consentPlaceholder);
                         modal.accept();
                     }
                 }
