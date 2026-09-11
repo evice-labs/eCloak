@@ -1,5 +1,5 @@
 {
-  description = "Anonymous Chat UI — Basecamp QML Module";
+  description = "eCloak — Zero-Knowledge Anonymous Chat for Logos Basecamp by Evice Labs";
 
   inputs = {
     logos-module-builder.url = "github:logos-co/logos-module-builder";

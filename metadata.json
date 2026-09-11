@@ -1,12 +1,12 @@
 {
-  "name": "el_anon_chat_ui",
-  "display_name": "El Anon Chat UI",
+  "name": "ecloak",
+  "display_name": "eCloak",
   "version": "1.0.0",
   "type": "ui_qml",
   "category": "general",
-  "description": "Anonymous Chat with Identity & Moderation Infrastructure — Basecamp QML UI",
+  "description": "eCloak — Zero-Knowledge Anonymous Chat with Cryptographic Moderation by Evice Labs",
   "view": "qml/Main.qml",
-  "icon": null,
+  "icon": "assets/EviceLogo-white.png",
   "dependencies": ["el_anon_chat_core"],
 
   "nix": {
