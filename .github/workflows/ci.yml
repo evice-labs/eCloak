@@ -58,7 +58,7 @@ jobs:
               echo "Error: icon file '$ICON' does not exist"
               exit 1
             fi
-            python3 -c "from PIL import Image; img = Image.open('$ICON'); assert img.size == (256, 256), f'Icon must be 256x256, got {img.size}'"
+            python3 -c "import struct; f = open('$ICON', 'rb'); f.seek(16); w, h = struct.unpack('>II', f.read(8)); assert (w, h) == (256, 256), f'Icon must be 256x256, got {w}x{h}'"
             echo "✔ Icon '$ICON' verified: exactly 256x256 PNG"
           fi
 
