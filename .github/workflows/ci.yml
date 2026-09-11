@@ -50,6 +50,18 @@ jobs:
           test -f qml/modals/StrikeModal.qml
           echo "✔ All core QML view and modal files verified."
 
+      - name: Validate Icon Dimensions (256x256 standard)
+        run: |
+          ICON=$(jq -r '.icon' metadata.json)
+          if [ "$ICON" != "null" ] && [ -n "$ICON" ]; then
+            if [ ! -f "$ICON" ]; then
+              echo "Error: icon file '$ICON' does not exist"
+              exit 1
+            fi
+            python3 -c "from PIL import Image; img = Image.open('$ICON'); assert img.size == (256, 256), f'Icon must be 256x256, got {img.size}'"
+            echo "✔ Icon '$ICON' verified: exactly 256x256 PNG"
+          fi
+
   build-nix:
     name: Nix Flake & Package (.lgx)
     runs-on: ubuntu-latest
@@ -64,9 +76,6 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
             accept-flake-config = true
-
-      - name: Setup Magic Nix Cache
-        uses: DeterminateSystems/magic-nix-cache-action@v2
 
       - name: Verify Flake Check
         run: nix flake check
