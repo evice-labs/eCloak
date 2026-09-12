@@ -7,7 +7,7 @@
   "description": "eCloak — Zero-Knowledge Anonymous Chat with Cryptographic Moderation by Evice Labs",
   "view": "qml/Main.qml",
   "icon": "assets/icon-256.png",
-  "dependencies": ["el_anon_chat_core"],
+  "dependencies": ["ecloakcore"],
 
   "nix": {
     "packages": {
