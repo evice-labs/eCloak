@@ -41,18 +41,27 @@ Item {
         // 1. Logos Basecamp IPC (logos.callModule)
         if (typeof logos !== "undefined" && logos && typeof logos.callModule === "function") {
             try {
+                // Try official ecloakcore identifier first
+                var res = logos.callModule("ecloakcore", method, args);
+                if (typeof res !== "undefined" && res !== null && res !== "") return res;
+                // Fallback for legacy el_anon_chat_core identifier
                 return logos.callModule("el_anon_chat_core", method, args);
             } catch(e) {
-                console.log("Logos IPC callModule error (" + method + "): " + e);
-                return JSON.stringify({ error: e.toString() });
+                try {
+                    return logos.callModule("el_anon_chat_core", method, args);
+                } catch(e2) {
+                    console.log("Logos IPC callModule error (" + method + "): " + e);
+                    return JSON.stringify({ error: e.toString() });
+                }
             }
         }
 
-        // 2. Direct QObject injection (el_anon_chat_core)
-        if (typeof el_anon_chat_core !== "undefined" && el_anon_chat_core) {
+        // 2. Direct QObject injection (ecloakcore or el_anon_chat_core)
+        var coreObj = (typeof ecloakcore !== "undefined" && ecloakcore) ? ecloakcore : ((typeof el_anon_chat_core !== "undefined" && el_anon_chat_core) ? el_anon_chat_core : null);
+        if (coreObj) {
             try {
-                if (typeof el_anon_chat_core[method] === "function") {
-                    return el_anon_chat_core[method].apply(el_anon_chat_core, args);
+                if (typeof coreObj[method] === "function") {
+                    return coreObj[method].apply(coreObj, args);
                 }
             } catch(e) {
                 console.log("Direct core call error (" + method + "): " + e);
