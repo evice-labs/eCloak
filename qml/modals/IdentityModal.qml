@@ -6,7 +6,7 @@ import "../components"
 Dialog {
     id: modal
     width: 520
-    height: 520
+    height: 570
     modal: true
     anchors.centerIn: parent
     padding: 24
@@ -21,6 +21,7 @@ Dialog {
 
     signal updateUsernameRequested(string newUsername)
     signal generateNewIdentityRequested()
+    signal stakeViaWalletRequested(int amount, string commitment)
 
     Theme { id: theme }
 
@@ -200,29 +201,68 @@ Dialog {
         // LEZ Status Card
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 44
+            Layout.preferredHeight: modal.collateralAmount >= 150 ? 50 : 80
             radius: theme.radiusSmall
-            color: modal.isLezConnected ? "#1a382e" : "#382e1a"
+            color: modal.collateralAmount >= 150 ? "#1a382e" : (modal.isLezConnected ? "#2d2416" : "#382e1a")
+            border.color: modal.collateralAmount >= 150 ? theme.accentLogos : theme.accentWarning
+            border.width: 1
 
-            RowLayout {
+            ColumnLayout {
                 anchors.fill: parent
                 anchors.margins: 8
-                spacing: 8
-                Text { text: modal.isLezConnected ? "●" : "○"; font.pixelSize: 14; color: modal.isLezConnected ? theme.accentLogos : "#e6a84a" }
-                ColumnLayout {
-                    spacing: 1
+                spacing: 6
+
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: 8
                     Text {
-                        text: modal.isLezConnected ? "Logos Execution Zone (LEZ) — Connected" : "Logos Execution Zone (LEZ) — Connecting..."
-                        font.bold: true
-                        font.pixelSize: 11
-                        color: modal.isLezConnected ? theme.accentLogos : "#e6a84a"
+                        text: modal.collateralAmount >= 150 ? "●" : (modal.isLezConnected ? "●" : "○")
+                        font.pixelSize: 14
+                        color: modal.collateralAmount >= 150 ? theme.accentLogos : theme.accentWarning
                     }
-                    Text {
-                        text: modal.isLezConnected
-                              ? "Block Height: #" + modal.blockHeight + " • Collateral Active: " + (modal.collateralAmount > 0 ? modal.collateralAmount + " LEZ" : "Not Staked")
-                              : "Block Height: — • Waiting for testnet..."
-                        font.pixelSize: 10
-                        color: modal.isLezConnected ? "#a8e6cf" : "#d4a574"
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        spacing: 1
+                        Text {
+                            text: modal.collateralAmount >= 150
+                                  ? "LEZ Membership Registry — 150 LEZ Collateral Active"
+                                  : "Logos Execution Zone (LEZ) — 150 LEZ Collateral Required"
+                            font.bold: true
+                            font.pixelSize: 11
+                            color: modal.collateralAmount >= 150 ? theme.accentLogos : theme.accentWarning
+                        }
+                        Text {
+                            text: modal.collateralAmount >= 150
+                                  ? "Identity protected by Zero-Knowledge nullifiers and strike slashing."
+                                  : "Staking 150 LEZ collateral binds your commitment to the on-chain forum."
+                            font.pixelSize: 10
+                            color: modal.collateralAmount >= 150 ? "#a8e6cf" : "#d4a574"
+                        }
+                    }
+                }
+
+                // Stake Action Button if not yet staked
+                RowLayout {
+                    Layout.fillWidth: true
+                    visible: modal.collateralAmount < 150
+                    spacing: 8
+
+                    Button {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 28
+                        contentItem: Text {
+                            text: "⚡ Stake 150 LEZ via Basecamp Wallet"
+                            font.bold: true
+                            font.pixelSize: 11
+                            color: "#12151c"
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                        background: Rectangle {
+                            color: theme.accentLogos
+                            radius: theme.radiusSmall
+                        }
+                        onClicked: modal.stakeViaWalletRequested(150, modal.commitmentHex)
                     }
                 }
             }
