@@ -20,9 +20,16 @@ Dialog {
     property bool isLezConnected: false
     property string validationMessage: ""
     property bool isValidationError: false
+    property bool waitingForManualStake: false
+
+    onOpened: {
+        userField.text = modal.currentUsername;
+        modal.validationMessage = "";
+        modal.waitingForManualStake = false;
+    }
 
     onCurrentUsernameChanged: {
-        if (!userField.activeFocus && modal.currentUsername.length > 0) {
+        if (!userField.activeFocus) {
             userField.text = modal.currentUsername;
         }
     }
@@ -298,15 +305,15 @@ Dialog {
                     }
                 }
 
-                // Stake Action Buttons if not yet staked
+                // Stake Action Step 1: Single prominent button
                 RowLayout {
                     Layout.fillWidth: true
-                    visible: modal.collateralAmount < 150
+                    visible: modal.collateralAmount < 150 && !modal.waitingForManualStake
                     spacing: 8
 
                     Button {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 28
+                        Layout.preferredHeight: 30
                         contentItem: Text {
                             text: "Stake 150 LEZ via Basecamp Wallet"
                             font.bold: true
@@ -320,17 +327,25 @@ Dialog {
                             radius: theme.radiusSmall
                         }
                         onClicked: {
-                            modal.validationMessage = "Requesting 150 LEZ stake...";
+                            modal.validationMessage = "Requesting 150 LEZ stake in Basecamp Wallet...";
                             modal.isValidationError = false;
+                            modal.waitingForManualStake = true;
                             modal.stakeViaWalletRequested(150, modal.commitmentHex);
                         }
                     }
+                }
+
+                // Stake Action Step 2: Follow-up Verification Button (shown after wallet opened)
+                RowLayout {
+                    Layout.fillWidth: true
+                    visible: modal.collateralAmount < 150 && modal.waitingForManualStake
+                    spacing: 8
 
                     Button {
-                        Layout.preferredWidth: 120
-                        Layout.preferredHeight: 28
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 30
                         contentItem: Text {
-                            text: "Confirm Staked"
+                            text: "✔ Confirm 150 LEZ Staked"
                             font.bold: true
                             font.pixelSize: 11
                             color: "#ffffff"
@@ -338,13 +353,36 @@ Dialog {
                             verticalAlignment: Text.AlignVCenter
                         }
                         background: Rectangle {
-                            color: theme.accentBlurple
+                            color: theme.accentSuccess
                             radius: theme.radiusSmall
                         }
                         onClicked: {
-                            modal.validationMessage = "Confirmed 150 LEZ collateral active.";
+                            modal.validationMessage = "Confirmed 150 LEZ collateral active on LEZ testnet.";
                             modal.isValidationError = false;
+                            modal.waitingForManualStake = false;
                             modal.confirmStakeRequested(150);
+                        }
+                    }
+
+                    Button {
+                        Layout.preferredWidth: 70
+                        Layout.preferredHeight: 30
+                        contentItem: Text {
+                            text: "Cancel"
+                            font.pixelSize: 11
+                            color: theme.textMuted
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                        background: Rectangle {
+                            color: "transparent"
+                            border.color: theme.borderSubtle
+                            border.width: 1
+                            radius: theme.radiusSmall
+                        }
+                        onClicked: {
+                            modal.waitingForManualStake = false;
+                            modal.validationMessage = "";
                         }
                     }
                 }

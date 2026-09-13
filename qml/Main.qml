@@ -118,29 +118,45 @@ Item {
         if (callback) callback(syncRes);
     }
 
+    // Robust JSON Parser that handles single, double-encoded JSON, or direct objects
+    function safeJsonParse(raw) {
+        if (!raw) return null;
+        var parsed = raw;
+        if (typeof parsed === "string") {
+            try {
+                parsed = JSON.parse(parsed);
+            } catch(e) {
+                return null;
+            }
+        }
+        // If string was double-encoded by IPC layer (std::string serialization)
+        if (typeof parsed === "string") {
+            try {
+                parsed = JSON.parse(parsed);
+            } catch(e) {}
+        }
+        return (typeof parsed === "object" && parsed !== null) ? parsed : null;
+    }
+
     // Synchronize identity from core module into UI state
     function syncIdentityFromCore() {
         callCoreAsync("getIdentityInfo", [], function(idInfo) {
-            if (idInfo && typeof idInfo === "string" && idInfo.length > 0 && !idInfo.startsWith("Error")) {
-                try {
-                    var parsedInfo = JSON.parse(idInfo);
-                    if (parsedInfo.has_identity && parsedInfo.commitment && parsedInfo.commitment.length >= 32) {
-                        root.myCommitment = parsedInfo.commitment;
-                        root.isIdentityRegistered = true;
-                        root.isCoreReady = true;
-                        if (parsedInfo.nsk) root.myNsk = parsedInfo.nsk;
-                        if (parsedInfo.username && parsedInfo.username.length > 0) {
-                            root.myUsername = parsedInfo.username;
-                        }
-                        if (parsedInfo.staked) {
-                            root.lezCollateral = parsedInfo.stake_amount || 150;
-                        }
-                        startupRetryTimer.stop();
-                        return;
-                    }
-                } catch(e) {
-                    console.log("Error parsing getIdentityInfo:", e);
+            var parsedInfo = safeJsonParse(idInfo);
+            if (parsedInfo && parsedInfo.has_identity && parsedInfo.commitment && parsedInfo.commitment.length >= 32) {
+                root.myCommitment = parsedInfo.commitment;
+                root.isIdentityRegistered = true;
+                root.isCoreReady = true;
+                if (parsedInfo.nsk) root.myNsk = parsedInfo.nsk;
+                if (parsedInfo.username && parsedInfo.username.length > 0) {
+                    root.myUsername = parsedInfo.username;
                 }
+                if (parsedInfo.staked) {
+                    root.lezCollateral = parsedInfo.stake_amount || 150;
+                } else {
+                    root.lezCollateral = 0;
+                }
+                startupRetryTimer.stop();
+                return;
             }
 
             // Fallback check to getCommitment
@@ -153,15 +169,13 @@ Item {
                         root.isCoreReady = true;
                         startupRetryTimer.stop();
                     } else if (cleanedComm.startsWith("{")) {
-                        try {
-                            var parsedComm = JSON.parse(existingComm);
-                            if (parsedComm.commitment && parsedComm.commitment.length >= 32) {
-                                root.myCommitment = parsedComm.commitment;
-                                root.isIdentityRegistered = true;
-                                root.isCoreReady = true;
-                                startupRetryTimer.stop();
-                            }
-                        } catch(e) {}
+                        var parsedComm = safeJsonParse(existingComm);
+                        if (parsedComm && parsedComm.commitment && parsedComm.commitment.length >= 32) {
+                            root.myCommitment = parsedComm.commitment;
+                            root.isIdentityRegistered = true;
+                            root.isCoreReady = true;
+                            startupRetryTimer.stop();
+                        }
                     }
                 }
             });
@@ -177,23 +191,27 @@ Item {
         console.log("ensureIdentityExists: generating new identity in core...");
         var res = callCore("createIdentity", [""]);
         if (res) {
-            try {
-                var parsed = JSON.parse(res);
-                if (parsed.commitment && parsed.commitment.length >= 32) {
-                    root.myCommitment = parsed.commitment;
-                    root.isIdentityRegistered = true;
-                    if (parsed.nsk) root.myNsk = parsed.nsk;
-                    console.log("ensureIdentityExists: created commitment:", root.myCommitment);
-                    return;
-                }
-            } catch(e) {}
+            var parsed = safeJsonParse(res);
+            if (parsed && parsed.commitment && parsed.commitment.length >= 32) {
+                root.myCommitment = parsed.commitment;
+                root.isIdentityRegistered = true;
+                if (parsed.nsk) root.myNsk = parsed.nsk;
+                root.myUsername = "";
+                root.lezCollateral = 0;
+                console.log("ensureIdentityExists: created commitment:", root.myCommitment);
+                return;
+            }
         }
         // Fallback for standalone dev
         var fb = generateLocalFallbackIdentity();
-        var pfb = JSON.parse(fb);
-        root.myCommitment = pfb.commitment;
-        root.myNsk = pfb.nsk;
-        root.isIdentityRegistered = true;
+        var pfb = safeJsonParse(fb);
+        if (pfb) {
+            root.myCommitment = pfb.commitment;
+            root.myNsk = pfb.nsk;
+            root.myUsername = "";
+            root.lezCollateral = 0;
+            root.isIdentityRegistered = true;
+        }
     }
 
     // Local fallback identity generator for standalone / dev testing
@@ -292,23 +310,17 @@ Item {
 
     function queryLezNetworkStatus() {
         callCoreAsync("getNetworkStatus", [], function(res) {
-            if (res && typeof res === "string" && res.length > 0 && !res.startsWith("Error")) {
-                try {
-                    var parsed = JSON.parse(res);
-                    if (parsed.connected !== undefined) {
-                        root.lezConnected = parsed.connected;
-                    }
-                    if (parsed.required_collateral_lez) {
-                        if (parsed.collateral_active) {
-                            root.lezCollateral = parsed.stake_amount || parsed.required_collateral_lez;
-                        }
-                    }
-                    if (parsed.commitment && parsed.commitment.length >= 32) {
-                        root.myCommitment = parsed.commitment;
-                        root.isIdentityRegistered = true;
-                    }
-                } catch(e) {
-                    console.log("Error parsing getNetworkStatus:", e);
+            var parsed = safeJsonParse(res);
+            if (parsed) {
+                if (parsed.connected !== undefined) {
+                    root.lezConnected = parsed.connected;
+                }
+                if (parsed.collateral_active && parsed.stake_amount) {
+                    root.lezCollateral = parsed.stake_amount;
+                }
+                if (parsed.commitment && parsed.commitment.length >= 32 && (!root.myCommitment || root.myCommitment.length === 0)) {
+                    root.myCommitment = parsed.commitment;
+                    root.isIdentityRegistered = true;
                 }
             } else {
                 root.lezConnected = true;
@@ -473,9 +485,16 @@ Item {
             }
 
             onSendMessage: function(text, attachment) {
-                // Guard: require identity before sending messages
+                // Guard 1: require identity before sending messages
                 if (!root.myCommitment || root.myCommitment.length === 0) {
                     notificationToast.showNotification("⚠ Identity required — please generate identity first.");
+                    identityModal.open();
+                    return;
+                }
+
+                // Guard 2: require 150 LEZ stake collateral before sending messages
+                if (root.lezCollateral < 150) {
+                    notificationToast.showNotification("⚠ 150 LEZ stake collateral required to post anonymously on LEZ testnet.");
                     identityModal.open();
                     return;
                 }
@@ -488,16 +507,14 @@ Item {
                 var modKeys = JSON.stringify(["02e4f82a1b9c3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789"]);
                 var res = root.callCore("preparePost", [text, dummySalt, modKeys, 1]);
                 if (res) {
-                    try {
-                        var parsed = JSON.parse(res);
+                    var parsed = safeJsonParse(res);
+                    if (parsed) {
                         if (parsed.error) {
                             notificationToast.showNotification("⚠ " + parsed.error);
                             return;
                         }
                         if (parsed.tracing_tag) newTag = parsed.tracing_tag;
                         if (parsed.post_point) postPt = parsed.post_point;
-                    } catch(e) {
-                        console.log("preparePost exception: " + e);
                     }
                 }
 
@@ -729,14 +746,12 @@ Item {
 
             var result = root.callCore("registerUsername", [newUsername]);
             if (result) {
-                try {
-                    var parsed = JSON.parse(result);
-                    if (parsed.error) {
-                        root.myUsername = previousUsername; // rollback
-                        notificationToast.showNotification("⚠ " + parsed.error);
-                        return;
-                    }
-                } catch(e) {}
+                var parsed = safeJsonParse(result);
+                if (parsed && parsed.error) {
+                    root.myUsername = previousUsername; // rollback
+                    notificationToast.showNotification("⚠ " + parsed.error);
+                    return;
+                }
             }
             notificationToast.showNotification("✔ Username registered: @" + newUsername);
         }
@@ -751,8 +766,8 @@ Item {
                 notificationToast.showNotification("New ZK Identity generated via Core Module!");
             }
             if (res) {
-                try {
-                    var parsed = JSON.parse(res);
+                var parsed = safeJsonParse(res);
+                if (parsed) {
                     if (parsed.error) {
                         notificationToast.showNotification("⚠ " + parsed.error);
                         return;
@@ -762,9 +777,9 @@ Item {
                         root.isIdentityRegistered = true;
                     }
                     if (parsed.nsk) root.myNsk = parsed.nsk;
-                } catch(e) {
-                    notificationToast.showNotification("⚠ Identity generation failed: " + e);
-                    return;
+                    // Brand new identity requires setting new username and staking
+                    root.myUsername = "";
+                    root.lezCollateral = 0;
                 }
             }
         }
@@ -781,6 +796,7 @@ Item {
                     if (res && res.ok) {
                         root.callCore("recordStake", [amount]);
                         root.lezCollateral = amount;
+                        identityModal.waitingForManualStake = false;
                         notificationToast.showNotification("✔ Stake confirmed! " + amount + " LEZ collateral active.");
                     } else if (res && (res.error === "unavailable" || res.error === "not_declared")) {
                         // Launch LEZ wallet if available
@@ -789,8 +805,9 @@ Item {
                                 console.log("basecamp.apps.launch result:", JSON.stringify(launchRes));
                             });
                         } catch(err) {}
-                        notificationToast.showNotification("LEZ Wallet opened. Please click 'Confirm Staked' after transfer.");
+                        notificationToast.showNotification("LEZ Wallet opened. Complete transfer, then click 'Confirm 150 LEZ Staked'.");
                     } else if (res && res.error === "cancelled") {
+                        identityModal.waitingForManualStake = false;
                         notificationToast.showNotification("Stake request cancelled in Wallet.");
                     } else {
                         notificationToast.showNotification("Stake notice: " + (res ? res.error : "unhandled"));
@@ -799,6 +816,7 @@ Item {
             } else {
                 root.callCore("recordStake", [amount]);
                 root.lezCollateral = amount;
+                identityModal.waitingForManualStake = false;
                 notificationToast.showNotification("✔ Standalone mode: " + amount + " LEZ collateral marked active.");
             }
         }
@@ -806,6 +824,7 @@ Item {
         onConfirmStakeRequested: function(amount) {
             root.callCore("recordStake", [amount]);
             root.lezCollateral = amount;
+            identityModal.waitingForManualStake = false;
             notificationToast.showNotification("✔ Collateral confirmed: " + amount + " LEZ staked!");
         }
     }
