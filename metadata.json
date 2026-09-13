@@ -8,6 +8,10 @@
   "view": "qml/Main.qml",
   "icon": "assets/icon-256.png",
   "dependencies": ["ecloakcore"],
+  "uses": [
+    { "intent": "basecamp.apps.launch" },
+    { "intent": "wallet.send" }
+  ],
 
   "nix": {
     "packages": {

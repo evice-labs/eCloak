@@ -33,8 +33,29 @@ Item {
 
     // Reference to Core Plugin (Direct injection or IPC bridge)
     property var anonCore: null
+    property bool isCoreReady: false
 
-    // Basecamp IPC & Core Module Bridge
+    // Basecamp-aligned Module Lifecycle & Events Handshake
+    Connections {
+        target: (typeof logos !== "undefined" && logos) ? logos : null
+
+        function onViewModuleReadyChanged(moduleName, isReady) {
+            console.log("eCloak onViewModuleReadyChanged:", moduleName, isReady);
+            if (isReady && (moduleName === "ecloak" || moduleName === "ecloakcore")) {
+                root.isCoreReady = true;
+                root.syncIdentityFromCore();
+            }
+        }
+
+        function onModuleEventReceived(moduleName, eventName, data) {
+            console.log("eCloak onModuleEventReceived:", moduleName, eventName, JSON.stringify(data));
+            if (moduleName === "ecloakcore") {
+                root.syncIdentityFromCore();
+            }
+        }
+    }
+
+    // Basecamp IPC & Core Module Bridge (Sync callModule)
     function callCore(method, args) {
         if (!args) args = [];
 
@@ -43,16 +64,22 @@ Item {
             try {
                 // Try official ecloakcore identifier first
                 var res = logos.callModule("ecloakcore", method, args);
-                if (typeof res !== "undefined" && res !== null && res !== "") return res;
+                if (typeof res !== "undefined" && res !== null && res !== "") {
+                    if (typeof res === "string" && res.startsWith("{")) {
+                        try {
+                            var checkErr = JSON.parse(res);
+                            if (checkErr.error && checkErr.error.indexOf("unreachable") !== -1) {
+                                return null;
+                            }
+                        } catch(ignore) {}
+                    }
+                    return res;
+                }
                 // Fallback for legacy el_anon_chat_core identifier
                 return logos.callModule("el_anon_chat_core", method, args);
             } catch(e) {
-                try {
-                    return logos.callModule("el_anon_chat_core", method, args);
-                } catch(e2) {
-                    console.log("Logos IPC callModule error (" + method + "): " + e);
-                    return JSON.stringify({ error: e.toString() });
-                }
+                console.log("Logos IPC callModule error (" + method + "): " + e);
+                return null;
             }
         }
 
@@ -72,6 +99,101 @@ Item {
         // 3. Fallback when running standalone outside Basecamp
         console.log("Core backend not connected, method called: " + method);
         return null;
+    }
+
+    // Basecamp IPC Async Caller (Pre-armed during startup via logos.callModuleAsync)
+    function callCoreAsync(method, args, callback) {
+        if (!args) args = [];
+        if (typeof logos !== "undefined" && logos && typeof logos.callModuleAsync === "function") {
+            try {
+                logos.callModuleAsync("ecloakcore", method, args, function(res) {
+                    if (callback) callback(res);
+                }, 10000);
+                return;
+            } catch(e) {
+                console.log("callCoreAsync error:", e);
+            }
+        }
+        var syncRes = callCore(method, args);
+        if (callback) callback(syncRes);
+    }
+
+    // Synchronize identity from core module into UI state
+    function syncIdentityFromCore() {
+        callCoreAsync("getIdentityInfo", [], function(idInfo) {
+            if (idInfo && typeof idInfo === "string" && idInfo.length > 0 && !idInfo.startsWith("Error")) {
+                try {
+                    var parsedInfo = JSON.parse(idInfo);
+                    if (parsedInfo.has_identity && parsedInfo.commitment && parsedInfo.commitment.length >= 32) {
+                        root.myCommitment = parsedInfo.commitment;
+                        root.isIdentityRegistered = true;
+                        root.isCoreReady = true;
+                        if (parsedInfo.nsk) root.myNsk = parsedInfo.nsk;
+                        if (parsedInfo.username && parsedInfo.username.length > 0) {
+                            root.myUsername = parsedInfo.username;
+                        }
+                        if (parsedInfo.staked) {
+                            root.lezCollateral = parsedInfo.stake_amount || 150;
+                        }
+                        startupRetryTimer.stop();
+                        return;
+                    }
+                } catch(e) {
+                    console.log("Error parsing getIdentityInfo:", e);
+                }
+            }
+
+            // Fallback check to getCommitment
+            callCoreAsync("getCommitment", [], function(existingComm) {
+                if (existingComm && typeof existingComm === "string" && existingComm.length > 0) {
+                    var cleanedComm = existingComm.replace(/\"/g, "").trim();
+                    if (cleanedComm.length >= 32 && !cleanedComm.startsWith("{")) {
+                        root.myCommitment = cleanedComm;
+                        root.isIdentityRegistered = true;
+                        root.isCoreReady = true;
+                        startupRetryTimer.stop();
+                    } else if (cleanedComm.startsWith("{")) {
+                        try {
+                            var parsedComm = JSON.parse(existingComm);
+                            if (parsedComm.commitment && parsedComm.commitment.length >= 32) {
+                                root.myCommitment = parsedComm.commitment;
+                                root.isIdentityRegistered = true;
+                                root.isCoreReady = true;
+                                startupRetryTimer.stop();
+                            }
+                        } catch(e) {}
+                    }
+                }
+            });
+        });
+
+        // Also query network status
+        queryLezNetworkStatus();
+    }
+
+    // Ensure an identity exists in core, generating one if missing
+    function ensureIdentityExists() {
+        if (root.myCommitment && root.myCommitment.length >= 32) return;
+        console.log("ensureIdentityExists: generating new identity in core...");
+        var res = callCore("createIdentity", [""]);
+        if (res) {
+            try {
+                var parsed = JSON.parse(res);
+                if (parsed.commitment && parsed.commitment.length >= 32) {
+                    root.myCommitment = parsed.commitment;
+                    root.isIdentityRegistered = true;
+                    if (parsed.nsk) root.myNsk = parsed.nsk;
+                    console.log("ensureIdentityExists: created commitment:", root.myCommitment);
+                    return;
+                }
+            } catch(e) {}
+        }
+        // Fallback for standalone dev
+        var fb = generateLocalFallbackIdentity();
+        var pfb = JSON.parse(fb);
+        root.myCommitment = pfb.commitment;
+        root.myNsk = pfb.nsk;
+        root.isIdentityRegistered = true;
     }
 
     // Local fallback identity generator for standalone / dev testing
@@ -115,51 +237,49 @@ Item {
 
     Theme { id: theme }
 
-    Component.onCompleted: {
-        // Query LEZ network status via Core Module (sandbox-safe, no direct XHR)
-        lezStatusTimer.start();
-        queryLezNetworkStatus();
-
-        // Restore existing identity from Core if available
-        try {
-            var idInfo = root.callCore("getIdentityInfo", []);
-            if (idInfo && typeof idInfo === "string" && idInfo.length > 0 && !idInfo.startsWith("Error")) {
-                var parsedInfo = JSON.parse(idInfo);
-                if (parsedInfo.has_identity && parsedInfo.commitment) {
-                    root.myCommitment = parsedInfo.commitment;
-                    root.isIdentityRegistered = true;
-                    if (parsedInfo.nsk) root.myNsk = parsedInfo.nsk;
-                    if (parsedInfo.username && parsedInfo.username.length > 0) {
-                        root.myUsername = parsedInfo.username;
-                    }
-                    if (root.lezCollateral === 0) {
-                        root.lezCollateral = 150;
-                    }
-                }
-            } else {
-                var existingComm = root.callCore("getCommitment", []);
-                if (existingComm && typeof existingComm === "string" && existingComm.length > 0) {
-                    var cleanedComm = existingComm.replace(/\"/g, "").trim();
-                    if (cleanedComm.length >= 32 && !cleanedComm.startsWith("{")) {
-                        root.myCommitment = cleanedComm;
-                        root.isIdentityRegistered = true;
-                    } else if (cleanedComm.startsWith("{")) {
-                        var parsedComm = JSON.parse(existingComm);
-                        if (parsedComm.commitment) {
-                            root.myCommitment = parsedComm.commitment;
-                            root.isIdentityRegistered = true;
-                        }
-                    }
+    // Startup retry timer to bridge the initial Basecamp module connection phase
+    Timer {
+        id: startupRetryTimer
+        interval: 800
+        repeat: true
+        property int retries: 0
+        onTriggered: {
+            retries++;
+            if (root.myCommitment && root.myCommitment.length >= 32) {
+                startupRetryTimer.stop();
+                return;
+            }
+            root.syncIdentityFromCore();
+            // Bound retry to 15 seconds (18 attempts)
+            if (retries >= 18) {
+                startupRetryTimer.stop();
+                if (!root.myCommitment || root.myCommitment.length < 32) {
+                    root.ensureIdentityExists();
                 }
             }
-        } catch(e) {
-            console.log("Core init identity notice: " + e);
+        }
+    }
+
+    Component.onCompleted: {
+        // Subscribe to module events if supported by runtime
+        if (typeof logos !== "undefined" && logos && typeof logos.onModuleEvent === "function") {
+            try {
+                logos.onModuleEvent("ecloakcore", "identityChanged");
+                logos.onModuleEvent("ecloakcore", "ready");
+            } catch(e) {}
         }
 
-        // If no identity exists, prompt user to create one
-        if (!root.myCommitment || root.myCommitment.length === 0) {
-            identityModal.open();
+        // Check if replica/bridge is already Valid
+        if (typeof logos !== "undefined" && logos && typeof logos.isViewModuleReady === "function") {
+            if (logos.isViewModuleReady("ecloak") || logos.isViewModuleReady("ecloakcore")) {
+                root.isCoreReady = true;
+            }
         }
+
+        // Kick off startup sync & timers
+        root.syncIdentityFromCore();
+        startupRetryTimer.start();
+        lezStatusTimer.start();
     }
 
     // LEZ Testnet Status Polling via Core Module (sandbox-safe)
@@ -171,28 +291,29 @@ Item {
     }
 
     function queryLezNetworkStatus() {
-        try {
-            var res = root.callCore("getNetworkStatus", []);
+        callCoreAsync("getNetworkStatus", [], function(res) {
             if (res && typeof res === "string" && res.length > 0 && !res.startsWith("Error")) {
-                var parsed = JSON.parse(res);
-                if (parsed.connected !== undefined) {
-                    root.lezConnected = parsed.connected;
-                }
-                if (parsed.required_collateral_lez) {
-                    if (root.lezCollateral === 0 && parsed.collateral_active) {
-                        root.lezCollateral = parsed.required_collateral_lez;
+                try {
+                    var parsed = JSON.parse(res);
+                    if (parsed.connected !== undefined) {
+                        root.lezConnected = parsed.connected;
                     }
-                }
-                if (parsed.commitment && parsed.commitment.length > 0) {
-                    root.myCommitment = parsed.commitment;
-                    root.isIdentityRegistered = true;
+                    if (parsed.required_collateral_lez) {
+                        if (parsed.collateral_active) {
+                            root.lezCollateral = parsed.stake_amount || parsed.required_collateral_lez;
+                        }
+                    }
+                    if (parsed.commitment && parsed.commitment.length >= 32) {
+                        root.myCommitment = parsed.commitment;
+                        root.isIdentityRegistered = true;
+                    }
+                } catch(e) {
+                    console.log("Error parsing getNetworkStatus:", e);
                 }
             } else {
                 root.lezConnected = true;
             }
-        } catch(e) {
-            console.log("LEZ status notice: " + e);
-        }
+        });
     }
 
     // Main 4-Column Layout Coordinator
@@ -592,14 +713,20 @@ Item {
         isLezConnected: root.lezConnected
 
         onUpdateUsernameRequested: function(newUsername) {
-            // Guard: require identity before registering username
-            if (!root.myCommitment || root.myCommitment.length === 0) {
-                notificationToast.showNotification("⚠ Identity required — cannot register username.");
+            // Guard: ensure identity exists in core before registering username
+            if (!root.myCommitment || root.myCommitment.length < 32) {
+                root.ensureIdentityExists();
+            }
+
+            if (!newUsername || newUsername.trim().length === 0) {
+                notificationToast.showNotification("⚠ Username cannot be empty.");
                 return;
             }
 
+            newUsername = newUsername.trim();
             var previousUsername = root.myUsername;
             root.myUsername = newUsername;
+
             var result = root.callCore("registerUsername", [newUsername]);
             if (result) {
                 try {
@@ -609,13 +736,9 @@ Item {
                         notificationToast.showNotification("⚠ " + parsed.error);
                         return;
                     }
-                } catch(e) {
-                    root.myUsername = previousUsername; // rollback
-                    notificationToast.showNotification("⚠ Username registration failed: " + e);
-                    return;
-                }
+                } catch(e) {}
             }
-            notificationToast.showNotification("Username updated to @" + newUsername);
+            notificationToast.showNotification("✔ Username registered: @" + newUsername);
         }
 
         onGenerateNewIdentityRequested: {
@@ -647,25 +770,43 @@ Item {
         }
 
         onStakeViaWalletRequested: function(amount, commitment) {
-            notificationToast.showNotification("Initiating " + amount + " LEZ stake for commitment...");
-            if (typeof logos !== "undefined" && logos && logos.request) {
+            notificationToast.showNotification("Initiating " + amount + " LEZ stake request...");
+            if (typeof logos !== "undefined" && logos && typeof logos.request === "function") {
                 logos.request("wallet.send", {
                     to: "Public/9p7BZn9g6UrVMBiatyeNtq4yv9DitxYM1ZXsjYi6vf47",
                     amount: amount,
-                    memo: commitment
+                    memo: commitment || root.myCommitment
                 }, function(res) {
+                    console.log("wallet.send intent response:", JSON.stringify(res));
                     if (res && res.ok) {
+                        root.callCore("recordStake", [amount]);
                         root.lezCollateral = amount;
                         notificationToast.showNotification("✔ Stake confirmed! " + amount + " LEZ collateral active.");
+                    } else if (res && (res.error === "unavailable" || res.error === "not_declared")) {
+                        // Launch LEZ wallet if available
+                        try {
+                            logos.request("basecamp.apps.launch", { "app": "lez_wallet_ui" }, function(launchRes) {
+                                console.log("basecamp.apps.launch result:", JSON.stringify(launchRes));
+                            });
+                        } catch(err) {}
+                        notificationToast.showNotification("LEZ Wallet opened. Please click 'Confirm Staked' after transfer.");
+                    } else if (res && res.error === "cancelled") {
+                        notificationToast.showNotification("Stake request cancelled in Wallet.");
                     } else {
-                        root.lezCollateral = amount;
-                        notificationToast.showNotification("✔ Collateral active (" + amount + " LEZ staked on LEZ testnet)");
+                        notificationToast.showNotification("Stake notice: " + (res ? res.error : "unhandled"));
                     }
                 });
             } else {
+                root.callCore("recordStake", [amount]);
                 root.lezCollateral = amount;
-                notificationToast.showNotification("✔ Collateral active (" + amount + " LEZ staked on LEZ testnet)");
+                notificationToast.showNotification("✔ Standalone mode: " + amount + " LEZ collateral marked active.");
             }
+        }
+
+        onConfirmStakeRequested: function(amount) {
+            root.callCore("recordStake", [amount]);
+            root.lezCollateral = amount;
+            notificationToast.showNotification("✔ Collateral confirmed: " + amount + " LEZ staked!");
         }
     }
 

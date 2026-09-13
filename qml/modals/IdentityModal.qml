@@ -6,7 +6,7 @@ import "../components"
 Dialog {
     id: modal
     width: 520
-    height: 570
+    height: 600
     modal: true
     anchors.centerIn: parent
     padding: 24
@@ -18,10 +18,19 @@ Dialog {
     property int blockHeight: 0
     property int collateralAmount: 0
     property bool isLezConnected: false
+    property string validationMessage: ""
+    property bool isValidationError: false
+
+    onCurrentUsernameChanged: {
+        if (!userField.activeFocus && modal.currentUsername.length > 0) {
+            userField.text = modal.currentUsername;
+        }
+    }
 
     signal updateUsernameRequested(string newUsername)
     signal generateNewIdentityRequested()
     signal stakeViaWalletRequested(int amount, string commitment)
+    signal confirmStakeRequested(int amount)
 
     Theme { id: theme }
 
@@ -108,7 +117,55 @@ Dialog {
                         color: theme.accentBlurple
                         radius: theme.radiusSmall
                     }
-                    onClicked: modal.updateUsernameRequested(userField.text.trim())
+                    onClicked: {
+                        var val = userField.text.trim();
+                        if (val.length === 0) {
+                            modal.validationMessage = "Username cannot be empty";
+                            modal.isValidationError = true;
+                            return;
+                        }
+                        if (!modal.commitmentHex || modal.commitmentHex.length < 32) {
+                            modal.validationMessage = "No active identity yet. Please generate an identity first.";
+                            modal.isValidationError = true;
+                            return;
+                        }
+                        modal.isValidationError = false;
+                        modal.validationMessage = "Saving username @" + val + "...";
+                        modal.updateUsernameRequested(val);
+                    }
+                }
+            }
+
+            // Inline Validation Status Banner
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 28
+                visible: modal.validationMessage.length > 0
+                radius: theme.radiusSmall
+                color: modal.isValidationError ? "#381a1a" : "#1a382e"
+                border.color: modal.isValidationError ? theme.accentDanger : theme.accentLogos
+                border.width: 1
+
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.leftMargin: 8
+                    anchors.rightMargin: 8
+                    spacing: 6
+
+                    Text {
+                        text: modal.isValidationError ? "⚠" : "✔"
+                        color: modal.isValidationError ? theme.accentDanger : theme.accentLogos
+                        font.bold: true
+                        font.pixelSize: 12
+                    }
+
+                    Text {
+                        Layout.fillWidth: true
+                        text: modal.validationMessage
+                        color: modal.isValidationError ? theme.accentDanger : "#a8e6cf"
+                        font.pixelSize: 11
+                        elide: Text.ElideRight
+                    }
                 }
             }
         }
@@ -241,7 +298,7 @@ Dialog {
                     }
                 }
 
-                // Stake Action Button if not yet staked
+                // Stake Action Buttons if not yet staked
                 RowLayout {
                     Layout.fillWidth: true
                     visible: modal.collateralAmount < 150
@@ -251,7 +308,7 @@ Dialog {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 28
                         contentItem: Text {
-                            text: "⚡ Stake 150 LEZ via Basecamp Wallet"
+                            text: "Stake 150 LEZ via Basecamp Wallet"
                             font.bold: true
                             font.pixelSize: 11
                             color: "#12151c"
@@ -262,7 +319,33 @@ Dialog {
                             color: theme.accentLogos
                             radius: theme.radiusSmall
                         }
-                        onClicked: modal.stakeViaWalletRequested(150, modal.commitmentHex)
+                        onClicked: {
+                            modal.validationMessage = "Requesting 150 LEZ stake...";
+                            modal.isValidationError = false;
+                            modal.stakeViaWalletRequested(150, modal.commitmentHex);
+                        }
+                    }
+
+                    Button {
+                        Layout.preferredWidth: 120
+                        Layout.preferredHeight: 28
+                        contentItem: Text {
+                            text: "Confirm Staked"
+                            font.bold: true
+                            font.pixelSize: 11
+                            color: "#ffffff"
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                        background: Rectangle {
+                            color: theme.accentBlurple
+                            radius: theme.radiusSmall
+                        }
+                        onClicked: {
+                            modal.validationMessage = "Confirmed 150 LEZ collateral active.";
+                            modal.isValidationError = false;
+                            modal.confirmStakeRequested(150);
+                        }
                     }
                 }
             }
@@ -283,7 +366,11 @@ Dialog {
                     horizontalAlignment: Text.AlignHCenter
                 }
                 background: Rectangle { color: "transparent" }
-                onClicked: modal.generateNewIdentityRequested()
+                onClicked: {
+                    modal.validationMessage = "Generating new ZK identity...";
+                    modal.isValidationError = false;
+                    modal.generateNewIdentityRequested();
+                }
             }
 
             Item { Layout.fillWidth: true }
@@ -301,7 +388,30 @@ Dialog {
                     color: theme.accentBlurple
                     radius: theme.radiusSmall
                 }
-                onClicked: modal.accept()
+                onClicked: {
+                    var val = userField.text.trim();
+                    // 1. Strict validation: username must not be empty
+                    if (val.length === 0) {
+                        modal.validationMessage = "Please set a pseudonymous username before continuing.";
+                        modal.isValidationError = true;
+                        return;
+                    }
+
+                    // 2. Auto-save username if changed
+                    if (val !== modal.currentUsername) {
+                        modal.updateUsernameRequested(val);
+                    }
+
+                    // 3. Strict validation: identity commitment must exist and be valid
+                    if (!modal.commitmentHex || modal.commitmentHex.length < 32) {
+                        modal.validationMessage = "Identity commitment required. Generating new identity...";
+                        modal.isValidationError = true;
+                        modal.generateNewIdentityRequested();
+                        return;
+                    }
+
+                    modal.accept();
+                }
             }
         }
     }
