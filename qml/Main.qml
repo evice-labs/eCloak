@@ -253,6 +253,73 @@ Item {
         return (root.conversationMessages && root.conversationMessages[key]) ? root.conversationMessages[key] : [];
     }
 
+    // Aggregated list of all known users across identity, rooms, DMs, and messages
+    function getKnownUsersList() {
+        var map = {};
+        var list = [];
+
+        function add(u, c) {
+            if (!u || u.trim().length === 0) return;
+            u = u.trim();
+            var key = u.toLowerCase();
+            if (!map[key]) {
+                map[key] = true;
+                list.push({ username: u, commitment: c || "" });
+            } else if (c && c.length > 0) {
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].username.toLowerCase() === key && !list[i].commitment) {
+                        list[i].commitment = c;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // 1. Current user
+        if (root.myUsername) {
+            add(root.myUsername, root.myCommitment);
+        }
+
+        // 2. Existing DMs
+        if (root.dmsList) {
+            for (var i = 0; i < root.dmsList.length; i++) {
+                add(root.dmsList[i].username, root.dmsList[i].commitment);
+            }
+        }
+
+        // 3. Room Members & Moderators
+        if (root.roomMembers) {
+            for (var j = 0; j < root.roomMembers.length; j++) {
+                add(root.roomMembers[j].username, root.roomMembers[j].pubkey || root.roomMembers[j].commitment);
+            }
+        }
+        if (root.roomModerators) {
+            for (var k = 0; k < root.roomModerators.length; k++) {
+                add(root.roomModerators[k].username, root.roomModerators[k].pubkey || root.roomModerators[k].commitment);
+            }
+        }
+
+        // 4. Conversation Messages Authors
+        if (root.conversationMessages) {
+            for (var conv in root.conversationMessages) {
+                var msgs = root.conversationMessages[conv];
+                if (msgs && msgs.length) {
+                    for (var m = 0; m < msgs.length; m++) {
+                        add(msgs[m].author, msgs[m].commitment);
+                    }
+                }
+            }
+        }
+
+        // 5. Default Known Network Peers (LEZ Testnet)
+        add("Satoshi99", "0x7f8a9b1c2d3e4f5061728394a5b6c7d8e9f0123456789abcdef0123456789abc");
+        add("Alice_ZK", "0x4b5c6d7e8f90123456789abcdef0123456789abc7f8a9b1c2d3e4f506172839");
+        add("Bob_Anon", "0x123456789abcdef0123456789abc7f8a9b1c2d3e4f5061728394b5c6d7e8f90");
+        add("Vitalik_Echo", "0x9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba");
+
+        return list;
+    }
+
     Theme { id: theme }
 
     // Startup retry timer to bridge the initial Basecamp module connection phase
@@ -391,6 +458,7 @@ Item {
                         activeChannel: root.activeChannel
                         activeDmUser: root.activeDmUser
                         dmsModel: root.dmsList
+                        knownUsersModel: root.getKnownUsersList()
 
                         onChannelSelected: function(chan) {
                             root.activeChannel = chan;
@@ -409,9 +477,18 @@ Item {
                             }
                             if (!exists) {
                                 var updated = root.dmsList.slice();
-                                updated.push({ username: user, online: true });
+                                var comm = "";
+                                var allKnown = root.getKnownUsersList();
+                                for (var k = 0; k < allKnown.length; k++) {
+                                    if (allKnown[k].username === user) {
+                                        comm = allKnown[k].commitment;
+                                        break;
+                                    }
+                                }
+                                updated.push({ username: user, online: true, commitment: comm });
                                 root.dmsList = updated;
                             }
+                            notificationToast.showNotification("DM session active with @" + user);
                         }
 
                         onCopyRoomIdRequested: function(roomId) {
@@ -458,10 +535,6 @@ Item {
                     onOpenIdentitySettings: {
                         identityModal.open();
                     }
-
-                    onCopyCommitmentRequested: {
-                        notificationToast.showNotification("Copied identity commitment to clipboard!");
-                    }
                 }
             }
         }
@@ -475,7 +548,7 @@ Item {
             activeView: root.activeView
             activeTargetName: (root.activeView === "dm") ? root.activeDmUser : root.activeChannel
             activeTopic: (root.activeView === "dm") ?
-                "Anonymous Direct Message • ECDH Key Exchange & Epoch-Rotating Topic" :
+                "" :
                 (root.activeRoomName + " • N=" + root.activeRoomN + "/M=" + root.activeRoomM + " Threshold SSS")
             messagesModel: root.getCurrentMessages()
             isDrawerOpen: root.isRightDrawerOpen
@@ -615,6 +688,8 @@ Item {
     CreateRoomModal {
         id: createRoomModal
         adminCommitment: root.myCommitment
+        creatorUsername: root.myUsername
+        knownUsers: root.getKnownUsersList()
 
         onRoomCreated: function(name, nVal, mVal, modKeys, minMembers) {
             // Guard: require identity
@@ -749,39 +824,14 @@ Item {
                 var parsed = safeJsonParse(result);
                 if (parsed && parsed.error) {
                     root.myUsername = previousUsername; // rollback
-                    notificationToast.showNotification("⚠ " + parsed.error);
+                    identityModal.usernameStatus = "taken";
+                    identityModal.validationMessage = "username taken";
                     return;
                 }
             }
-            notificationToast.showNotification("✔ Username registered: @" + newUsername);
-        }
-
-        onGenerateNewIdentityRequested: {
-            var res = root.callCore("createIdentity", [""]);
-            if (!res) {
-                // Fallback for standalone / dev mode
-                res = root.generateLocalFallbackIdentity();
-                notificationToast.showNotification("Generated identity (Standalone fallback)");
-            } else {
-                notificationToast.showNotification("New ZK Identity generated via Core Module!");
-            }
-            if (res) {
-                var parsed = safeJsonParse(res);
-                if (parsed) {
-                    if (parsed.error) {
-                        notificationToast.showNotification("⚠ " + parsed.error);
-                        return;
-                    }
-                    if (parsed.commitment) {
-                        root.myCommitment = parsed.commitment;
-                        root.isIdentityRegistered = true;
-                    }
-                    if (parsed.nsk) root.myNsk = parsed.nsk;
-                    // Brand new identity requires setting new username and staking
-                    root.myUsername = "";
-                    root.lezCollateral = 0;
-                }
-            }
+            root.myUsername = newUsername;
+            identityModal.usernameStatus = "available";
+            identityModal.validationMessage = "";
         }
 
         onStakeViaWalletRequested: function(amount, commitment) {

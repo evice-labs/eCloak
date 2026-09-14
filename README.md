@@ -1,5 +1,3 @@
-# eCloak
-
 <p align="center">
   <img src="assets/EviceLogo-white.png" alt="Evice Labs Logo" width="160" />
 </p>
@@ -7,7 +5,6 @@
 <p align="center">
   <strong>Zero-Knowledge Anonymous Chat with Cryptographic Accountability on Logos Basecamp</strong>
   <br />
-  <em>Built by Evice Labs</em>
 </p>
 
 <p align="center">
