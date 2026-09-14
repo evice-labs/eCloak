@@ -5,9 +5,11 @@ import QtQuick.Dialogs
 
 Rectangle {
     id: composer
-    height: (currentAttachment ? 96 : 48) + Math.max(0, Math.min(80, inputField.contentHeight - 20))
+    height: (currentAttachment ? 104 : 60) + Math.max(0, Math.min(80, inputField.contentHeight - 20))
     radius: theme.radiusMedium
     color: theme.bgInput
+    border.color: inputField.activeFocus ? theme.accentBlurple : theme.borderSubtle
+    border.width: 1
 
     property string placeholderTarget: "#general-chat"
     property bool isDmMode: false
@@ -124,9 +126,9 @@ Rectangle {
             // Attachment / Action Button (+)
             Rectangle {
                 Layout.alignment: Qt.AlignVCenter
-                width: 28
-                height: 28
-                radius: 14
+                width: 32
+                height: 32
+                radius: 16
                 color: attachMouse.containsMouse ? theme.bgHover : "#4e5058"
 
                 Text {
@@ -165,7 +167,8 @@ Rectangle {
                         ("Message " + composer.placeholderTarget + "...")
                     placeholderTextColor: theme.textMuted
                     color: theme.textNormal
-                    font.pixelSize: 14
+                    font.family: theme.fontFamily
+                    font.pixelSize: 13
                     wrapMode: TextEdit.Wrap
                     selectByMouse: true
                     background: null

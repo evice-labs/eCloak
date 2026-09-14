@@ -42,15 +42,18 @@ Item {
                     width: 48
                     height: 48
                     radius: 24
-                    color: theme.bgHover
+                    color: (feed.activeView === "dm" && feed.channelName) ? theme.accentBlurple : theme.bgHover
                     Layout.alignment: Qt.AlignVCenter
 
                     Text {
                         anchors.centerIn: parent
-                        text: !feed.channelName ? (feed.activeView === "dm" ? "💬" : "🛡️") : (feed.activeView === "dm" ? "@" : "#")
+                        text: !feed.channelName ?
+                            (feed.activeView === "dm" ? "💬" : "🛡️") :
+                            (feed.activeView === "dm" ? feed.channelName.substring(0, 1).toUpperCase() : "#")
+                        font.family: theme.fontFamily
                         font.bold: true
-                        font.pixelSize: 24
-                        color: theme.textHeader
+                        font.pixelSize: (feed.activeView === "dm" && feed.channelName) ? 20 : 24
+                        color: (feed.activeView === "dm" && feed.channelName) ? "#ffffff" : theme.textHeader
                     }
                 }
 
@@ -58,8 +61,9 @@ Item {
                     text: !feed.channelName ?
                         (feed.activeView === "dm" ? "No Conversation Selected" : "Welcome to Logos AnonChat") :
                         (feed.activeView === "dm" ? ("Direct Chat with " + feed.channelName) : ("Welcome to #" + feed.channelName + "!"))
+                    font.family: theme.fontFamily
                     font.bold: true
-                    font.pixelSize: 24
+                    font.pixelSize: 22
                     color: theme.textHeader
                     Layout.alignment: Qt.AlignVCenter
                     Layout.fillWidth: true

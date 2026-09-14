@@ -129,7 +129,7 @@ Rectangle {
         // ==========================================
         Text {
             Layout.topMargin: 8
-            text: "ONLINE MEMBERS — " + (drawer.membersList ? drawer.membersList.length : 0)
+            text: "MEMBERS — " + (drawer.membersList ? drawer.membersList.length : 0)
             font.bold: true
             font.pixelSize: 11
             color: theme.textMuted
@@ -146,7 +146,7 @@ Rectangle {
 
                 Text {
                     visible: !drawer.membersList || drawer.membersList.length === 0
-                    text: "No other members online"
+                    text: "No other members"
                     font.pixelSize: 11
                     color: theme.textMuted
                     font.italic: true
@@ -179,17 +179,6 @@ Rectangle {
                                     font.bold: true
                                     font.pixelSize: 11
                                     color: "#12151c"
-                                }
-
-                                Rectangle {
-                                    anchors.bottom: parent.bottom
-                                    anchors.right: parent.right
-                                    width: 6
-                                    height: 6
-                                    radius: 3
-                                    color: modelData.online ? theme.accentSuccess : theme.textMuted
-                                    border.color: theme.bgSidebar
-                                    border.width: 1
                                 }
                             }
 

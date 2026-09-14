@@ -40,38 +40,67 @@ Rectangle {
 
             RowLayout {
                 anchors.fill: parent
-                anchors.leftMargin: 0
-                anchors.rightMargin: 0
+                anchors.leftMargin: 16
+                anchors.rightMargin: 16
                 spacing: 12
 
+                // Channel Room Icon (#)
                 Text {
-                    text: !chatArea.activeTargetName ? (chatArea.activeView === "dm" ? "" : "") : (chatArea.activeView === "dm" ? "@" : "#")
+                    visible: chatArea.activeView !== "dm" && chatArea.activeTargetName !== ""
+                    text: "#"
                     font.bold: true
                     font.pixelSize: 18
                     color: theme.textMuted
                 }
 
+                // DM User Avatar Profile Icon
+                Rectangle {
+                    visible: chatArea.activeView === "dm" && chatArea.activeTargetName !== ""
+                    Layout.alignment: Qt.AlignVCenter
+                    width: 28
+                    height: 28
+                    radius: 14
+                    color: theme.accentBlurple
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: chatArea.activeTargetName ? chatArea.activeTargetName.substring(0, 1).toUpperCase() : "U"
+                        font.family: theme.fontFamily
+                        font.bold: true
+                        font.pixelSize: 13
+                        color: "#ffffff"
+                    }
+                }
+
                 Text {
                     text: !chatArea.activeTargetName ? (chatArea.activeView === "dm" ? "Direct Messages" : "Logos AnonChat") : chatArea.activeTargetName
+                    font.family: theme.fontFamily
                     font.bold: true
                     font.pixelSize: 15
                     color: theme.textHeader
                 }
 
                 Rectangle {
+                    visible: chatArea.activeView !== "dm" && (chatArea.activeTopic !== "" || !chatArea.activeTargetName)
                     width: 1
                     height: 16
                     color: theme.borderSubtle
                 }
 
                 Text {
+                    visible: chatArea.activeView !== "dm"
                     Layout.fillWidth: true
                     text: !chatArea.activeTargetName ?
-                        (chatArea.activeView === "dm" ? "Select a conversation or start a new direct message" : "Create or join a room to begin anonymous group chatting") :
+                        "Create or join a room to begin anonymous group chatting" :
                         chatArea.activeTopic
                     font.pixelSize: 12
                     color: theme.textMuted
                     elide: Text.ElideRight
+                }
+
+                Item {
+                    visible: chatArea.activeView === "dm"
+                    Layout.fillWidth: true
                 }
 
                 // Member Drawer Toggle Button (Visible only in room mode with active room)
@@ -127,7 +156,7 @@ Rectangle {
         // ==========================================
         Item {
             Layout.fillWidth: true
-            Layout.preferredHeight: composerComp.height + 24
+            Layout.preferredHeight: composerComp.height + 12
 
             // Placeholder Banner when no target is selected
             Rectangle {

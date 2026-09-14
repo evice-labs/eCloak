@@ -46,20 +46,10 @@ Item {
                 Text {
                     anchors.centerIn: parent
                     text: profileBar.myUsername ? profileBar.myUsername.substring(0, 1).toUpperCase() : "A"
+                    font.family: theme.fontFamily
                     font.bold: true
                     font.pixelSize: 14
                     color: "#12151c"
-                }
-
-                Rectangle {
-                    anchors.bottom: parent.bottom
-                    anchors.right: parent.right
-                    width: 9
-                    height: 9
-                    radius: 4.5
-                    color: theme.accentSuccess
-                    border.color: theme.bgCard
-                    border.width: 1.5
                 }
 
                 MouseArea {
@@ -73,7 +63,7 @@ Item {
                 ToolTip.text: "Manage ZK Identity"
             }
 
-            // Username, ZK Badge & Public Commitment in a single horizontal row
+            // Username & Public Commitment in a single horizontal row
             RowLayout {
                 Layout.alignment: Qt.AlignVCenter
                 Layout.fillWidth: true
@@ -81,6 +71,7 @@ Item {
 
                 Text {
                     text: profileBar.myUsername
+                    font.family: theme.fontFamily
                     font.bold: true
                     font.pixelSize: 13
                     color: theme.textHeader
@@ -88,35 +79,56 @@ Item {
                     Layout.maximumWidth: 95
                 }
 
-                // Mini ZK Badge
-                Rectangle {
-                    height: 15
-                    width: zkBadgeText.implicitWidth + 6
-                    radius: 3
-                    color: "#153026"
-                    border.color: theme.accentLogos
-                    border.width: 1
+                // Public Commitment aligned in the same row with underline and click-to-copy
+                Item {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 18
+                    Layout.alignment: Qt.AlignVCenter
+
+                    property bool justCopied: false
+
+                    Timer {
+                        id: copyFeedbackTimer
+                        interval: 1800
+                        onTriggered: parent.justCopied = false
+                    }
 
                     Text {
-                        id: zkBadgeText
-                        anchors.centerIn: parent
-                        text: "ZK"
-                        font.pixelSize: 8
-                        font.bold: true
-                        color: theme.accentLogos
+                        id: commText
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: parent.justCopied ? "✔ Copied!" : (profileBar.myCommitment ?
+                            (profileBar.myCommitment.substring(0, 6) + "..." + profileBar.myCommitment.substring(profileBar.myCommitment.length - 4)) :
+                            "0x00...00")
+                        font.pixelSize: 10
+                        font.family: theme.fontFamilyMono
+                        font.underline: true
+                        color: parent.justCopied ? theme.accentSuccess : (commMouse.containsMouse ? theme.accentLogos : theme.textMuted)
+                        elide: Text.ElideRight
+                    }
+
+                    MouseArea {
+                        id: commMouse
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            if (profileBar.myCommitment && profileBar.myCommitment.length > 0) {
+                                clipHelper.text = profileBar.myCommitment;
+                                clipHelper.selectAll();
+                                clipHelper.copy();
+                                parent.justCopied = true;
+                                copyFeedbackTimer.restart();
+                                profileBar.copyCommitmentRequested();
+                            }
+                        }
                     }
                 }
 
-                // Public Commitment aligned in the same row
-                Text {
-                    text: profileBar.myCommitment ?
-                        (profileBar.myCommitment.substring(0, 6) + "..." + profileBar.myCommitment.substring(profileBar.myCommitment.length - 4)) :
-                        "0x00...00"
-                    font.pixelSize: 10
-                    font.family: "monospace"
-                    color: theme.textMuted
-                    elide: Text.ElideRight
-                    Layout.fillWidth: true
+                TextInput {
+                    id: clipHelper
+                    visible: false
                 }
             }
 

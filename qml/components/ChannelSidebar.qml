@@ -14,6 +14,9 @@ Rectangle {
     property string activeChannel: "general-chat"
     property string activeDmUser: ""
     property var dmsModel: []
+    property var knownUsersModel: []
+    property var matchingUsersList: []
+    property bool isSearching: false
 
     signal channelSelected(string channelName)
     signal dmSelected(string targetUsername)
@@ -21,6 +24,107 @@ Rectangle {
     signal leaveRoomRequested(string roomId)
 
     Theme { id: theme }
+
+    function getAllKnownUsers() {
+        var res = [];
+        var map = {};
+
+        function pushUser(u, c) {
+            if (!u || u.trim().length === 0) return;
+            u = u.trim();
+            var k = u.toLowerCase();
+            if (!map[k]) {
+                map[k] = true;
+                res.push({ username: u, commitment: c || "" });
+            } else if (c && c.length > 0) {
+                for (var i = 0; i < res.length; i++) {
+                    if (res[i].username.toLowerCase() === k && !res[i].commitment) {
+                        res[i].commitment = c;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (sidebar.knownUsersModel && sidebar.knownUsersModel.length) {
+            for (var i = 0; i < sidebar.knownUsersModel.length; i++) {
+                pushUser(sidebar.knownUsersModel[i].username, sidebar.knownUsersModel[i].commitment);
+            }
+        }
+
+        if (sidebar.dmsModel && sidebar.dmsModel.length) {
+            for (var j = 0; j < sidebar.dmsModel.length; j++) {
+                pushUser(sidebar.dmsModel[j].username, sidebar.dmsModel[j].commitment);
+            }
+        }
+
+        // Default known network peers
+        pushUser("Satoshi99", "0x7f8a9b1c2d3e4f5061728394a5b6c7d8e9f0123456789abcdef0123456789abc");
+        pushUser("Alice_ZK", "0x4b5c6d7e8f90123456789abcdef0123456789abc7f8a9b1c2d3e4f506172839");
+        pushUser("Bob_Anon", "0x123456789abcdef0123456789abc7f8a9b1c2d3e4f5061728394b5c6d7e8f90");
+        pushUser("Vitalik_Echo", "0x9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba");
+
+        return res;
+    }
+
+    function performUserSearch(keyword) {
+        if (!keyword || keyword.trim().length === 0) {
+            sidebar.matchingUsersList = [];
+            sidebar.isSearching = false;
+            return;
+        }
+        var q = keyword.trim().toLowerCase();
+        if (q.startsWith("@")) q = q.substring(1);
+
+        var all = getAllKnownUsers();
+        var results = [];
+
+        for (var i = 0; i < all.length; i++) {
+            var user = all[i];
+            var uName = (user.username || "").toLowerCase();
+            var uComm = (user.commitment || "").toLowerCase();
+
+            // Anti-Spam & Anti-Enumeration: Exact match on username or high-entropy commitment match (>= 10 chars)
+            var matchUsername = (uName === q);
+            var matchCommitment = (q.length >= 10 && uComm.indexOf(q) !== -1);
+
+            if (matchUsername || matchCommitment) {
+                results.push(user);
+            }
+        }
+
+        sidebar.matchingUsersList = results;
+        sidebar.isSearching = (results.length > 0);
+    }
+
+    function selectFirstOrTypedUser() {
+        var q = searchInput.text.trim();
+        if (!q || q.length === 0) return;
+        if (q.startsWith("@")) q = q.substring(1);
+
+        if (sidebar.matchingUsersList && sidebar.matchingUsersList.length > 0) {
+            sidebar.dmSelected(sidebar.matchingUsersList[0].username);
+            searchInput.text = "";
+            sidebar.matchingUsersList = [];
+            sidebar.isSearching = false;
+        } else {
+            // Anti-Spam check: only start DM if exact username or valid commitment is found
+            var all = getAllKnownUsers();
+            var found = null;
+            for (var i = 0; i < all.length; i++) {
+                if (all[i].username.toLowerCase() === q.toLowerCase() || (q.length >= 10 && all[i].commitment.toLowerCase().indexOf(q.toLowerCase()) !== -1)) {
+                    found = all[i];
+                    break;
+                }
+            }
+            if (found) {
+                sidebar.dmSelected(found.username);
+                searchInput.text = "";
+                sidebar.matchingUsersList = [];
+                sidebar.isSearching = false;
+            }
+        }
+    }
 
     ColumnLayout {
         anchors.fill: parent
@@ -113,37 +217,83 @@ Rectangle {
                 }
             }
 
-            // DM Header Mode (Search Button)
+            // DM Header Mode (Direct Search Input)
             Rectangle {
                 anchors.fill: parent
                 anchors.margins: 8
                 radius: theme.radiusSmall
                 color: theme.bgRail
+                border.color: searchInput.activeFocus ? theme.accentBlurple : theme.borderSubtle
+                border.width: 1
                 visible: sidebar.activeView === "dm"
 
                 RowLayout {
                     anchors.fill: parent
                     anchors.leftMargin: 8
                     anchors.rightMargin: 8
-                    spacing: 8
+                    spacing: 6
 
                     Text {
                         text: "🔍"
                         font.pixelSize: 12
                     }
 
-                    Text {
-                        text: "Find or start a DM..."
+                    TextInput {
+                        id: searchInput
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignVCenter
+                        color: theme.textHeader
+                        font.family: theme.fontFamily
                         font.pixelSize: 12
-                        color: theme.textMuted
-                    }
-                }
+                        clip: true
+                        selectByMouse: true
 
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    hoverEnabled: true
-                    onClicked: searchDmDialog.open()
+                        Text {
+                            anchors.left: parent.left
+                            anchors.verticalCenter: parent.verticalCenter
+                            visible: !searchInput.text && !searchInput.activeFocus
+                            text: "Find or start a DM..."
+                            font.family: theme.fontFamily
+                            font.pixelSize: 12
+                            color: theme.textMuted
+                        }
+
+                        onTextChanged: {
+                            sidebar.performUserSearch(text);
+                        }
+
+                        Keys.onReturnPressed: {
+                            sidebar.selectFirstOrTypedUser();
+                        }
+
+                        Keys.onEscapePressed: {
+                            searchInput.text = "";
+                            sidebar.matchingUsersList = [];
+                            sidebar.isSearching = false;
+                        }
+                    }
+
+                    // Clear button (✕)
+                    Text {
+                        visible: searchInput.text.length > 0
+                        text: "✕"
+                        font.pixelSize: 11
+                        font.family: theme.fontFamily
+                        color: clearSearchMouse.containsMouse ? theme.textHeader : theme.textMuted
+
+                        MouseArea {
+                            id: clearSearchMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                searchInput.text = "";
+                                sidebar.matchingUsersList = [];
+                                sidebar.isSearching = false;
+                                searchInput.forceActiveFocus();
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -333,18 +483,6 @@ Rectangle {
                                         font.pixelSize: 12
                                         color: "#ffffff"
                                     }
-
-                                    // Online status dot
-                                    Rectangle {
-                                        anchors.bottom: parent.bottom
-                                        anchors.right: parent.right
-                                        width: 8
-                                        height: 8
-                                        radius: 4
-                                        color: modelData.online ? theme.accentSuccess : theme.textMuted
-                                        border.color: theme.bgSidebar
-                                        border.width: 1.5
-                                    }
                                 }
 
                                 ColumnLayout {
@@ -398,32 +536,136 @@ Rectangle {
         }
     }
 
-    Dialog {
-        id: searchDmDialog
-        title: "Start Anonymous 1-on-1 DM"
-        anchors.centerIn: parent
-        modal: true
-        standardButtons: Dialog.Ok | Dialog.Cancel
+    // Click-outside backdrop to dismiss suggestions dropdown
+    MouseArea {
+        anchors.fill: parent
+        z: 998
+        visible: suggestionDropdown.visible
+        onClicked: {
+            sidebar.isSearching = false;
+        }
+    }
 
-        ColumnLayout {
-            spacing: 8
-            Label { text: "Enter recipient's username:"; color: theme.textHeader }
-            TextField {
-                id: targetUserInput
-                placeholderText: "e.g. Satoshi99"
-                color: theme.textHeader
-                background: Rectangle { color: theme.bgInput; radius: 4 }
-            }
-            Label {
-                text: "🔒 Keys negotiated via ECDH, relay topic rotating per epoch."
-                font.pixelSize: 10
-                color: theme.accentLogos
-            }
+    // Autocomplete / Search Suggestion Dropdown
+    Rectangle {
+        id: suggestionDropdown
+        z: 999
+        anchors.top: parent.top
+        anchors.topMargin: 50
+        anchors.left: parent.left
+        anchors.leftMargin: 8
+        anchors.right: parent.right
+        anchors.rightMargin: 8
+        visible: sidebar.activeView === "dm" && sidebar.isSearching && sidebar.matchingUsersList.length > 0
+        height: Math.min(suggestionListCol.implicitHeight + 16, 280)
+        radius: theme.radiusMedium
+        color: theme.bgCard
+        border.color: theme.borderSubtle
+        border.width: 1
+        clip: true
+
+        Behavior on height {
+            NumberAnimation { duration: 120; easing.type: Easing.OutCubic }
         }
 
-        onAccepted: {
-            if (targetUserInput.text.trim()) {
-                sidebar.dmSelected(targetUserInput.text.trim())
+        ScrollView {
+            id: suggestionScroll
+            anchors.fill: parent
+            anchors.margins: 6
+            clip: true
+            ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+
+            ColumnLayout {
+                id: suggestionListCol
+                width: suggestionDropdown.width - 12
+                spacing: 4
+
+                // Header
+                Text {
+                    text: "VERIFIED USER MATCH"
+                    font.family: theme.fontFamily
+                    font.bold: true
+                    font.pixelSize: 10
+                    color: theme.accentLogos
+                    Layout.fillWidth: true
+                    Layout.leftMargin: 6
+                    Layout.topMargin: 2
+                }
+
+                // Matched Users List
+                Repeater {
+                    model: sidebar.matchingUsersList
+
+                    Rectangle {
+                        width: suggestionListCol.width
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: suggestionListCol.width
+                        Layout.preferredHeight: 46
+                        radius: theme.radiusSmall
+                        color: sugMouse.containsMouse ? theme.bgHover : "transparent"
+
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.leftMargin: 8
+                            anchors.rightMargin: 8
+                            spacing: 10
+
+                            // Avatar with Initial
+                            Rectangle {
+                                width: 28
+                                height: 28
+                                radius: 14
+                                color: theme.accentBlurple
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: modelData.username ? modelData.username.substring(0, 1).toUpperCase() : "U"
+                                    font.family: theme.fontFamily
+                                    font.bold: true
+                                    font.pixelSize: 12
+                                    color: "#ffffff"
+                                }
+                            }
+
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 2
+
+                                Text {
+                                    text: "@" + modelData.username
+                                    font.family: theme.fontFamily
+                                    font.bold: true
+                                    font.pixelSize: 12
+                                    color: theme.textHeader
+                                    elide: Text.ElideRight
+                                }
+
+                                Text {
+                                    text: modelData.commitment ?
+                                        (modelData.commitment.substring(0, 10) + "..." + modelData.commitment.substring(modelData.commitment.length - 8)) :
+                                        "0x00...00"
+                                    font.family: theme.fontFamilyMono
+                                    font.pixelSize: 9
+                                    color: theme.accentLogos
+                                    elide: Text.ElideRight
+                                }
+                            }
+                        }
+
+                        MouseArea {
+                            id: sugMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                sidebar.dmSelected(modelData.username);
+                                searchInput.text = "";
+                                sidebar.isSearching = false;
+                                sidebar.matchingUsersList = [];
+                            }
+                        }
+                    }
+                }
             }
         }
     }

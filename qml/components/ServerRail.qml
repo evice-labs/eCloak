@@ -57,7 +57,7 @@ Rectangle {
                     anchors.centerIn: parent
                     width: 28
                     height: 28
-                    source: "../../assets/EviceLogo-white.png"
+                    source: "../assets/EviceLogo-white.png"
                     fillMode: Image.PreserveAspectFit
                     smooth: true
                     mipmap: true

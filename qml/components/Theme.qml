@@ -43,6 +43,15 @@ QtObject {
     readonly property int radiusSquircle: 16
     readonly property int radiusCircle: 24
 
+    // Typography (Apple SF Pro / Google Roboto / Phantom Inter)
+    readonly property string fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Roboto', 'Segoe UI', sans-serif"
+    readonly property string fontFamilyMono: "'SF Mono', 'Roboto Mono', 'Fira Code', 'DejaVu Sans Mono', monospace"
+
+    // Card & Surface Nuances
+    readonly property color bgCardInner: "#1e1f22"
+    readonly property color bgCardHover: "#282a2e"
+    readonly property color borderCard: "#33353b"
+
     // Durations
     readonly property int animFast: 120
     readonly property int animNormal: 200
