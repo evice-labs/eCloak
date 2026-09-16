@@ -307,14 +307,14 @@ Dialog {
                                     width: 22
                                     height: 22
                                     radius: 11
-                                    color: theme.accentLogos
+                                    color: theme.primary
                                     Text {
                                         anchors.centerIn: parent
                                         text: modal.creatorUsername ? modal.creatorUsername.substring(0, 1).toUpperCase() : "Y"
                                         font.family: theme.fontFamily
                                         font.bold: true
                                         font.pixelSize: 10
-                                        color: "#12151c"
+                                        color: "#ffffff"
                                     }
                                 }
 
@@ -334,15 +334,15 @@ Dialog {
                                         "Pending ZK ID"
                                     font.family: theme.fontFamilyMono
                                     font.pixelSize: 9
-                                    color: theme.accentLogos
+                                    color: theme.primary
                                 }
 
                                 Rectangle {
                                     height: 16
                                     width: 44
                                     radius: 3
-                                    color: "#153026"
-                                    border.color: theme.accentLogos
+                                    color: Qt.rgba(theme.primary.r, theme.primary.g, theme.primary.b, 0.15)
+                                    border.color: theme.primary
                                     border.width: 1
                                     Text {
                                         anchors.centerIn: parent
@@ -350,7 +350,7 @@ Dialog {
                                         font.family: theme.fontFamily
                                         font.pixelSize: 8
                                         font.bold: true
-                                        color: theme.accentLogos
+                                        color: theme.primary
                                     }
                                 }
                             }

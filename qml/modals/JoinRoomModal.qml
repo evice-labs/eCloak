@@ -76,8 +76,8 @@ Dialog {
             Layout.fillWidth: true
             Layout.preferredHeight: 70
             radius: theme.radiusSmall
-            color: "#1a382e"
-            border.color: theme.accentLogos
+            color: Qt.rgba(theme.primary.r, theme.primary.g, theme.primary.b, 0.12)
+            border.color: theme.primary
             border.width: 1
 
             RowLayout {
@@ -92,12 +92,12 @@ Dialog {
                         text: "Signed Join Consent Active"
                         font.bold: true
                         font.pixelSize: 11
-                        color: theme.accentLogos
+                        color: theme.primary
                     }
                     Text {
                         text: "Generates a BIP-340 Schnorr signature over the room ID using your NSK. Protects you against puppet-room framing attacks."
                         font.pixelSize: 10
-                        color: "#a8e6cf"
+                        color: theme.textNormal
                         wrapMode: Text.Wrap
                         Layout.fillWidth: true
                     }
