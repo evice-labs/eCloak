@@ -70,7 +70,7 @@ Rectangle {
                         width: 26
                         height: 26
                         radius: 13
-                        color: theme.accentBlurple
+                        color: theme.primary
 
                         Text {
                             anchors.centerIn: parent
@@ -97,7 +97,7 @@ Rectangle {
                                 height: 12
                                 width: 30
                                 radius: 2
-                                color: theme.accentBlurple
+                                color: theme.primary
                                 Text {
                                     anchors.centerIn: parent
                                     text: "MOD"
@@ -171,14 +171,14 @@ Rectangle {
                                 width: 24
                                 height: 24
                                 radius: 12
-                                color: theme.accentLogos
+                                color: theme.primary
 
                                 Text {
                                     anchors.centerIn: parent
                                     text: modelData.username.substring(0, 1).toUpperCase()
                                     font.bold: true
                                     font.pixelSize: 11
-                                    color: "#12151c"
+                                    color: "#ffffff"
                                 }
                             }
 
@@ -208,7 +208,7 @@ Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 154
             radius: theme.radiusMedium
-            color: theme.bgRail
+            color: theme.bgCard
             border.color: (drawer.radarTargetUser && drawer.radarStrikes >= drawer.radarStrikesRequired) ? theme.accentDanger : theme.borderSubtle
             border.width: 1
 
@@ -224,7 +224,7 @@ Rectangle {
                         text: "SLASHING RADAR"
                         font.bold: true
                         font.pixelSize: 11
-                        color: drawer.radarTargetUser ? theme.accentDanger : theme.accentLogos
+                        color: drawer.radarTargetUser ? theme.accentDanger : theme.primary
                     }
                 }
 
@@ -283,7 +283,7 @@ Rectangle {
                     Layout.preferredHeight: 28
                     radius: theme.radiusSmall
                     color: (drawer.radarTargetUser && drawer.radarStrikes >= drawer.radarStrikesRequired) ? theme.accentDanger :
-                           (drawer.radarTargetUser ? theme.accentBlurple : theme.bgHover)
+                           (drawer.radarTargetUser ? theme.primary : theme.bgHover)
 
                     Text {
                         anchors.centerIn: parent

@@ -60,7 +60,7 @@ Rectangle {
                     width: 28
                     height: 28
                     radius: 14
-                    color: theme.accentBlurple
+                    color: theme.primary
 
                     Text {
                         anchors.centerIn: parent

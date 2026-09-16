@@ -99,7 +99,7 @@ Dialog {
                 width: 38
                 height: 38
                 radius: 19
-                color: theme.accentLogos
+                color: theme.primary
 
                 Text {
                     anchors.centerIn: parent
@@ -107,7 +107,7 @@ Dialog {
                     font.family: theme.fontFamily
                     font.bold: true
                     font.pixelSize: 16
-                    color: "#12151c"
+                    color: "#ffffff"
                 }
             }
 
@@ -473,8 +473,8 @@ Dialog {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 44
                 radius: theme.radiusMedium
-                color: "#23241b"
-                border.color: "#3d3a24"
+                color: theme.accentWarningBg
+                border.color: theme.accentWarning
                 border.width: 1
 
                 RowLayout {
@@ -498,12 +498,12 @@ Dialog {
                             font.family: theme.fontFamily
                             font.bold: true
                             font.pixelSize: 11
-                            color: "#12151c"
+                            color: "#ffffff"
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                         }
                         background: Rectangle {
-                            color: theme.accentLogos
+                            color: theme.primary
                             radius: theme.radiusSmall
                         }
                         onClicked: {

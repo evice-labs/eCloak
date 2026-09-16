@@ -16,7 +16,7 @@ Item {
 
     Theme { id: theme }
 
-    // Floating Modal/Card Container (Matches ChatArea bottom banner height & bottomMargin)
+    // Floating Modal/Card Container
     Rectangle {
         id: floatingCard
         anchors.fill: parent
@@ -35,13 +35,13 @@ Item {
             anchors.rightMargin: 8
             spacing: 8
 
-            // User Avatar with Online Status Indicator
+            // User Avatar
             Rectangle {
                 Layout.alignment: Qt.AlignVCenter
                 width: 34
                 height: 34
                 radius: 17
-                color: theme.accentLogos
+                color: theme.primary
 
                 Text {
                     anchors.centerIn: parent
@@ -49,7 +49,7 @@ Item {
                     font.family: theme.fontFamily
                     font.bold: true
                     font.pixelSize: 14
-                    color: "#12151c"
+                    color: "#ffffff"
                 }
 
                 MouseArea {
@@ -104,7 +104,7 @@ Item {
                         font.pixelSize: 10
                         font.family: theme.fontFamilyMono
                         font.underline: true
-                        color: parent.justCopied ? theme.accentSuccess : (commMouse.containsMouse ? theme.accentLogos : theme.textMuted)
+                        color: parent.justCopied ? theme.accentSuccess : (commMouse.containsMouse ? theme.primary : theme.textMuted)
                         elide: Text.ElideRight
                     }
 
@@ -159,5 +159,23 @@ Item {
                 ToolTip.text: "Identity & Security Settings"
             }
         }
+    }
+
+    // Top horizontal divider
+    Rectangle {
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: 1
+        color: theme.borderSubtle
+    }
+
+    // Right vertical divider 
+    Rectangle {
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width: 1
+        color: theme.borderSubtle
     }
 }

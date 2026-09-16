@@ -115,9 +115,9 @@ Rectangle {
             }
         }
 
-        // ==========================================
+        // ===============================================
         // MAIN INPUT ROW (+ Button, Text, SSS Pill, Send)
-        // ==========================================
+        // ===============================================
         RowLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -129,14 +129,16 @@ Rectangle {
                 width: 32
                 height: 32
                 radius: 16
-                color: attachMouse.containsMouse ? theme.bgHover : "#4e5058"
+                color: attachMouse.containsMouse ? theme.bgHover : theme.bgCard
+                border.color: theme.borderSubtle
+                border.width: 1
 
                 Text {
                     anchors.centerIn: parent
                     text: "+"
                     font.bold: true
                     font.pixelSize: 18
-                    color: theme.bgInput
+                    color: attachMouse.containsMouse ? theme.textHeader : theme.textNormal
                 }
 
                 MouseArea {
@@ -188,56 +190,14 @@ Rectangle {
                 }
             }
 
-            // Cryptographic Status Pill
-            Rectangle {
-                Layout.alignment: Qt.AlignVCenter
-                height: 24
-                width: sssRow.implicitWidth + 12
-                radius: 12
-                color: "#1a382e"
-                border.color: theme.accentLogos
-                border.width: 1
-
-                RowLayout {
-                    id: sssRow
-                    anchors.centerIn: parent
-                    spacing: 4
-
-                    Text {
-                        text: "🔒"
-                        font.pixelSize: 11
-                    }
-
-                    Text {
-                        text: composer.isDmMode ? "ECDH E2EE" : "2-Tier SSS"
-                        font.pixelSize: 10
-                        font.bold: true
-                        color: theme.accentLogos
-                    }
-                }
-
-                MouseArea {
-                    id: sssMouse
-                    anchors.fill: parent
-                    hoverEnabled: true
-                }
-
-                ToolTip.visible: sssMouse.containsMouse
-                ToolTip.delay: 200
-                ToolTip.text: composer.isDmMode ?
-                    "Encrypted with pairwise ECDH shared key.
-Relay topic rotates each epoch (HKDF)." :
-                    "Protected by Two-Tier Shamir Secret Sharing.
-Shares distributed across N-of-M room moderators."
-            }
-
             // Send Button
             Rectangle {
                 Layout.alignment: Qt.AlignVCenter
                 width: 32
                 height: 32
                 radius: 16
-                color: (inputField.text.trim().length > 0 || composer.currentAttachment !== null) ? theme.accentBlurple : "transparent"
+                color: (inputField.text.trim().length > 0 || composer.currentAttachment !== null) ?
+                    (sendMouse.containsMouse ? theme.primaryHover : theme.primary) : "transparent"
                 visible: inputField.text.trim().length > 0 || composer.currentAttachment !== null
 
                 Text {
@@ -248,7 +208,9 @@ Shares distributed across N-of-M room moderators."
                 }
 
                 MouseArea {
+                    id: sendMouse
                     anchors.fill: parent
+                    hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
                         if (inputField.text.trim().length > 0 || composer.currentAttachment !== null) {
@@ -310,8 +272,7 @@ Shares distributed across N-of-M room moderators."
         var isDoc = docExts.indexOf(ext) !== -1;
 
         if (!isImg && !isVid && !isDoc) {
-            validationErrorMsg = "Unsupported file format '." + ext + "'.
-Allowed: PNG, JPG, WEBP, GIF, MP4, WEBM, PDF, TXT, JSON, MD.";
+            validationErrorMsg = "Unsupported file format '." + ext + "'. Allowed: PNG, JPG, WEBP, GIF, MP4, WEBM, PDF, TXT, JSON, MD.";
             validationErrorDialog.open();
             return;
         }

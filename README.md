@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/EviceLogo-white.png" alt="Evice Labs Logo" width="160" />
+  <img src="qml/assets/EviceLogo-white.png" alt="Evice Labs Logo" width="160" />
 </p>
 
 <p align="center">

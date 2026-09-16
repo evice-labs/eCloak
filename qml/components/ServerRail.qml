@@ -49,7 +49,7 @@ Rectangle {
                 width: 48
                 height: 48
                 radius: (rail.activeView === "dm" || dmMouse.containsMouse) ? theme.radiusSquircle : theme.radiusCircle
-                color: rail.activeView === "dm" ? theme.accentBlurple : (dmMouse.containsMouse ? theme.accentBlurpleHover : theme.bgChat)
+                color: rail.activeView === "dm" ? theme.primary : (dmMouse.containsMouse ? theme.primaryHover : theme.bgCard)
                 Behavior on radius { NumberAnimation { duration: theme.animFast } }
                 Behavior on color { ColorAnimation { duration: theme.animFast } }
 
@@ -127,7 +127,7 @@ Rectangle {
                             width: 48
                             height: 48
                             radius: (roomDelegate.isSelected || roomDelegate.isHovered) ? theme.radiusSquircle : theme.radiusCircle
-                            color: roomDelegate.isSelected ? theme.accentBlurple : (roomDelegate.isHovered ? theme.accentBlurpleHover : theme.bgChat)
+                            color: roomDelegate.isSelected ? theme.primary : (roomDelegate.isHovered ? theme.primaryHover : theme.bgCard)
                             Behavior on radius { NumberAnimation { duration: theme.animFast } }
                             Behavior on color { ColorAnimation { duration: theme.animFast } }
 
@@ -147,7 +147,7 @@ Rectangle {
                                 width: 14
                                 height: 14
                                 radius: 7
-                                color: modelData.mature ? theme.accentLogos : theme.accentWarning
+                                color: modelData.mature ? theme.primary : theme.accentWarning
                                 border.color: theme.bgRail
                                 border.width: 2
                                 visible: true
@@ -179,7 +179,7 @@ Rectangle {
                         width: 48
                         height: 48
                         radius: addMouse.containsMouse ? theme.radiusSquircle : theme.radiusCircle
-                        color: addMouse.containsMouse ? theme.accentSuccess : theme.bgChat
+                        color: addMouse.containsMouse ? theme.primary : theme.bgCard
                         Behavior on radius { NumberAnimation { duration: theme.animFast } }
                         Behavior on color { ColorAnimation { duration: theme.animFast } }
 
@@ -187,7 +187,7 @@ Rectangle {
                             anchors.centerIn: parent
                             text: "+"
                             font.pixelSize: 24
-                            color: addMouse.containsMouse ? "#ffffff" : theme.accentSuccess
+                            color: addMouse.containsMouse ? "#ffffff" : theme.primary
                         }
 
                         MouseArea {
