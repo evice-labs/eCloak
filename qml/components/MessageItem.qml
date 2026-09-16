@@ -12,12 +12,66 @@ Rectangle {
     property string author: "Anonymous"
     property string authorCommitment: ""
     property string timestamp: "Today at 12:00"
+    property var createdAt: 0
+    property var currentTick: 0
+    property string activeView: "room" // "room" or "dm"
     property string contentText: ""
     property string tracingTag: ""
     property bool isMod: false
     property bool isVerified: true
     property var postPoint: null
     property var attachment: null
+
+    function formatDisplayTimestamp(rawTime, epochMs, tick) {
+        if (!epochMs || epochMs <= 0) {
+            if (rawTime && rawTime !== "Just now") {
+                return rawTime;
+            }
+            return "Just now";
+        }
+
+        var now = (tick && tick > 0) ? tick : Date.now();
+        var diffMs = Math.max(0, now - epochMs);
+        var diffSec = Math.floor(diffMs / 1000);
+        var diffMin = Math.floor(diffSec / 60);
+        var diffHour = Math.floor(diffMin / 60);
+        var diffDay = Math.floor(diffHour / 24);
+        var diffWeek = Math.floor(diffDay / 7);
+        var diffMonth = Math.floor(diffDay / 30);
+        var diffYear = Math.floor(diffDay / 365);
+
+        if (diffSec < 10) {
+            return "Just now";
+        } else if (diffSec < 60) {
+            return diffSec + "s ago";
+        } else if (diffMin < 60) {
+            return diffMin + "m ago";
+        } else if (diffHour < 24) {
+            return diffHour + "h ago";
+        } else if (diffDay < 7) {
+            return (diffDay === 1) ? "Yesterday" : (diffDay + "d ago");
+        } else if (diffWeek < 5) {
+            return (diffWeek === 1) ? "1w ago" : (diffWeek + "w ago");
+        } else if (diffMonth < 12) {
+            return (diffMonth === 1) ? "1mo ago" : (diffMonth + "mo ago");
+        } else {
+            return (diffYear === 1) ? "1y ago" : (diffYear + "y ago");
+        }
+    }
+
+
+    function cleanTracingTag() {
+        if (!msgItem.tracingTag) return "";
+        var tag = msgItem.tracingTag;
+        if (/^[0-9a-fA-F]+$/.test(tag)) return tag;
+        var hex = "";
+        for (var i = 0; i < tag.length; i++) {
+            var b = tag.charCodeAt(i) & 0xff;
+            var hs = b.toString(16);
+            hex += (hs.length === 1 ? "0" : "") + hs;
+        }
+        return hex;
+    }
 
     signal flagClicked(string author, string commitment, string tag, string text)
     signal inspectClicked(string tag, var point)
@@ -45,14 +99,14 @@ Rectangle {
             width: 40
             height: 40
             radius: 20
-            color: msgItem.isMod ? theme.accentBlurple : theme.accentLogos
+            color: ((msgItem.activeView === "room") && msgItem.isMod) ? theme.primaryHover : theme.primary
 
             Text {
                 anchors.centerIn: parent
                 text: msgItem.author.substring(0, 1).toUpperCase()
                 font.bold: true
                 font.pixelSize: 16
-                color: msgItem.isMod ? "#ffffff" : "#12151c"
+                color: "#ffffff"
             }
         }
 
@@ -61,7 +115,7 @@ Rectangle {
             Layout.fillWidth: true
             spacing: 4
 
-            // Top Meta Row: Author, Role Badges, Timestamp
+            // Top Meta Row: Author, Role Badges, Timestamp, Subtle SSS Indicator
             RowLayout {
                 spacing: 8
 
@@ -72,9 +126,9 @@ Rectangle {
                     color: theme.textHeader
                 }
 
-                // Moderator Badge
+                // Moderator Badge (Active only in room mode, never in DM)
                 Rectangle {
-                    visible: msgItem.isMod
+                    visible: (msgItem.activeView === "room") && msgItem.isMod
                     height: 16
                     width: modLabel.implicitWidth + 8
                     radius: 3
@@ -90,67 +144,69 @@ Rectangle {
                     }
                 }
 
-                // ZK Verified Badge
-                Rectangle {
-                    visible: msgItem.isVerified
-                    height: 16
-                    width: verLabel.implicitWidth + 8
-                    radius: 3
-                    color: "#1a382e"
-                    border.color: theme.accentLogos
-                    border.width: 1
-
-                    Text {
-                        id: verLabel
-                        anchors.centerIn: parent
-                        text: "VERIFIED ZK"
-                        font.pixelSize: 9
-                        font.bold: true
-                        color: theme.accentLogos
-                    }
-                }
-
                 Text {
-                    text: msgItem.timestamp
+                    id: timeText
+                    text: msgItem.formatDisplayTimestamp(msgItem.timestamp, msgItem.createdAt, msgItem.currentTick)
                     font.pixelSize: 11
-                    color: theme.textMuted
+                    color: timeHover.containsMouse ? theme.textNormal : theme.textMuted
+
+                    MouseArea {
+                        id: timeHover
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        acceptedButtons: Qt.NoButton
+                    }
+
+                    ToolTip.visible: timeHover.containsMouse
+                    ToolTip.delay: 250
+                    ToolTip.text: msgItem.createdAt > 0 ?
+                        Qt.formatDateTime(new Date(msgItem.createdAt), "dddd, MMMM d, yyyy • hh:mm:ss AP") :
+                        (msgItem.timestamp || "Just now")
                 }
 
-                Item { Layout.fillWidth: true }
-            }
 
-            // Cryptographic Accountability Pill (Tracing Tag & Two-Tier SSS)
-            RowLayout {
-                spacing: 6
-                visible: msgItem.tracingTag !== ""
-
+                // Minimalist Cryptographic SSS Badge (Subtle pill, only in room mode with tracing tag)
                 Rectangle {
-                    height: 18
-                    width: tagRow.implicitWidth + 12
-                    radius: 9
-                    color: theme.bgRail
-                    border.color: theme.borderSubtle
+                    visible: (msgItem.activeView === "room") && msgItem.tracingTag !== ""
+                    height: 16
+                    width: tagLabel.implicitWidth + 10
+                    radius: 4
+                    color: tagMouse.containsMouse ? theme.bgHover : theme.bgCard
+                    border.color: tagMouse.containsMouse ? theme.primary : theme.borderSubtle
                     border.width: 1
 
                     RowLayout {
-                        id: tagRow
+                        id: tagLabel
                         anchors.centerIn: parent
-                        spacing: 4
+                        spacing: 3
 
                         Text {
-                            text: "🔒 2-Tier SSS:"
-                            font.pixelSize: 10
-                            color: theme.accentLogos
+                            text: "🔒"
+                            font.pixelSize: 9
                         }
 
                         Text {
-                            text: msgItem.tracingTag ? ("Tag #" + msgItem.tracingTag.substring(0, 8)) : "#00000000"
-                            font.pixelSize: 10
+                            text: "#" + (msgItem.cleanTracingTag().length >= 8 ? msgItem.cleanTracingTag().substring(0, 8) : msgItem.cleanTracingTag())
+                            font.pixelSize: 9
                             font.family: "monospace"
-                            color: theme.textInteractive
+                            color: theme.primary
                         }
                     }
+
+                    MouseArea {
+                        id: tagMouse
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: msgItem.inspectClicked(msgItem.cleanTracingTag(), msgItem.postPoint)
+                    }
+
+                    ToolTip.visible: tagMouse.containsMouse
+                    ToolTip.delay: 300
+                    ToolTip.text: "Two-Tier SSS Tracing Tag:\n#" + msgItem.cleanTracingTag() + "\n\nClick to inspect cryptographic share"
                 }
+
+                Item { Layout.fillWidth: true }
             }
 
             // Message Body Text
@@ -183,7 +239,7 @@ Rectangle {
 
                     Image {
                         anchors.fill: parent
-                        source: msgItem.attachment ? msgItem.attachment.path : ""
+                        source: msgItem.attachment ? (msgItem.attachment.path ? msgItem.attachment.path : (msgItem.attachment.localPath ? ("file://" + msgItem.attachment.localPath) : "")) : ""
                         fillMode: Image.PreserveAspectCrop
                         asynchronous: true
                     }
@@ -323,7 +379,7 @@ Rectangle {
                     anchors.fill: parent
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: msgItem.inspectClicked(msgItem.tracingTag, msgItem.postPoint)
+                    onClicked: msgItem.inspectClicked(msgItem.cleanTracingTag(), msgItem.postPoint)
                 }
                 ToolTip.visible: inspMouse.containsMouse
                 ToolTip.delay: 200
@@ -342,7 +398,7 @@ Rectangle {
                     anchors.fill: parent
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: msgItem.flagClicked(msgItem.author, msgItem.authorCommitment, msgItem.tracingTag, msgItem.contentText)
+                    onClicked: msgItem.flagClicked(msgItem.author, msgItem.authorCommitment, msgItem.cleanTracingTag(), msgItem.contentText)
                 }
                 ToolTip.visible: flagMouse.containsMouse
                 ToolTip.delay: 200

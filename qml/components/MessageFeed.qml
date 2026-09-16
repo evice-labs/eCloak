@@ -8,6 +8,17 @@ Item {
     property var messagesModel: []
     property string channelName: "general-chat"
     property string activeView: "room" // "room" or "dm"
+    property var currentTick: Date.now()
+
+    Timer {
+        id: tickTimer
+        interval: 15000
+        running: true
+        repeat: true
+        onTriggered: {
+            feed.currentTick = Date.now()
+        }
+    }
 
     signal flagRequested(string author, string commitment, string tag, string text)
     signal inspectRequested(string tag, var point)
@@ -42,7 +53,7 @@ Item {
                     width: 48
                     height: 48
                     radius: 24
-                    color: (feed.activeView === "dm" && feed.channelName) ? theme.accentBlurple : theme.bgHover
+                    color: (feed.activeView === "dm" && feed.channelName) ? theme.primary : theme.bgHover
                     Layout.alignment: Qt.AlignVCenter
 
                     Text {
@@ -98,6 +109,9 @@ Item {
             author: modelData.author || "Anonymous"
             authorCommitment: modelData.commitment || ""
             timestamp: modelData.timestamp || "Just now"
+            createdAt: modelData.createdAt || 0
+            currentTick: feed.currentTick
+            activeView: feed.activeView
             contentText: modelData.text || ""
             tracingTag: modelData.tracingTag || ""
             isMod: modelData.isMod || false
