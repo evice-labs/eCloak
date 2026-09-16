@@ -171,8 +171,8 @@ Rectangle {
                         height: 16
                         width: matureLabel.implicitWidth + 8
                         radius: 3
-                        color: sidebar.isRoomMature ? "#1c382f" : "#3d311b"
-                        border.color: sidebar.isRoomMature ? theme.accentLogos : theme.accentWarning
+                        color: sidebar.isRoomMature ? theme.accentSuccessBg : theme.accentWarningBg
+                        border.color: sidebar.isRoomMature ? theme.accentSuccess : theme.accentWarning
                         border.width: 1
 
                         Text {
@@ -181,7 +181,7 @@ Rectangle {
                             text: sidebar.isRoomMature ? "Mature" : "New"
                             font.pixelSize: 9
                             font.bold: true
-                            color: sidebar.isRoomMature ? theme.accentLogos : theme.accentWarning
+                            color: sidebar.isRoomMature ? theme.accentSuccess : theme.accentWarning
                         }
                     }
                 }
@@ -474,7 +474,7 @@ Rectangle {
                                     width: 28
                                     height: 28
                                     radius: 14
-                                    color: theme.accentBlurple
+                                    color: theme.primary
 
                                     Text {
                                         anchors.centerIn: parent
@@ -615,7 +615,7 @@ Rectangle {
                                 width: 28
                                 height: 28
                                 radius: 14
-                                color: theme.accentBlurple
+                                color: theme.primary
 
                                 Text {
                                     anchors.centerIn: parent
@@ -669,4 +669,24 @@ Rectangle {
             }
         }
     }
+
+    // Vertical divider left (separating ServerRail from ChannelSidebar)
+    Rectangle {
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width: 1
+        color: theme.borderSubtle
+    }
+
+    // Vertical divider right (separating ChannelSidebar from ChatArea)
+    Rectangle {
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width: 1
+        color: theme.borderSubtle
+    }
 }
+
+
