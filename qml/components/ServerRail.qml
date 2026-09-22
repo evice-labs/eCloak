@@ -14,9 +14,15 @@ Rectangle {
     signal dmSelected()
     signal roomSelected(string roomId, string roomName, int nMod, int mMod, bool mature)
     signal addRoomClicked()
+    signal createRoomClicked()
+    signal joinRoomClicked()
     signal identitySettingsClicked()
+    signal clearInputsRequested()
 
-    Theme { id: theme }
+    MouseArea {
+        anchors.fill: parent
+        onClicked: rail.clearInputsRequested()
+    }
 
     ColumnLayout {
         anchors.fill: parent
@@ -55,9 +61,9 @@ Rectangle {
 
                 Image {
                     anchors.centerIn: parent
-                    width: 28
-                    height: 28
-                    source: "../assets/EviceLogo-white.png"
+                    width: 32
+                    height: 32
+                    source: "../assets/eCloakLogoCircle.png"
                     fillMode: Image.PreserveAspectFit
                     smooth: true
                     mipmap: true
@@ -68,16 +74,38 @@ Rectangle {
                     anchors.fill: parent
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: rail.dmSelected()
+                    onClicked: {
+                        rail.clearInputsRequested();
+                        rail.dmSelected();
+                    }
                 }
 
-                ToolTip.visible: dmMouse.containsMouse
-                ToolTip.delay: 200
-                ToolTip.text: "Direct Messages (Anon DMs)"
+                ToolTip {
+                    id: dmTip
+                    visible: dmMouse.containsMouse
+                    delay: 200
+                    text: "Direct Messages (Anon DMs)"
+                    topPadding: 6
+                    bottomPadding: 6
+                    leftPadding: 10
+                    rightPadding: 10
+                    contentItem: Text {
+                        text: dmTip.text
+                        font.family: theme.fontFamily
+                        font.pixelSize: 12
+                        color: theme.textHeader
+                    }
+                    background: Rectangle {
+                        color: theme.bgCard
+                        border.color: theme.borderSubtle
+                        border.width: 1
+                        radius: 6
+                    }
+                }
             }
         }
 
-        // --- Divider Pill ---
+        // Divider Pill
         Rectangle {
             Layout.alignment: Qt.AlignHCenter
             width: 32
@@ -86,7 +114,7 @@ Rectangle {
             color: theme.divider
         }
 
-        // --- Scrollable Room List ---
+        // Scrollable Room List
         ScrollView {
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -139,36 +167,44 @@ Rectangle {
                                 color: (roomDelegate.isSelected || roomDelegate.isHovered) ? "#ffffff" : theme.textInteractive
                             }
 
-                            // SSS Shield mini badge
-                            Rectangle {
-                                anchors.right: parent.right
-                                anchors.bottom: parent.bottom
-                                anchors.margins: -2
-                                width: 14
-                                height: 14
-                                radius: 7
-                                color: modelData.mature ? theme.primary : theme.accentWarning
-                                border.color: theme.bgRail
-                                border.width: 2
-                                visible: true
-                            }
-
                             MouseArea {
                                 id: roomMouse
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
-                                onClicked: rail.roomSelected(modelData.id, modelData.name, modelData.nMod, modelData.mMod, modelData.mature)
+                                onClicked: {
+                                    rail.clearInputsRequested();
+                                    rail.roomSelected(modelData.id, modelData.name, modelData.nMod, modelData.mMod, modelData.mature);
+                                }
                             }
 
-                            ToolTip.visible: roomMouse.containsMouse
-                            ToolTip.delay: 200
-                            ToolTip.text: modelData.name + (modelData.mature ? " • (Mature N=" + modelData.nMod + "/M=" + modelData.mMod + ")" : " • (New Room)")
+                            ToolTip {
+                                id: roomTip
+                                visible: roomMouse.containsMouse
+                                delay: 200
+                                text: modelData.name
+                                topPadding: 6
+                                bottomPadding: 6
+                                leftPadding: 10
+                                rightPadding: 10
+                                contentItem: Text {
+                                    text: roomTip.text
+                                    font.family: theme.fontFamily
+                                    font.pixelSize: 12
+                                    color: theme.textHeader
+                                }
+                                background: Rectangle {
+                                    color: theme.bgCard
+                                    border.color: theme.borderSubtle
+                                    border.width: 1
+                                    radius: 6
+                                }
+                            }
                         }
                     }
                 }
 
-                // --- Add Room Button (+) ---
+                // Add Room Button (+)
                 Item {
                     width: 72
                     height: 48
@@ -178,8 +214,8 @@ Rectangle {
                         anchors.centerIn: parent
                         width: 48
                         height: 48
-                        radius: addMouse.containsMouse ? theme.radiusSquircle : theme.radiusCircle
-                        color: addMouse.containsMouse ? theme.primary : theme.bgCard
+                        radius: (addMouse.containsMouse || addRoomMenu.visible) ? theme.radiusSquircle : theme.radiusCircle
+                        color: (addMouse.containsMouse || addRoomMenu.visible) ? theme.primary : theme.bgCard
                         Behavior on radius { NumberAnimation { duration: theme.animFast } }
                         Behavior on color { ColorAnimation { duration: theme.animFast } }
 
@@ -187,7 +223,7 @@ Rectangle {
                             anchors.centerIn: parent
                             text: "+"
                             font.pixelSize: 24
-                            color: addMouse.containsMouse ? "#ffffff" : theme.primary
+                            color: (addMouse.containsMouse || addRoomMenu.visible) ? "#ffffff" : theme.primary
                         }
 
                         MouseArea {
@@ -195,12 +231,97 @@ Rectangle {
                             anchors.fill: parent
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
-                            onClicked: rail.addRoomClicked()
+                            onClicked: {
+                                rail.clearInputsRequested();
+                                addRoomMenu.open();
+                            }
                         }
 
-                        ToolTip.visible: addMouse.containsMouse
-                        ToolTip.delay: 200
-                        ToolTip.text: "Create or Join Room"
+                        Menu {
+                            id: addRoomMenu
+                            x: addBtnBox.width + 8
+                            y: 0
+                            topPadding: 4
+                            bottomPadding: 4
+                            leftPadding: 4
+                            rightPadding: 4
+
+                            background: Rectangle {
+                                implicitWidth: 180
+                                color: theme.bgCard
+                                border.color: theme.borderSubtle
+                                border.width: 1
+                                radius: 8
+                            }
+
+                            MenuItem {
+                                id: itemCreateRoom
+                                text: "➕ Create a Room"
+                                contentItem: Text {
+                                    text: itemCreateRoom.text
+                                    font.family: theme.fontFamily
+                                    font.pixelSize: 13
+                                    color: itemCreateRoom.highlighted ? "#ffffff" : theme.textHeader
+                                    verticalAlignment: Text.AlignVCenter
+                                    leftPadding: 8
+                                    rightPadding: 8
+                                }
+                                background: Rectangle {
+                                    implicitWidth: 172
+                                    implicitHeight: 34
+                                    color: itemCreateRoom.highlighted ? theme.bgHover : "transparent"
+                                    radius: 6
+                                }
+                                onTriggered: {
+                                    rail.createRoomClicked();
+                                    rail.addRoomClicked();
+                                }
+                            }
+
+                            MenuItem {
+                                id: itemJoinRoom
+                                text: "🔗 Join with Room ID"
+                                contentItem: Text {
+                                    text: itemJoinRoom.text
+                                    font.family: theme.fontFamily
+                                    font.pixelSize: 13
+                                    color: itemJoinRoom.highlighted ? "#ffffff" : theme.textHeader
+                                    verticalAlignment: Text.AlignVCenter
+                                    leftPadding: 8
+                                    rightPadding: 8
+                                }
+                                background: Rectangle {
+                                    implicitWidth: 172
+                                    implicitHeight: 34
+                                    color: itemJoinRoom.highlighted ? theme.bgHover : "transparent"
+                                    radius: 6
+                                }
+                                onTriggered: rail.joinRoomClicked()
+                            }
+                        }
+
+                        ToolTip {
+                            id: addTip
+                            visible: addMouse.containsMouse && !addRoomMenu.visible
+                            delay: 200
+                            text: "Create or Join Room"
+                            topPadding: 6
+                            bottomPadding: 6
+                            leftPadding: 10
+                            rightPadding: 10
+                            contentItem: Text {
+                                text: addTip.text
+                                font.family: theme.fontFamily
+                                font.pixelSize: 12
+                                color: theme.textHeader
+                            }
+                            background: Rectangle {
+                                color: theme.bgCard
+                                border.color: theme.borderSubtle
+                                border.width: 1
+                                radius: 6
+                            }
+                        }
                     }
                 }
             }
