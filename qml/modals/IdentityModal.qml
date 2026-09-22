@@ -287,6 +287,16 @@ Dialog {
                 modal.validationMessage = "empty";
                 return;
             }
+            if (val.length < 3 || val.length > 32) {
+                modal.usernameStatus = "taken";
+                modal.validationMessage = "3-32 chars";
+                return;
+            }
+            if (!/^[a-zA-Z0-9_]+$/.test(val)) {
+                modal.usernameStatus = "taken";
+                modal.validationMessage = "letters, numbers, _ only";
+                return;
+            }
             if (!modal.commitmentHex || modal.commitmentHex.length < 32) {
                 modal.usernameStatus = "taken";
                 modal.validationMessage = "no identity";
@@ -328,11 +338,11 @@ Dialog {
                     Text {
                         Layout.fillWidth: true
                         Layout.alignment: Qt.AlignVCenter
-                        text: modal.commitmentHex || "0x0000000000000000000000000000000000000000000000000000000000000000"
+                        text: modal.commitmentHex || "Not generated"
                         color: theme.textHeader
                         font.family: theme.fontFamilyMono
                         font.pixelSize: 10
-                        elide: Text.None
+                        elide: Text.ElideNone
                     }
 
                     // Uniform Fixed-Size Copy Button (64x28)
@@ -413,7 +423,7 @@ Dialog {
                         font.pixelSize: (modal.isRevealed && !modal.nskCopied) ? 10 : 12
                         font.weight: modal.isRevealed ? Font.Normal : Font.Medium
                         font.underline: modal.isRevealed && !modal.nskCopied
-                        elide: Text.None
+                        elide: Text.ElideNone
 
                         MouseArea {
                             id: nskMouse

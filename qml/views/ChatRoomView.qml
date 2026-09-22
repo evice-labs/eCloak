@@ -13,12 +13,6 @@ Item {
 
     ListModel {
         id: messageFeed
-        ListElement {
-            authorName: "Anon#3912"
-            authorCommitment: "0a0b0c0d0e0f1011121314151617181920212223242526272829303132333435"
-            tracingTag: "e4f82a1b9c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f"
-            content: "Welcome to Logos AnonChat! Every post published here is protected by 2-tier SSS."
-        }
     }
 
     ColumnLayout {
