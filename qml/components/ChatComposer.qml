@@ -11,12 +11,18 @@ Rectangle {
     border.color: inputField.activeFocus ? theme.accentBlurple : theme.borderSubtle
     border.width: 1
 
-    property string placeholderTarget: "#general-chat"
+    property string placeholderTarget: ""
     property bool isDmMode: false
     property var currentAttachment: null
     property string validationErrorMsg: ""
 
     signal sendRequested(string messageText, var attachmentData)
+    signal inputFocusGained()
+    signal clearOtherFocusRequested()
+
+    function clearInputFocus() {
+        inputField.focus = false;
+    }
 
     Theme { id: theme }
 
@@ -32,9 +38,7 @@ Rectangle {
         anchors.bottomMargin: 0
         spacing: 6
 
-        // ==========================================
         // ATTACHMENT PREVIEW CHIP (When file is selected)
-        // ==========================================
         Rectangle {
             id: previewChip
             Layout.fillWidth: true
@@ -115,9 +119,7 @@ Rectangle {
             }
         }
 
-        // ===============================================
         // MAIN INPUT ROW (+ Button, Text, SSS Pill, Send)
-        // ===============================================
         RowLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -149,9 +151,28 @@ Rectangle {
                     onClicked: fileDialog.open()
                 }
 
-                ToolTip.visible: attachMouse.containsMouse
-                ToolTip.delay: 200
-                ToolTip.text: "Attach image, video, or document (Max 10 MB)"
+                ToolTip {
+                    id: attachTip
+                    visible: attachMouse.containsMouse
+                    delay: 200
+                    text: "Attach image, video, or document (Max 10 MB)"
+                    topPadding: 6
+                    bottomPadding: 6
+                    leftPadding: 10
+                    rightPadding: 10
+                    contentItem: Text {
+                        text: attachTip.text
+                        font.family: theme.fontFamily
+                        font.pixelSize: 12
+                        color: theme.textHeader
+                    }
+                    background: Rectangle {
+                        color: theme.bgCard
+                        border.color: theme.borderSubtle
+                        border.width: 1
+                        radius: 6
+                    }
+                }
             }
 
             // Text Input Field
@@ -166,7 +187,7 @@ Rectangle {
                     verticalAlignment: Text.AlignVCenter
                     placeholderText: composer.currentAttachment ?
                         "Add a caption or comment..." :
-                        ("Message " + composer.placeholderTarget + "...")
+                        ("Message " + (composer.placeholderTarget ? composer.placeholderTarget : "channel") + "...")
                     placeholderTextColor: theme.textMuted
                     color: theme.textNormal
                     font.family: theme.fontFamily
@@ -174,6 +195,18 @@ Rectangle {
                     wrapMode: TextEdit.Wrap
                     selectByMouse: true
                     background: null
+
+                    onActiveFocusChanged: {
+                        if (inputField.activeFocus) {
+                            composer.inputFocusGained();
+                        }
+                    }
+
+                    Keys.onEscapePressed: function(event) {
+                        composer.clearInputFocus();
+                        composer.clearOtherFocusRequested();
+                        event.accepted = true;
+                    }
 
                     Keys.onReturnPressed: function(event) {
                         if (event.modifiers & Qt.ShiftModifier) {
@@ -224,9 +257,7 @@ Rectangle {
         }
     }
 
-    // ==========================================
     // NATIVE OS FILE PICKER DIALOG
-    // ==========================================
     FileDialog {
         id: fileDialog
         title: "Select Photo, Video, or Document to Attach"
@@ -244,9 +275,7 @@ Rectangle {
         }
     }
 
-    // ==========================================
     // ATTACHMENT VALIDATION LOGIC
-    // ==========================================
     function validateAndSetAttachment(fileUrl) {
         var rawPath = fileUrl.replace(/^file:\/\//, "");
         var parts = rawPath.split("/");
@@ -300,9 +329,7 @@ Rectangle {
         };
     }
 
-    // ==========================================
     // VALIDATION ERROR DIALOG
-    // ==========================================
     Dialog {
         id: validationErrorDialog
         title: "Attachment Validation Failed"

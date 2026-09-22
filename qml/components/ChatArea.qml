@@ -7,15 +7,22 @@ Rectangle {
     color: theme.bgChat
 
     property string activeView: "room" // "room" or "dm"
-    property string activeTargetName: "general-chat"
-    property string activeTopic: "Decentralized anonymous group communication • Two-Tier SSS enabled"
+    property string activeTargetName: ""
+    property string activeTopic: ""
     property var messagesModel: []
     property bool isDrawerOpen: true
 
     signal sendMessage(string text, var attachment)
     signal flagMessage(string author, string commitment, string tag, string text)
     signal inspectMessage(string tag, var point)
+    signal reactMessage(int messageIndex, string emoji)
     signal toggleDrawer()
+    signal inputFocusGained()
+    signal clearOtherFocusRequested()
+
+    function clearInputFocus() {
+        if (composerComp) composerComp.clearInputFocus();
+    }
 
     Theme { id: theme }
 
@@ -23,13 +30,19 @@ Rectangle {
         anchors.fill: parent
         spacing: 0
 
-        // ==========================================
         // TOP HEADER BAR (48px)
-        // ==========================================
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 48
             color: theme.bgChat
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    chatArea.clearInputFocus();
+                    chatArea.clearOtherFocusRequested();
+                }
+            }
 
             Rectangle {
                 anchors.bottom: parent.bottom
@@ -73,7 +86,7 @@ Rectangle {
                 }
 
                 Text {
-                    text: !chatArea.activeTargetName ? (chatArea.activeView === "dm" ? "Direct Messages" : "Logos AnonChat") : chatArea.activeTargetName
+                    text: !chatArea.activeTargetName ? (chatArea.activeView === "dm" ? "Direct Messages" : "Evice AnonChat") : chatArea.activeTargetName
                     font.family: theme.fontFamily
                     font.bold: true
                     font.pixelSize: 15
@@ -109,7 +122,7 @@ Rectangle {
                     width: 32
                     height: 32
                     radius: theme.radiusSmall
-                    color: (drawerMouse.containsMouse || chatArea.isDrawerOpen) ? theme.bgHover : "transparent"
+                    color: drawerMouse.containsMouse ? theme.bgHover : "transparent"
 
                     Text {
                         anchors.centerIn: parent
@@ -125,16 +138,33 @@ Rectangle {
                         onClicked: chatArea.toggleDrawer()
                     }
 
-                    ToolTip.visible: drawerMouse.containsMouse
-                    ToolTip.delay: 200
-                    ToolTip.text: chatArea.isDrawerOpen ? "Hide Member List & Slashing Radar" : "Show Member List & Slashing Radar"
+                    ToolTip {
+                        id: drawerTip
+                        visible: drawerMouse.containsMouse
+                        delay: 200
+                        text: chatArea.isDrawerOpen ? "Hide Member List & Slashing Radar" : "Show Member List & Slashing Radar"
+                        topPadding: 6
+                        bottomPadding: 6
+                        leftPadding: 10
+                        rightPadding: 10
+                        contentItem: Text {
+                            text: drawerTip.text
+                            font.family: theme.fontFamily
+                            font.pixelSize: 12
+                            color: theme.textHeader
+                        }
+                        background: Rectangle {
+                            color: theme.bgCard
+                            border.color: theme.borderSubtle
+                            border.width: 1
+                            radius: 6
+                        }
+                    }
                 }
             }
         }
 
-        // ==========================================
         // MESSAGE FEED AREA
-        // ==========================================
         MessageFeed {
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -149,11 +179,18 @@ Rectangle {
             onInspectRequested: function(tag, point) {
                 chatArea.inspectMessage(tag, point)
             }
+
+            onReactRequested: function(idx, emoji) {
+                chatArea.reactMessage(idx, emoji)
+            }
+
+            onFeedClicked: {
+                chatArea.clearInputFocus();
+                chatArea.clearOtherFocusRequested();
+            }
         }
 
-        // ==========================================
         // BOTTOM MESSAGE COMPOSER
-        // ==========================================
         Item {
             Layout.fillWidth: true
             Layout.preferredHeight: composerComp.height + 12
@@ -169,6 +206,14 @@ Rectangle {
                 border.color: theme.borderSubtle
                 border.width: 1
                 visible: !chatArea.activeTargetName || chatArea.activeTargetName === ""
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        chatArea.clearInputFocus();
+                        chatArea.clearOtherFocusRequested();
+                    }
+                }
 
                 RowLayout {
                     anchors.centerIn: parent
@@ -199,8 +244,11 @@ Rectangle {
                 anchors.bottomMargin: 12
                 visible: chatArea.activeTargetName !== ""
 
-                placeholderTarget: (chatArea.activeView === "dm" ? "@" : "#") + chatArea.activeTargetName
+                placeholderTarget: chatArea.activeTargetName ? ((chatArea.activeView === "dm" ? "@" : "#") + chatArea.activeTargetName) : ""
                 isDmMode: chatArea.activeView === "dm"
+
+                onInputFocusGained: chatArea.inputFocusGained()
+                onClearOtherFocusRequested: chatArea.clearOtherFocusRequested()
 
                 onSendRequested: function(msg, attach) {
                     chatArea.sendMessage(msg, attach)

@@ -6,7 +6,7 @@ Item {
     id: feed
 
     property var messagesModel: []
-    property string channelName: "general-chat"
+    property string channelName: ""
     property string activeView: "room" // "room" or "dm"
     property var currentTick: Date.now()
 
@@ -22,8 +22,14 @@ Item {
 
     signal flagRequested(string author, string commitment, string tag, string text)
     signal inspectRequested(string tag, var point)
+    signal reactRequested(int messageIndex, string emoji)
+    signal feedClicked()
 
     Theme { id: theme }
+
+    TapHandler {
+        onTapped: feed.feedClicked()
+    }
 
     ListView {
         id: msgList
@@ -70,7 +76,7 @@ Item {
 
                 Text {
                     text: !feed.channelName ?
-                        (feed.activeView === "dm" ? "No Conversation Selected" : "Welcome to Logos AnonChat") :
+                        (feed.activeView === "dm" ? "No Conversation Selected" : "Welcome to Evice AnonChat") :
                         (feed.activeView === "dm" ? ("Direct Chat with " + feed.channelName) : ("Welcome to #" + feed.channelName + "!"))
                     font.family: theme.fontFamily
                     font.bold: true
@@ -118,6 +124,7 @@ Item {
             isVerified: true
             postPoint: modelData.postPoint || null
             attachment: modelData.attachment || null
+            reactions: modelData.reactions || []
 
             onFlagClicked: function(author, comm, tag, text) {
                 feed.flagRequested(author, comm, tag, text)
@@ -125,6 +132,14 @@ Item {
 
             onInspectClicked: function(tag, point) {
                 feed.inspectRequested(tag, point)
+            }
+
+            onReactClicked: function(emoji) {
+                feed.reactRequested(index, emoji)
+            }
+
+            onMessageClicked: {
+                feed.feedClicked()
             }
         }
 

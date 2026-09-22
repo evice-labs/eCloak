@@ -6,8 +6,37 @@ Rectangle {
     id: msgItem
     width: parent ? parent.width : 600
     height: contentLayout.height + 16
-    color: msgMouse.containsMouse ? theme.bgHover : "transparent"
+    color: msgItem.isHovered ? theme.bgHover : "transparent"
     radius: theme.radiusSmall
+
+    property bool isHovered: false
+
+    Timer {
+        id: hoverDebounceTimer
+        interval: 100
+        repeat: false
+        onTriggered: {
+            if (!msgMouse.containsMouse && !hoverBarMouse.containsMouse &&
+                !flagMouse.containsMouse && !copyMouse.containsMouse &&
+                !r1.containsMouse && !r2.containsMouse &&
+                !timeHover.containsMouse && !tagMouse.containsMouse) {
+                msgItem.isHovered = false;
+            }
+        }
+    }
+
+    function checkHover() {
+        var anyContains = msgMouse.containsMouse || hoverBarMouse.containsMouse ||
+            flagMouse.containsMouse || copyMouse.containsMouse ||
+            r1.containsMouse || r2.containsMouse ||
+            timeHover.containsMouse || tagMouse.containsMouse;
+        if (anyContains) {
+            hoverDebounceTimer.stop();
+            msgItem.isHovered = true;
+        } else {
+            hoverDebounceTimer.restart();
+        }
+    }
 
     property string author: "Anonymous"
     property string authorCommitment: ""
@@ -21,6 +50,7 @@ Rectangle {
     property bool isVerified: true
     property var postPoint: null
     property var attachment: null
+    property var reactions: []
 
     function formatDisplayTimestamp(rawTime, epochMs, tick) {
         if (!epochMs || epochMs <= 0) {
@@ -76,13 +106,25 @@ Rectangle {
     signal flagClicked(string author, string commitment, string tag, string text)
     signal inspectClicked(string tag, var point)
     signal reactClicked(string emoji)
+    signal messageClicked()
 
     Theme { id: theme }
+
+    TextInput {
+        id: clipHelper
+        visible: false
+    }
 
     MouseArea {
         id: msgMouse
         anchors.fill: parent
         hoverEnabled: true
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
+        cursorShape: Qt.ArrowCursor
+        onContainsMouseChanged: msgItem.checkHover()
+        onClicked: {
+            msgItem.messageClicked();
+        }
     }
 
     RowLayout {
@@ -99,7 +141,7 @@ Rectangle {
             width: 40
             height: 40
             radius: 20
-            color: ((msgItem.activeView === "room") && msgItem.isMod) ? theme.primaryHover : theme.primary
+            color: theme.primary
 
             Text {
                 anchors.centerIn: parent
@@ -129,10 +171,12 @@ Rectangle {
                 // Moderator Badge (Active only in room mode, never in DM)
                 Rectangle {
                     visible: (msgItem.activeView === "room") && msgItem.isMod
-                    height: 16
-                    width: modLabel.implicitWidth + 8
-                    radius: 3
-                    color: theme.accentBlurple
+                    height: 18
+                    width: modLabel.implicitWidth + 12
+                    radius: 9
+                    color: theme.primary
+                    border.color: theme.primary
+                    border.width: 1
 
                     Text {
                         id: modLabel
@@ -155,22 +199,42 @@ Rectangle {
                         anchors.fill: parent
                         hoverEnabled: true
                         acceptedButtons: Qt.NoButton
+                        onContainsMouseChanged: msgItem.checkHover()
                     }
 
-                    ToolTip.visible: timeHover.containsMouse
-                    ToolTip.delay: 250
-                    ToolTip.text: msgItem.createdAt > 0 ?
-                        Qt.formatDateTime(new Date(msgItem.createdAt), "dddd, MMMM d, yyyy • hh:mm:ss AP") :
-                        (msgItem.timestamp || "Just now")
+                    ToolTip {
+                        id: timeTip
+                        visible: timeHover.containsMouse
+                        delay: 250
+                        text: msgItem.createdAt > 0 ?
+                            Qt.formatDateTime(new Date(msgItem.createdAt), "dddd, MMMM d, yyyy • hh:mm:ss AP") :
+                            (msgItem.timestamp || "Just now")
+                        topPadding: 6
+                        bottomPadding: 6
+                        leftPadding: 10
+                        rightPadding: 10
+                        contentItem: Text {
+                            text: timeTip.text
+                            font.family: theme.fontFamily
+                            font.pixelSize: 12
+                            color: theme.textHeader
+                        }
+                        background: Rectangle {
+                            color: theme.bgCard
+                            border.color: theme.borderSubtle
+                            border.width: 1
+                            radius: 6
+                        }
+                    }
                 }
 
 
                 // Minimalist Cryptographic SSS Badge (Subtle pill, only in room mode with tracing tag)
                 Rectangle {
                     visible: (msgItem.activeView === "room") && msgItem.tracingTag !== ""
-                    height: 16
-                    width: tagLabel.implicitWidth + 10
-                    radius: 4
+                    height: 18
+                    width: tagLabel.implicitWidth + 12
+                    radius: 9
                     color: tagMouse.containsMouse ? theme.bgHover : theme.bgCard
                     border.color: tagMouse.containsMouse ? theme.primary : theme.borderSubtle
                     border.width: 1
@@ -197,13 +261,33 @@ Rectangle {
                         id: tagMouse
                         anchors.fill: parent
                         hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: msgItem.inspectClicked(msgItem.cleanTracingTag(), msgItem.postPoint)
+                        acceptedButtons: Qt.NoButton
+                        cursorShape: Qt.ArrowCursor
+                        onContainsMouseChanged: msgItem.checkHover()
                     }
 
-                    ToolTip.visible: tagMouse.containsMouse
-                    ToolTip.delay: 300
-                    ToolTip.text: "Two-Tier SSS Tracing Tag:\n#" + msgItem.cleanTracingTag() + "\n\nClick to inspect cryptographic share"
+                    ToolTip {
+                        id: tagTip
+                        visible: tagMouse.containsMouse
+                        delay: 300
+                        text: "Two-Tier SSS Tracing Tag:\n#" + msgItem.cleanTracingTag()
+                        topPadding: 6
+                        bottomPadding: 6
+                        leftPadding: 10
+                        rightPadding: 10
+                        contentItem: Text {
+                            text: tagTip.text
+                            font.family: theme.fontFamily
+                            font.pixelSize: 12
+                            color: theme.textHeader
+                        }
+                        background: Rectangle {
+                            color: theme.bgCard
+                            border.color: theme.borderSubtle
+                            border.width: 1
+                            radius: 6
+                        }
+                    }
                 }
 
                 Item { Layout.fillWidth: true }
@@ -309,100 +393,312 @@ Rectangle {
                     }
                 }
             }
+
+            // Reaction Badges / Pills Row
+            Flow {
+                Layout.fillWidth: true
+                spacing: 6
+                visible: msgItem.reactions && msgItem.reactions.length > 0
+
+                Repeater {
+                    model: msgItem.reactions
+
+                    Rectangle {
+                        height: 24
+                        width: reactContentRow.implicitWidth + 14
+                        radius: 12
+                        color: modelData.hasReacted ? theme.bgActive : (pillMouse.containsMouse ? theme.bgHover : theme.bgCard)
+                        border.color: modelData.hasReacted ? theme.primary : theme.borderSubtle
+                        border.width: 1
+
+                        RowLayout {
+                            id: reactContentRow
+                            anchors.centerIn: parent
+                            spacing: 4
+
+                            Text {
+                                text: modelData.emoji
+                                font.pixelSize: 12
+                            }
+
+                            Text {
+                                text: modelData.count
+                                font.pixelSize: 11
+                                font.bold: true
+                                color: modelData.hasReacted ? theme.textInteractiveActive : theme.textHeader
+                            }
+                        }
+
+                        MouseArea {
+                            id: pillMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onContainsMouseChanged: msgItem.checkHover()
+                            onClicked: msgItem.reactClicked(modelData.emoji)
+                        }
+
+                        ToolTip {
+                            id: reactTip
+                            visible: pillMouse.containsMouse
+                            delay: 300
+                            text: (modelData.users && modelData.users.length > 0) ? (modelData.users.join(", ") + " reacted with " + modelData.emoji) : ("Reacted with " + modelData.emoji)
+                            topPadding: 6
+                            bottomPadding: 6
+                            leftPadding: 10
+                            rightPadding: 10
+                            contentItem: Text {
+                                text: reactTip.text
+                                font.family: theme.fontFamily
+                                font.pixelSize: 12
+                                color: theme.textHeader
+                            }
+                            background: Rectangle {
+                                color: theme.bgCard
+                                border.color: theme.borderSubtle
+                                border.width: 1
+                                radius: 6
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
-    // --- Floating Action Bar on Hover ---
+    // Floating Action Bar on Hover
     Rectangle {
+        id: hoverBar
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.margins: 4
         height: 32
-        radius: theme.radiusSmall
-        color: theme.bgSidebar
+        width: actionRow.implicitWidth + 12
+        radius: theme.radiusMedium
+        color: theme.bgCard
         border.color: theme.borderSubtle
         border.width: 1
-        visible: msgMouse.containsMouse
+        z: 10
+        visible: msgItem.isHovered
+
+        MouseArea {
+            id: hoverBarMouse
+            anchors.fill: parent
+            hoverEnabled: true
+            acceptedButtons: Qt.NoButton
+            onContainsMouseChanged: msgItem.checkHover()
+        }
 
         RowLayout {
-            anchors.fill: parent
-            anchors.leftMargin: 4
-            anchors.rightMargin: 4
-            spacing: 2
+            id: actionRow
+            anchors.centerIn: parent
+            spacing: 3
 
-            // Quick Emoji Reaction
+            // 1. Strike / Flag Button (🚩)
             Rectangle {
+                visible: msgItem.activeView === "room"
                 width: 26
                 height: 26
-                radius: 3
-                color: r1.containsMouse ? theme.bgHover : "transparent"
-                Text { anchors.centerIn: parent; text: "👍"; font.pixelSize: 13 }
-                MouseArea {
-                    id: r1
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: msgItem.reactClicked("👍")
+                radius: theme.radiusSmall
+                color: flagMouse.containsMouse ? theme.accentDangerBg : "transparent"
+                border.color: flagMouse.containsMouse ? theme.accentDanger : "transparent"
+                border.width: 1
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "🚩"
+                    font.pixelSize: 13
                 }
-                ToolTip.visible: r1.containsMouse
-                ToolTip.delay: 200
-                ToolTip.text: "React 👍"
-            }
 
-            Rectangle {
-                width: 26
-                height: 26
-                radius: 3
-                color: r2.containsMouse ? theme.bgHover : "transparent"
-                Text { anchors.centerIn: parent; text: "🚀"; font.pixelSize: 13 }
-                MouseArea {
-                    id: r2
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: msgItem.reactClicked("🚀")
-                }
-                ToolTip.visible: r2.containsMouse
-                ToolTip.delay: 200
-                ToolTip.text: "React 🚀"
-            }
-
-            // Inspect SSS Share
-            Rectangle {
-                width: 26
-                height: 26
-                radius: 3
-                color: inspMouse.containsMouse ? theme.bgHover : "transparent"
-                Text { anchors.centerIn: parent; text: "🔍"; font.pixelSize: 12 }
-                MouseArea {
-                    id: inspMouse
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: msgItem.inspectClicked(msgItem.cleanTracingTag(), msgItem.postPoint)
-                }
-                ToolTip.visible: inspMouse.containsMouse
-                ToolTip.delay: 200
-                ToolTip.text: "Inspect Two-Tier SSS Payload"
-            }
-
-            // Flag Post Button
-            Rectangle {
-                width: 26
-                height: 26
-                radius: 3
-                color: flagMouse.containsMouse ? theme.accentDangerHover : "transparent"
-                Text { anchors.centerIn: parent; text: "🚩"; font.pixelSize: 12 }
                 MouseArea {
                     id: flagMouse
                     anchors.fill: parent
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
+                    onContainsMouseChanged: msgItem.checkHover()
                     onClicked: msgItem.flagClicked(msgItem.author, msgItem.authorCommitment, msgItem.cleanTracingTag(), msgItem.contentText)
                 }
-                ToolTip.visible: flagMouse.containsMouse
-                ToolTip.delay: 200
-                ToolTip.text: "Flag Message (Trigger Moderator Review)"
+
+                ToolTip {
+                    id: flagTip
+                    visible: flagMouse.containsMouse
+                    delay: 200
+                    text: "Issue Moderation Strike"
+                    topPadding: 6
+                    bottomPadding: 6
+                    leftPadding: 10
+                    rightPadding: 10
+                    contentItem: Text {
+                        text: flagTip.text
+                        font.family: theme.fontFamily
+                        font.pixelSize: 12
+                        color: theme.textHeader
+                    }
+                    background: Rectangle {
+                        color: theme.bgCard
+                        border.color: theme.borderSubtle
+                        border.width: 1
+                        radius: 6
+                    }
+                }
+            }
+
+            // 2. Copy Message Button (📋)
+            Rectangle {
+                width: 26
+                height: 26
+                radius: theme.radiusSmall
+                color: copyMouse.containsMouse ? theme.bgHover : "transparent"
+                border.color: copyMouse.containsMouse ? theme.borderSubtle : "transparent"
+                border.width: 1
+
+                property bool justCopied: false
+
+                Timer {
+                    id: copyResetTimer
+                    interval: 1500
+                    onTriggered: parent.justCopied = false
+                }
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "📋"
+                    font.pixelSize: 13
+                }
+
+                MouseArea {
+                    id: copyMouse
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onContainsMouseChanged: msgItem.checkHover()
+                    onClicked: {
+                        clipHelper.text = msgItem.contentText;
+                        clipHelper.selectAll();
+                        clipHelper.copy();
+                        parent.justCopied = true;
+                        copyResetTimer.restart();
+                    }
+                }
+
+                ToolTip {
+                    id: copyTip
+                    visible: copyMouse.containsMouse || parent.justCopied
+                    delay: parent.justCopied ? 0 : 200
+                    text: parent.justCopied ? "Copied!" : "Copy Message"
+                    topPadding: 6
+                    bottomPadding: 6
+                    leftPadding: 10
+                    rightPadding: 10
+                    contentItem: Text {
+                        text: copyTip.text
+                        font.family: theme.fontFamily
+                        font.pixelSize: 12
+                        color: theme.textHeader
+                    }
+                    background: Rectangle {
+                        color: theme.bgCard
+                        border.color: theme.borderSubtle
+                        border.width: 1
+                        radius: 6
+                    }
+                }
+            }
+
+            // 3. React Thumbs Up Button (👍)
+            Rectangle {
+                width: 26
+                height: 26
+                radius: theme.radiusSmall
+                color: r1.containsMouse ? theme.bgHover : "transparent"
+                border.color: r1.containsMouse ? theme.borderSubtle : "transparent"
+                border.width: 1
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "👍"
+                    font.pixelSize: 13
+                }
+
+                MouseArea {
+                    id: r1
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onContainsMouseChanged: msgItem.checkHover()
+                    onClicked: msgItem.reactClicked("👍")
+                }
+
+                ToolTip {
+                    id: r1Tip
+                    visible: r1.containsMouse
+                    delay: 200
+                    text: "React 👍"
+                    topPadding: 6
+                    bottomPadding: 6
+                    leftPadding: 10
+                    rightPadding: 10
+                    contentItem: Text {
+                        text: r1Tip.text
+                        font.family: theme.fontFamily
+                        font.pixelSize: 12
+                        color: theme.textHeader
+                    }
+                    background: Rectangle {
+                        color: theme.bgCard
+                        border.color: theme.borderSubtle
+                        border.width: 1
+                        radius: 6
+                    }
+                }
+            }
+
+            // 4. React Rocket Button (🚀)
+            Rectangle {
+                width: 26
+                height: 26
+                radius: theme.radiusSmall
+                color: r2.containsMouse ? theme.bgHover : "transparent"
+                border.color: r2.containsMouse ? theme.borderSubtle : "transparent"
+                border.width: 1
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "🚀"
+                    font.pixelSize: 13
+                }
+
+                MouseArea {
+                    id: r2
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onContainsMouseChanged: msgItem.checkHover()
+                    onClicked: msgItem.reactClicked("🚀")
+                }
+
+                ToolTip {
+                    id: r2Tip
+                    visible: r2.containsMouse
+                    delay: 200
+                    text: "React 🚀"
+                    topPadding: 6
+                    bottomPadding: 6
+                    leftPadding: 10
+                    rightPadding: 10
+                    contentItem: Text {
+                        text: r2Tip.text
+                        font.family: theme.fontFamily
+                        font.pixelSize: 12
+                        color: theme.textHeader
+                    }
+                    background: Rectangle {
+                        color: theme.bgCard
+                        border.color: theme.borderSubtle
+                        border.width: 1
+                        radius: 6
+                    }
+                }
             }
         }
     }
