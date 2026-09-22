@@ -1,10 +1,10 @@
 {
-  "name": "ecloak",
+  "name": "e-cloak",
   "display_name": "eCloak",
   "version": "1.0.0",
   "type": "ui_qml",
   "category": "general",
-  "description": "eCloak — Zero-Knowledge Anonymous Chat with Cryptographic Moderation by Evice Labs",
+  "description": "Zero-Knowledge Anonymous Chat with Cryptographic Moderation by Evice Labs",
   "view": "qml/Main.qml",
   "icon": "assets/icon-256.png",
   "dependencies": ["ecloakcore"],
