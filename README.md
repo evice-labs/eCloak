@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="qml/assets/EviceLogo-white.png" alt="Evice Labs Logo" width="160" />
+  <img src="qml/assets/eCloakLogo.png" alt="eCloak Logo" width="160" />
 </p>
 
 <p align="center">
@@ -67,13 +67,14 @@ All conversations are end-to-end encrypted and author-unlinkable using **Zero-Kn
 │         └────────────┴──────┬──────┴───────────┘        │
 │                             │                           │
 │                   Logos Basecamp IPC                    │
-│             logos.callModule("el_anon_chat_core", ...)  │
+│             logos.callModule("e_cloak_core", ...)       │
 └─────────────────────────────┼───────────────────────────┘
                               ▼
 ┌─────────────────────────────────────────────────────────┐
-│                   el-anon-chat-core                     │
+│                     e-cloak-core                        │
 │                  (C++ Qt Plugin / FFI)                  │
 │                                                         │
+│      Powered by e-identity-stack:                       │
 │      ├── e_identity_sdk.so    (Rust Cryptographic Core) │
 │      └── e_moderation_sdk.so  (GF(2^8) & SSS Engine)    │
 └─────────────────────────────┼───────────────────────────┘
@@ -91,9 +92,9 @@ All conversations are end-to-end encrypted and author-unlinkable using **Zero-Kn
 ## Directory Structure
 
 ```
-eCloak/
+e-cloak/
 ├── LICENSE                 # Business Source License 1.1 (BSL 1.1)
-├── metadata.json           # Basecamp UI module manifest (ecloak)
+├── metadata.json           # Basecamp UI module manifest (e-cloak)
 ├── flake.nix               # Nix packaging definition with logos-module-builder
 ├── README.md               # Product architecture & developer documentation
 ├── assets/                 # Brand assets & logos

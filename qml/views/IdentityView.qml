@@ -127,7 +127,7 @@ Item {
 
             TextField {
                 id: usernameInput
-                placeholderText: "Choose a pseudonym (e.g. Satoshi99)"
+                placeholderText: "Choose an anonymous pseudonym"
                 Layout.preferredWidth: 260
             }
 

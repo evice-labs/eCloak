@@ -5,7 +5,7 @@
         "logos-container": "logos-container",
         "logos-nix": "logos-nix_12",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -33,7 +33,7 @@
         "logos-container": "logos-container_6",
         "logos-nix": "logos-nix_64",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -128,7 +128,7 @@
         "logos-protocol": "logos-protocol_4",
         "logos-qt-sdk": "logos-qt-sdk_2",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -155,7 +155,7 @@
       "inputs": {
         "logos-container": "logos-container_7",
         "logos-cpp-sdk": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -169,7 +169,7 @@
         "logos-module-loader": "logos-module-loader_3",
         "logos-nix": "logos-nix_68",
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -180,7 +180,7 @@
           "logos-protocol"
         ],
         "logos-qt-sdk": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -191,7 +191,7 @@
           "logos-qt-sdk"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -313,21 +313,21 @@
         "type": "github"
       }
     },
-    "el_anon_chat_core": {
+    "e-cloak-core": {
       "inputs": {
         "logos-module-builder": "logos-module-builder"
       },
       "locked": {
-        "lastModified": 1788870624,
-        "narHash": "sha256-nmyq9+x5yTCAfpO0c87qn4Vd8OvJUX/WvTczafQxWlY=",
+        "lastModified": 1789578207,
+        "narHash": "sha256-1HIxBXTexJ4Wh721shSnjPgZPXv3FzksnKrGnb8qokw=",
         "owner": "evice-labs",
-        "repo": "el-anon-chat-core",
-        "rev": "233bc67332ec66a9e587ec05befd434dd71aa67b",
+        "repo": "e-cloak-core",
+        "rev": "8c13920aeb8e594afd884c4b77506a0420b4fc17",
         "type": "github"
       },
       "original": {
         "owner": "evice-labs",
-        "repo": "el-anon-chat-core",
+        "repo": "e-cloak-core",
         "type": "github"
       }
     },
@@ -406,7 +406,7 @@
     "logos-container": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -414,7 +414,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -441,7 +441,7 @@
     "logos-container_10": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -453,7 +453,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -784,7 +784,7 @@
       "inputs": {
         "logos-nix": "logos-nix_13",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -852,7 +852,7 @@
     "logos-container_3": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -861,7 +861,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -890,7 +890,7 @@
       "inputs": {
         "logos-nix": "logos-nix_48",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -916,7 +916,7 @@
     "logos-container_5": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -924,7 +924,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -951,7 +951,7 @@
     "logos-container_6": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -963,7 +963,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -995,7 +995,7 @@
       "inputs": {
         "logos-nix": "logos-nix_65",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -1026,7 +1026,7 @@
     "logos-container_8": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -1039,7 +1039,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -1072,7 +1072,7 @@
       "inputs": {
         "logos-nix": "logos-nix_96",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -1104,12 +1104,12 @@
         "logos-lidl": "logos-lidl",
         "logos-nix": "logos-nix",
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-cpp-sdk",
           "logos-nix",
@@ -1134,7 +1134,7 @@
       "inputs": {
         "logos-lidl": "logos-lidl_32",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -1149,7 +1149,7 @@
         ],
         "logos-protocol": "logos-protocol_15",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -1184,7 +1184,7 @@
         "logos-lidl": "logos-lidl_34",
         "logos-nix": "logos-nix_97",
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -1195,7 +1195,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -1226,7 +1226,7 @@
       "inputs": {
         "logos-lidl": "logos-lidl_40",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -1237,7 +1237,7 @@
         ],
         "logos-protocol": "logos-protocol_20",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -1266,7 +1266,7 @@
     "logos-cpp-sdk_13": {
       "inputs": {
         "logos-lidl": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -1274,7 +1274,7 @@
           "logos-lidl"
         ],
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -1282,7 +1282,7 @@
           "logos-nix"
         ],
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -1290,7 +1290,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -1318,14 +1318,14 @@
       "inputs": {
         "logos-lidl": "logos-lidl_47",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-view-module-runtime",
           "logos-nix"
         ],
         "logos-protocol": "logos-protocol_28",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-view-module-runtime",
           "logos-cpp-sdk",
@@ -1523,7 +1523,7 @@
         "logos-nix": "logos-nix_11",
         "logos-protocol": "logos-protocol_3",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-cpp-sdk",
@@ -1901,7 +1901,7 @@
         "logos-lidl": "logos-lidl_7",
         "logos-nix": "logos-nix_14",
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -1909,7 +1909,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -1938,7 +1938,7 @@
         "logos-lidl": "logos-lidl_9",
         "logos-nix": "logos-nix_21",
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -1947,7 +1947,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -1976,7 +1976,7 @@
       "inputs": {
         "logos-lidl": "logos-lidl_16",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -1987,7 +1987,7 @@
         ],
         "logos-protocol": "logos-protocol_8",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2018,14 +2018,14 @@
         "logos-lidl": "logos-lidl_18",
         "logos-nix": "logos-nix_49",
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2053,7 +2053,7 @@
         "logos-lidl": "logos-lidl_19",
         "logos-nix": "logos-nix_52",
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2062,7 +2062,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2093,7 +2093,7 @@
         "logos-nix": "logos-nix_63",
         "logos-protocol": "logos-protocol_12",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2124,7 +2124,7 @@
         "logos-lidl": "logos-lidl_25",
         "logos-nix": "logos-nix_69",
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2137,7 +2137,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2173,7 +2173,7 @@
         "nix-bundle-dir": "nix-bundle-dir",
         "nix-bundle-macos-app": "nix-bundle-macos-app",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-design-system",
           "logos-nix",
@@ -2201,7 +2201,7 @@
         "nix-bundle-dir": "nix-bundle-dir_2",
         "nix-bundle-macos-app": "nix-bundle-macos-app_2",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2233,7 +2233,7 @@
         "nix-bundle-dir": "nix-bundle-dir_7",
         "nix-bundle-macos-app": "nix-bundle-macos-app_3",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2265,7 +2265,7 @@
         "nix-bundle-dir": "nix-bundle-dir_8",
         "nix-bundle-macos-app": "nix-bundle-macos-app_4",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2434,7 +2434,7 @@
         "logos-protocol": "logos-protocol_23",
         "logos-qt-sdk": "logos-qt-sdk_10",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2472,7 +2472,7 @@
         "logos-protocol": "logos-protocol_17",
         "logos-qt-sdk": "logos-qt-sdk_8",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2581,13 +2581,13 @@
     "logos-lidl": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-cpp-sdk",
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-cpp-sdk",
           "logos-lidl",
@@ -2612,7 +2612,7 @@
     "logos-lidl_10": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2622,7 +2622,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2651,7 +2651,7 @@
     "logos-lidl_11": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2661,7 +2661,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2690,7 +2690,7 @@
     "logos-lidl_12": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2700,7 +2700,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2729,7 +2729,7 @@
     "logos-lidl_13": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2739,7 +2739,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2768,7 +2768,7 @@
     "logos-lidl_14": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2779,7 +2779,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2809,7 +2809,7 @@
     "logos-lidl_15": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2820,7 +2820,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2850,7 +2850,7 @@
     "logos-lidl_16": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2861,7 +2861,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2891,7 +2891,7 @@
     "logos-lidl_17": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2902,7 +2902,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2932,7 +2932,7 @@
     "logos-lidl_18": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2940,7 +2940,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2967,7 +2967,7 @@
     "logos-lidl_19": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -2977,7 +2977,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3006,13 +3006,13 @@
     "logos-lidl_2": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-plugin-core",
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-plugin-core",
           "logos-lidl",
@@ -3037,7 +3037,7 @@
     "logos-lidl_20": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3047,7 +3047,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3076,7 +3076,7 @@
     "logos-lidl_21": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3086,7 +3086,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3115,7 +3115,7 @@
     "logos-lidl_22": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3125,7 +3125,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3154,7 +3154,7 @@
     "logos-lidl_23": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3164,7 +3164,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3193,7 +3193,7 @@
     "logos-lidl_24": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3204,7 +3204,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3234,7 +3234,7 @@
     "logos-lidl_25": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3248,7 +3248,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3281,7 +3281,7 @@
     "logos-lidl_26": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3295,7 +3295,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3328,7 +3328,7 @@
     "logos-lidl_27": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3342,7 +3342,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3375,7 +3375,7 @@
     "logos-lidl_28": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3389,7 +3389,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3422,7 +3422,7 @@
     "logos-lidl_29": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3436,7 +3436,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3469,13 +3469,13 @@
     "logos-lidl_3": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-plugin-qt",
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-plugin-qt",
           "logos-lidl",
@@ -3500,7 +3500,7 @@
     "logos-lidl_30": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3515,7 +3515,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3549,7 +3549,7 @@
     "logos-lidl_31": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3564,7 +3564,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3598,7 +3598,7 @@
     "logos-lidl_32": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3613,7 +3613,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3647,7 +3647,7 @@
     "logos-lidl_33": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3662,7 +3662,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3696,7 +3696,7 @@
     "logos-lidl_34": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3708,7 +3708,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3739,7 +3739,7 @@
     "logos-lidl_35": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3751,7 +3751,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3782,7 +3782,7 @@
     "logos-lidl_36": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3794,7 +3794,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3825,7 +3825,7 @@
     "logos-lidl_37": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3836,7 +3836,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3866,7 +3866,7 @@
     "logos-lidl_38": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3877,7 +3877,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3907,7 +3907,7 @@
     "logos-lidl_39": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3918,7 +3918,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3948,13 +3948,13 @@
     "logos-lidl_4": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-qt-sdk",
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-qt-sdk",
           "logos-lidl",
@@ -3979,7 +3979,7 @@
     "logos-lidl_40": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -3990,7 +3990,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -4020,7 +4020,7 @@
     "logos-lidl_41": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -4031,7 +4031,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -4061,7 +4061,7 @@
     "logos-lidl_42": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -4069,7 +4069,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -4096,7 +4096,7 @@
     "logos-lidl_43": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -4104,7 +4104,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -4131,14 +4131,14 @@
     "logos-lidl_44": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-plugin-qt",
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-plugin-qt",
@@ -4164,14 +4164,14 @@
     "logos-lidl_45": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-test-framework",
           "logos-plugin-qt",
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-test-framework",
           "logos-plugin-qt",
@@ -4197,14 +4197,14 @@
     "logos-lidl_46": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-test-framework",
           "logos-qt-sdk",
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-test-framework",
           "logos-qt-sdk",
@@ -4230,14 +4230,14 @@
     "logos-lidl_47": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-view-module-runtime",
           "logos-cpp-sdk",
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-view-module-runtime",
           "logos-cpp-sdk",
@@ -4263,14 +4263,14 @@
     "logos-lidl_48": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-view-module-runtime",
           "logos-plugin-qt",
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-view-module-runtime",
           "logos-plugin-qt",
@@ -4325,13 +4325,13 @@
     "logos-lidl_5": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-rust-sdk",
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-rust-sdk",
           "logos-lidl",
@@ -4684,14 +4684,14 @@
     "logos-lidl_6": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-cpp-sdk",
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-cpp-sdk",
@@ -5091,7 +5091,7 @@
     "logos-lidl_7": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -5100,7 +5100,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -5560,7 +5560,7 @@
     "logos-lidl_8": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -5569,7 +5569,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -6009,7 +6009,7 @@
     "logos-lidl_9": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -6019,7 +6019,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -6270,7 +6270,7 @@
       "inputs": {
         "logos-nix": "logos-nix_3",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-module",
           "logos-nix",
@@ -6309,7 +6309,7 @@
         "nix-bundle-lgx": "nix-bundle-lgx_7",
         "nix-bundle-logos-module-install": "nix-bundle-logos-module-install_4",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-nix",
           "nixpkgs"
@@ -6342,7 +6342,7 @@
         "logos-qt-sdk": "logos-qt-sdk_3",
         "logos-rust-sdk": "logos-rust-sdk_2",
         "logos-standalone-app": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -6354,7 +6354,7 @@
         "nix-bundle-lgx": "nix-bundle-lgx",
         "nix-bundle-logos-module-install": "nix-bundle-logos-module-install",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -6397,7 +6397,7 @@
         "nix-bundle-lgx": "nix-bundle-lgx_5",
         "nix-bundle-logos-module-install": "nix-bundle-logos-module-install_3",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -6434,7 +6434,7 @@
         "logos-qt-sdk": "logos-qt-sdk_6",
         "logos-rust-sdk": "logos-rust-sdk_4",
         "logos-standalone-app": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -6450,7 +6450,7 @@
         "nix-bundle-lgx": "nix-bundle-lgx_3",
         "nix-bundle-logos-module-install": "nix-bundle-logos-module-install_2",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -6666,7 +6666,7 @@
         "logos-container": "logos-container_3",
         "logos-nix": "logos-nix_16",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -6695,7 +6695,7 @@
         "logos-container": "logos-container_5",
         "logos-nix": "logos-nix_51",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -6723,7 +6723,7 @@
         "logos-container": "logos-container_8",
         "logos-nix": "logos-nix_67",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -6756,7 +6756,7 @@
         "logos-container": "logos-container_10",
         "logos-nix": "logos-nix_99",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -6905,7 +6905,7 @@
       "inputs": {
         "logos-nix": "logos-nix_33",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -6936,7 +6936,7 @@
       "inputs": {
         "logos-nix": "logos-nix_35",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -6967,7 +6967,7 @@
       "inputs": {
         "logos-nix": "logos-nix_50",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -6994,7 +6994,7 @@
       "inputs": {
         "logos-nix": "logos-nix_54",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -7023,7 +7023,7 @@
       "inputs": {
         "logos-nix": "logos-nix_56",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -7053,7 +7053,7 @@
       "inputs": {
         "logos-nix": "logos-nix_58",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -7083,7 +7083,7 @@
       "inputs": {
         "logos-nix": "logos-nix_62",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -7114,7 +7114,7 @@
       "inputs": {
         "logos-nix": "logos-nix_66",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -7146,7 +7146,7 @@
       "inputs": {
         "logos-nix": "logos-nix_71",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -7179,7 +7179,7 @@
       "inputs": {
         "logos-nix": "logos-nix_73",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -7213,7 +7213,7 @@
       "inputs": {
         "logos-nix": "logos-nix_5",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-plugin-core",
           "logos-module",
@@ -7239,7 +7239,7 @@
       "inputs": {
         "logos-nix": "logos-nix_75",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -7273,7 +7273,7 @@
       "inputs": {
         "logos-nix": "logos-nix_79",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -7308,7 +7308,7 @@
       "inputs": {
         "logos-nix": "logos-nix_81",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -7343,7 +7343,7 @@
       "inputs": {
         "logos-nix": "logos-nix_83",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -7378,7 +7378,7 @@
       "inputs": {
         "logos-nix": "logos-nix_98",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -7409,7 +7409,7 @@
       "inputs": {
         "logos-nix": "logos-nix_106",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -7441,7 +7441,7 @@
       "inputs": {
         "logos-nix": "logos-nix_111",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -7472,7 +7472,7 @@
       "inputs": {
         "logos-nix": "logos-nix_114",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -7503,7 +7503,7 @@
       "inputs": {
         "logos-nix": "logos-nix_116",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -7534,7 +7534,7 @@
       "inputs": {
         "logos-nix": "logos-nix_135",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -7562,7 +7562,7 @@
       "inputs": {
         "logos-nix": "logos-nix_7",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-plugin-qt",
           "logos-module",
@@ -7588,7 +7588,7 @@
       "inputs": {
         "logos-nix": "logos-nix_139",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -7617,7 +7617,7 @@
       "inputs": {
         "logos-nix": "logos-nix_142",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-plugin-qt",
@@ -7644,7 +7644,7 @@
       "inputs": {
         "logos-nix": "logos-nix_147",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-test-framework",
           "logos-plugin-qt",
@@ -7671,7 +7671,7 @@
       "inputs": {
         "logos-nix": "logos-nix_149",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-view-module-runtime",
           "logos-plugin-qt",
@@ -7856,7 +7856,7 @@
       "inputs": {
         "logos-nix": "logos-nix_15",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -8174,7 +8174,7 @@
       "inputs": {
         "logos-nix": "logos-nix_20",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -8526,7 +8526,7 @@
       "inputs": {
         "logos-nix": "logos-nix_23",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -8748,7 +8748,7 @@
       "inputs": {
         "logos-nix": "logos-nix_25",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -8778,7 +8778,7 @@
       "inputs": {
         "logos-nix": "logos-nix_27",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -8808,7 +8808,7 @@
       "inputs": {
         "logos-nix": "logos-nix_31",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -14908,7 +14908,7 @@
       "inputs": {
         "logos-nix": "logos-nix_37",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -14941,7 +14941,7 @@
         "nix-bundle-appimage": "nix-bundle-appimage_3",
         "nix-bundle-dir": "nix-bundle-dir_5",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -15063,7 +15063,7 @@
         "nix-bundle-appimage": "nix-bundle-appimage_6",
         "nix-bundle-dir": "nix-bundle-dir_11",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -15100,7 +15100,7 @@
         "nix-bundle-appimage": "nix-bundle-appimage_7",
         "nix-bundle-dir": "nix-bundle-dir_14",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -15134,7 +15134,7 @@
         "nix-bundle-appimage": "nix-bundle-appimage_8",
         "nix-bundle-dir": "nix-bundle-dir_17",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -15167,7 +15167,7 @@
         "nix-bundle-appimage": "nix-bundle-appimage_9",
         "nix-bundle-dir": "nix-bundle-dir_20",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -15197,7 +15197,7 @@
         "nix-bundle-appimage": "nix-bundle-appimage_10",
         "nix-bundle-dir": "nix-bundle-dir_23",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "nix-bundle-logos-module-install",
           "logos-package-manager",
@@ -15324,7 +15324,7 @@
       "inputs": {
         "logos-nix": "logos-nix_127",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -15355,7 +15355,7 @@
       "inputs": {
         "logos-nix": "logos-nix_131",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -15383,7 +15383,7 @@
       "inputs": {
         "logos-nix": "logos-nix_151",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "nix-bundle-lgx",
           "logos-package",
@@ -15409,7 +15409,7 @@
       "inputs": {
         "logos-nix": "logos-nix_155",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "nix-bundle-logos-module-install",
           "logos-package-manager",
@@ -15436,7 +15436,7 @@
       "inputs": {
         "logos-nix": "logos-nix_160",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "nix-bundle-logos-module-install",
           "nix-bundle-lgx",
@@ -15619,7 +15619,7 @@
       "inputs": {
         "logos-nix": "logos-nix_41",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -15908,7 +15908,7 @@
       "inputs": {
         "logos-nix": "logos-nix_46",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -15939,7 +15939,7 @@
       "inputs": {
         "logos-nix": "logos-nix_85",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -15973,7 +15973,7 @@
       "inputs": {
         "logos-nix": "logos-nix_89",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16008,7 +16008,7 @@
       "inputs": {
         "logos-nix": "logos-nix_94",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16043,7 +16043,7 @@
       "inputs": {
         "logos-nix": "logos-nix_102",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16075,7 +16075,7 @@
       "inputs": {
         "logos-nix": "logos-nix_118",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16105,7 +16105,7 @@
       "inputs": {
         "logos-nix": "logos-nix_122",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16138,12 +16138,12 @@
         "logos-module": "logos-module_2",
         "logos-nix": "logos-nix_6",
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-plugin-core",
           "logos-nix",
@@ -16170,7 +16170,7 @@
         "logos-module": "logos-module_7",
         "logos-nix": "logos-nix_26",
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16179,7 +16179,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16210,7 +16210,7 @@
         "logos-module": "logos-module_14",
         "logos-nix": "logos-nix_57",
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16219,7 +16219,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16250,7 +16250,7 @@
         "logos-module": "logos-module_19",
         "logos-nix": "logos-nix_74",
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16263,7 +16263,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16450,12 +16450,12 @@
         "logos-module": "logos-module_3",
         "logos-nix": "logos-nix_8",
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-plugin-qt",
           "logos-nix",
@@ -16479,7 +16479,7 @@
     "logos-plugin-qt_10": {
       "inputs": {
         "logos-lidl": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16494,7 +16494,7 @@
         ],
         "logos-module": "logos-module_21",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16508,7 +16508,7 @@
           "logos-nix"
         ],
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16522,7 +16522,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16557,7 +16557,7 @@
         "logos-lidl": "logos-lidl_30",
         "logos-module": "logos-module_22",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16571,7 +16571,7 @@
           "logos-nix"
         ],
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16585,7 +16585,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16618,7 +16618,7 @@
         "logos-lidl": "logos-lidl_33",
         "logos-module": "logos-module_23",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16632,7 +16632,7 @@
           "logos-nix"
         ],
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16646,7 +16646,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16679,7 +16679,7 @@
         "logos-lidl": "logos-lidl_35",
         "logos-module": "logos-module_25",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16690,7 +16690,7 @@
           "logos-nix"
         ],
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16701,7 +16701,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16731,7 +16731,7 @@
         "logos-lidl": "logos-lidl_37",
         "logos-module": "logos-module_26",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16741,7 +16741,7 @@
           "logos-nix"
         ],
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16751,7 +16751,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16780,7 +16780,7 @@
         "logos-lidl": "logos-lidl_38",
         "logos-module": "logos-module_27",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16790,7 +16790,7 @@
           "logos-nix"
         ],
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16800,7 +16800,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16829,7 +16829,7 @@
         "logos-lidl": "logos-lidl_41",
         "logos-module": "logos-module_28",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16839,7 +16839,7 @@
           "logos-nix"
         ],
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16849,7 +16849,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16880,7 +16880,7 @@
         "logos-nix": "logos-nix_136",
         "logos-protocol": "logos-protocol_22",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16906,7 +16906,7 @@
     "logos-plugin-qt_18": {
       "inputs": {
         "logos-lidl": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16915,7 +16915,7 @@
         ],
         "logos-module": "logos-module_30",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16923,7 +16923,7 @@
           "logos-nix"
         ],
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16931,7 +16931,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16962,7 +16962,7 @@
         "logos-nix": "logos-nix_143",
         "logos-protocol": "logos-protocol_25",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-plugin-qt",
@@ -16987,7 +16987,7 @@
     "logos-plugin-qt_2": {
       "inputs": {
         "logos-lidl": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -16997,7 +16997,7 @@
         ],
         "logos-module": "logos-module_5",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -17006,7 +17006,7 @@
           "logos-nix"
         ],
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -17015,7 +17015,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -17045,19 +17045,19 @@
         "logos-lidl": "logos-lidl_45",
         "logos-module": "logos-module_32",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-test-framework",
           "logos-nix"
         ],
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-test-framework",
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-test-framework",
           "nixpkgs"
@@ -17082,19 +17082,19 @@
         "logos-lidl": "logos-lidl_48",
         "logos-module": "logos-module_33",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-view-module-runtime",
           "logos-nix"
         ],
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-view-module-runtime",
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-view-module-runtime",
           "nixpkgs"
@@ -17485,7 +17485,7 @@
         "logos-module": "logos-module_8",
         "logos-nix": "logos-nix_28",
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -17494,7 +17494,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18020,7 +18020,7 @@
     "logos-plugin-qt_4": {
       "inputs": {
         "logos-lidl": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18031,7 +18031,7 @@
         ],
         "logos-module": "logos-module_9",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18041,7 +18041,7 @@
           "logos-nix"
         ],
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18051,7 +18051,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18178,7 +18178,7 @@
         "logos-lidl": "logos-lidl_14",
         "logos-module": "logos-module_10",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18188,7 +18188,7 @@
           "logos-nix"
         ],
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18198,7 +18198,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18227,7 +18227,7 @@
         "logos-lidl": "logos-lidl_17",
         "logos-module": "logos-module_11",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18237,7 +18237,7 @@
           "logos-nix"
         ],
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18247,7 +18247,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18277,7 +18277,7 @@
         "logos-module": "logos-module_15",
         "logos-nix": "logos-nix_59",
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18286,7 +18286,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18314,7 +18314,7 @@
     "logos-plugin-qt_8": {
       "inputs": {
         "logos-lidl": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18325,7 +18325,7 @@
         ],
         "logos-module": "logos-module_16",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18335,7 +18335,7 @@
           "logos-nix"
         ],
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18345,7 +18345,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18377,7 +18377,7 @@
         "logos-module": "logos-module_20",
         "logos-nix": "logos-nix_76",
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18390,7 +18390,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18423,7 +18423,7 @@
       "inputs": {
         "logos-nix": "logos-nix_9",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-protocol",
           "logos-nix",
@@ -18448,7 +18448,7 @@
       "inputs": {
         "logos-nix": "logos-nix_60",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18476,7 +18476,7 @@
     "logos-protocol_11": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18486,7 +18486,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18515,7 +18515,7 @@
     "logos-protocol_12": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18526,7 +18526,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18557,7 +18557,7 @@
       "inputs": {
         "logos-nix": "logos-nix_77",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18589,7 +18589,7 @@
     "logos-protocol_14": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18603,7 +18603,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18634,7 +18634,7 @@
     "logos-protocol_15": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18649,7 +18649,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18683,7 +18683,7 @@
     "logos-protocol_16": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18697,7 +18697,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18729,7 +18729,7 @@
       "inputs": {
         "logos-nix": "logos-nix_107",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18759,7 +18759,7 @@
     "logos-protocol_18": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18769,7 +18769,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18796,7 +18796,7 @@
     "logos-protocol_19": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18806,7 +18806,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18833,13 +18833,13 @@
     "logos-protocol_2": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-rust-sdk",
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-rust-sdk",
           "logos-protocol",
@@ -18864,7 +18864,7 @@
     "logos-protocol_20": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18875,7 +18875,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18905,7 +18905,7 @@
     "logos-protocol_21": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18915,7 +18915,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18942,7 +18942,7 @@
     "logos-protocol_22": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18950,7 +18950,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -18978,7 +18978,7 @@
       "inputs": {
         "logos-nix": "logos-nix_137",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -19004,7 +19004,7 @@
     "logos-protocol_24": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -19012,7 +19012,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -19039,14 +19039,14 @@
     "logos-protocol_25": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-plugin-qt",
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-plugin-qt",
@@ -19073,7 +19073,7 @@
       "inputs": {
         "logos-nix": "logos-nix_144",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-protocol",
@@ -19098,13 +19098,13 @@
     "logos-protocol_27": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-test-framework",
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-test-framework",
           "nixpkgs"
@@ -19127,14 +19127,14 @@
     "logos-protocol_28": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-view-module-runtime",
           "logos-cpp-sdk",
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-view-module-runtime",
           "logos-cpp-sdk",
@@ -19160,13 +19160,13 @@
     "logos-protocol_29": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-view-module-runtime",
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-view-module-runtime",
           "nixpkgs"
@@ -19189,14 +19189,14 @@
     "logos-protocol_3": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-cpp-sdk",
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-cpp-sdk",
@@ -19539,7 +19539,7 @@
       "inputs": {
         "logos-nix": "logos-nix_18",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -19947,7 +19947,7 @@
       "inputs": {
         "logos-nix": "logos-nix_29",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -20243,7 +20243,7 @@
     "logos-protocol_6": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -20253,7 +20253,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -20282,7 +20282,7 @@
     "logos-protocol_7": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -20292,7 +20292,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -20319,7 +20319,7 @@
     "logos-protocol_8": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -20330,7 +20330,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -20360,7 +20360,7 @@
     "logos-protocol_9": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -20370,7 +20370,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -20398,7 +20398,7 @@
       "inputs": {
         "logos-nix": "logos-nix_112",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -20428,7 +20428,7 @@
       "inputs": {
         "logos-nix": "logos-nix_145",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-qt-mcp",
@@ -20507,24 +20507,24 @@
     "logos-qt-sdk": {
       "inputs": {
         "logos-cpp-sdk": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-cpp-sdk"
         ],
         "logos-lidl": "logos-lidl_4",
         "logos-nix": "logos-nix_10",
         "logos-plugin-qt": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-plugin-qt"
         ],
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-qt-sdk",
           "logos-nix",
@@ -20553,7 +20553,7 @@
         "logos-plugin-qt": "logos-plugin-qt_18",
         "logos-protocol": "logos-protocol_24",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -20579,32 +20579,32 @@
     "logos-qt-sdk_11": {
       "inputs": {
         "logos-cpp-sdk": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-test-framework",
           "logos-cpp-sdk"
         ],
         "logos-lidl": "logos-lidl_46",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-test-framework",
           "logos-nix"
         ],
         "logos-plugin-qt": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-test-framework",
           "logos-plugin-qt"
         ],
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-test-framework",
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-test-framework",
           "nixpkgs"
@@ -21054,7 +21054,7 @@
     "logos-qt-sdk_2": {
       "inputs": {
         "logos-cpp-sdk": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21065,7 +21065,7 @@
         "logos-nix": "logos-nix_19",
         "logos-plugin-qt": "logos-plugin-qt_2",
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21073,7 +21073,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21236,7 +21236,7 @@
     "logos-qt-sdk_3": {
       "inputs": {
         "logos-cpp-sdk": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21248,7 +21248,7 @@
         "logos-nix": "logos-nix_30",
         "logos-plugin-qt": "logos-plugin-qt_4",
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21257,7 +21257,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21285,7 +21285,7 @@
     "logos-qt-sdk_4": {
       "inputs": {
         "logos-cpp-sdk": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21296,7 +21296,7 @@
         ],
         "logos-lidl": "logos-lidl_15",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21306,7 +21306,7 @@
           "logos-nix"
         ],
         "logos-plugin-qt": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21316,7 +21316,7 @@
           "logos-plugin-qt"
         ],
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21326,7 +21326,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21353,7 +21353,7 @@
     "logos-qt-sdk_5": {
       "inputs": {
         "logos-cpp-sdk": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21365,7 +21365,7 @@
         "logos-nix": "logos-nix_61",
         "logos-plugin-qt": "logos-plugin-qt_8",
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21374,7 +21374,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21402,7 +21402,7 @@
     "logos-qt-sdk_6": {
       "inputs": {
         "logos-cpp-sdk": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21418,7 +21418,7 @@
         "logos-nix": "logos-nix_78",
         "logos-plugin-qt": "logos-plugin-qt_10",
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21431,7 +21431,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21463,7 +21463,7 @@
     "logos-qt-sdk_7": {
       "inputs": {
         "logos-cpp-sdk": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21478,7 +21478,7 @@
         ],
         "logos-lidl": "logos-lidl_31",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21492,7 +21492,7 @@
           "logos-nix"
         ],
         "logos-plugin-qt": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21506,7 +21506,7 @@
           "logos-plugin-qt"
         ],
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21520,7 +21520,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21551,7 +21551,7 @@
     "logos-qt-sdk_8": {
       "inputs": {
         "logos-cpp-sdk": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21564,7 +21564,7 @@
         "logos-lidl": "logos-lidl_36",
         "logos-nix": "logos-nix_108",
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21575,7 +21575,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21605,7 +21605,7 @@
     "logos-qt-sdk_9": {
       "inputs": {
         "logos-cpp-sdk": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21616,7 +21616,7 @@
         ],
         "logos-lidl": "logos-lidl_39",
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21626,7 +21626,7 @@
           "logos-nix"
         ],
         "logos-plugin-qt": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21636,7 +21636,7 @@
           "logos-plugin-qt"
         ],
         "logos-protocol": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21646,7 +21646,7 @@
           "logos-protocol"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21674,23 +21674,23 @@
       "inputs": {
         "logos-lidl": "logos-lidl_5",
         "logos-logoscore-cli": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-cpp-sdk"
         ],
         "logos-module-builder": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-cpp-sdk"
         ],
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-nix"
         ],
         "logos-protocol": "logos-protocol_2",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-rust-sdk",
           "logos-nix",
@@ -21715,7 +21715,7 @@
       "inputs": {
         "logos-lidl": "logos-lidl_13",
         "logos-logoscore-cli": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21724,7 +21724,7 @@
           "logos-cpp-sdk"
         ],
         "logos-module-builder": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21733,7 +21733,7 @@
           "logos-cpp-sdk"
         ],
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21743,7 +21743,7 @@
         ],
         "logos-protocol": "logos-protocol_6",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21772,7 +21772,7 @@
       "inputs": {
         "logos-lidl": "logos-lidl_23",
         "logos-logoscore-cli": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21781,7 +21781,7 @@
           "logos-cpp-sdk"
         ],
         "logos-module-builder": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21790,7 +21790,7 @@
           "logos-cpp-sdk"
         ],
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21800,7 +21800,7 @@
         ],
         "logos-protocol": "logos-protocol_11",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21829,7 +21829,7 @@
       "inputs": {
         "logos-lidl": "logos-lidl_29",
         "logos-logoscore-cli": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21842,7 +21842,7 @@
           "logos-cpp-sdk"
         ],
         "logos-module-builder": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21855,7 +21855,7 @@
           "logos-cpp-sdk"
         ],
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -21868,7 +21868,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -22112,7 +22112,7 @@
       "inputs": {
         "logos-cpp-sdk": "logos-cpp-sdk_2",
         "logos-design-system": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-design-system"
         ],
@@ -22122,12 +22122,12 @@
         "logos-protocol": "logos-protocol_26",
         "logos-qt-mcp": "logos-qt-mcp_2",
         "logos-view-module-runtime": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-view-module-runtime"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-nix",
@@ -22152,7 +22152,7 @@
       "inputs": {
         "logos-cpp-sdk": "logos-cpp-sdk_8",
         "logos-design-system": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -22166,7 +22166,7 @@
         "logos-protocol": "logos-protocol_18",
         "logos-qt-mcp": "logos-qt-mcp",
         "logos-view-module-runtime": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -22175,7 +22175,7 @@
           "logos-view-module-runtime"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -22289,7 +22289,7 @@
     "logos-test-framework": {
       "inputs": {
         "logos-cpp-sdk": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -22302,7 +22302,7 @@
         "logos-protocol": "logos-protocol_7",
         "logos-qt-sdk": "logos-qt-sdk_4",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -22330,7 +22330,7 @@
     "logos-test-framework_2": {
       "inputs": {
         "logos-cpp-sdk": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -22347,7 +22347,7 @@
         "logos-protocol": "logos-protocol_14",
         "logos-qt-sdk": "logos-qt-sdk_7",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -22379,7 +22379,7 @@
     "logos-test-framework_3": {
       "inputs": {
         "logos-cpp-sdk": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -22392,7 +22392,7 @@
         "logos-protocol": "logos-protocol_19",
         "logos-qt-sdk": "logos-qt-sdk_9",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -22420,7 +22420,7 @@
     "logos-test-framework_4": {
       "inputs": {
         "logos-cpp-sdk": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-cpp-sdk"
         ],
@@ -22429,7 +22429,7 @@
         "logos-protocol": "logos-protocol_27",
         "logos-qt-sdk": "logos-qt-sdk_11",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-test-framework",
           "logos-nix",
@@ -22609,7 +22609,7 @@
     "logos-view-module": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -22618,7 +22618,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -22650,7 +22650,7 @@
         "logos-plugin-qt": "logos-plugin-qt_6",
         "logos-protocol": "logos-protocol_9",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -22682,7 +22682,7 @@
         "logos-plugin-qt": "logos-plugin-qt_12",
         "logos-protocol": "logos-protocol_16",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -22718,7 +22718,7 @@
         "logos-plugin-qt": "logos-plugin-qt_16",
         "logos-protocol": "logos-protocol_21",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -22750,7 +22750,7 @@
         "logos-plugin-qt": "logos-plugin-qt_21",
         "logos-protocol": "logos-protocol_29",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-view-module-runtime",
           "logos-nix",
@@ -22898,7 +22898,7 @@
     "logos-view-module_2": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -22911,7 +22911,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -22943,7 +22943,7 @@
     "logos-view-module_3": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -22952,7 +22952,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -22980,12 +22980,12 @@
     "logos-view-module_4": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-view-module",
           "logos-nix",
@@ -23149,19 +23149,19 @@
     "nix-bundle-appimage": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-design-system",
           "logos-nix"
         ],
         "nix-bundle-dir": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-design-system",
           "nix-bundle-dir"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-design-system",
           "nixpkgs"
@@ -23186,7 +23186,7 @@
         "logos-nix": "logos-nix_156",
         "nix-bundle-dir": "nix-bundle-dir_22",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "nix-bundle-logos-module-install",
           "logos-package-manager",
@@ -23545,7 +23545,7 @@
     "nix-bundle-appimage_2": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -23555,7 +23555,7 @@
           "logos-nix"
         ],
         "nix-bundle-dir": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -23565,7 +23565,7 @@
           "nix-bundle-dir"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -23621,7 +23621,7 @@
         "logos-nix": "logos-nix_42",
         "nix-bundle-dir": "nix-bundle-dir_4",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -23651,7 +23651,7 @@
     "nix-bundle-appimage_4": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -23661,7 +23661,7 @@
           "logos-nix"
         ],
         "nix-bundle-dir": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -23671,7 +23671,7 @@
           "nix-bundle-dir"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -23698,7 +23698,7 @@
     "nix-bundle-appimage_5": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -23712,7 +23712,7 @@
           "logos-nix"
         ],
         "nix-bundle-dir": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -23726,7 +23726,7 @@
           "nix-bundle-dir"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -23759,7 +23759,7 @@
         "logos-nix": "logos-nix_90",
         "nix-bundle-dir": "nix-bundle-dir_10",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -23795,7 +23795,7 @@
         "logos-nix": "logos-nix_103",
         "nix-bundle-dir": "nix-bundle-dir_13",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -23828,7 +23828,7 @@
         "logos-nix": "logos-nix_123",
         "nix-bundle-dir": "nix-bundle-dir_16",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -23860,7 +23860,7 @@
         "logos-nix": "logos-nix_132",
         "nix-bundle-dir": "nix-bundle-dir_19",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -23887,13 +23887,13 @@
     "nix-bundle-dir": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-design-system",
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-design-system",
           "nixpkgs"
@@ -23917,7 +23917,7 @@
       "inputs": {
         "logos-nix": "logos-nix_91",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -23951,7 +23951,7 @@
       "inputs": {
         "logos-nix": "logos-nix_92",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -23986,7 +23986,7 @@
       "inputs": {
         "logos-nix": "logos-nix_95",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -24021,7 +24021,7 @@
       "inputs": {
         "logos-nix": "logos-nix_104",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -24052,7 +24052,7 @@
       "inputs": {
         "logos-nix": "logos-nix_105",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -24084,7 +24084,7 @@
       "inputs": {
         "logos-nix": "logos-nix_119",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -24114,7 +24114,7 @@
       "inputs": {
         "logos-nix": "logos-nix_124",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -24144,7 +24144,7 @@
       "inputs": {
         "logos-nix": "logos-nix_125",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -24175,7 +24175,7 @@
       "inputs": {
         "logos-nix": "logos-nix_128",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -24206,7 +24206,7 @@
       "inputs": {
         "logos-nix": "logos-nix_133",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -24232,7 +24232,7 @@
     "nix-bundle-dir_2": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -24242,7 +24242,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -24270,7 +24270,7 @@
       "inputs": {
         "logos-nix": "logos-nix_134",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -24298,7 +24298,7 @@
       "inputs": {
         "logos-nix": "logos-nix_152",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "nix-bundle-lgx",
           "nix-bundle-dir",
@@ -24324,7 +24324,7 @@
       "inputs": {
         "logos-nix": "logos-nix_157",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "nix-bundle-logos-module-install",
           "logos-package-manager",
@@ -24350,7 +24350,7 @@
       "inputs": {
         "logos-nix": "logos-nix_158",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "nix-bundle-logos-module-install",
           "logos-package-manager",
@@ -24377,7 +24377,7 @@
       "inputs": {
         "logos-nix": "logos-nix_161",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "nix-bundle-logos-module-install",
           "nix-bundle-lgx",
@@ -24554,7 +24554,7 @@
       "inputs": {
         "logos-nix": "logos-nix_38",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -24916,7 +24916,7 @@
       "inputs": {
         "logos-nix": "logos-nix_43",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -25190,7 +25190,7 @@
       "inputs": {
         "logos-nix": "logos-nix_44",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -25221,7 +25221,7 @@
       "inputs": {
         "logos-nix": "logos-nix_47",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -25251,7 +25251,7 @@
     "nix-bundle-dir_7": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -25261,7 +25261,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -25288,7 +25288,7 @@
     "nix-bundle-dir_8": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -25302,7 +25302,7 @@
           "logos-nix"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -25334,7 +25334,7 @@
       "inputs": {
         "logos-nix": "logos-nix_86",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -25370,7 +25370,7 @@
         "logos-package": "logos-package",
         "nix-bundle-dir": "nix-bundle-dir_3",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -25615,7 +25615,7 @@
         "logos-package": "logos-package_3",
         "nix-bundle-dir": "nix-bundle-dir_6",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -25647,7 +25647,7 @@
         "logos-package": "logos-package_4",
         "nix-bundle-dir": "nix-bundle-dir_9",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -25682,7 +25682,7 @@
         "logos-package": "logos-package_6",
         "nix-bundle-dir": "nix-bundle-dir_12",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -25718,7 +25718,7 @@
         "logos-package": "logos-package_8",
         "nix-bundle-dir": "nix-bundle-dir_15",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -25749,7 +25749,7 @@
         "logos-package": "logos-package_10",
         "nix-bundle-dir": "nix-bundle-dir_18",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -25781,7 +25781,7 @@
         "logos-package": "logos-package_12",
         "nix-bundle-dir": "nix-bundle-dir_21",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "nix-bundle-lgx",
           "logos-nix",
@@ -25808,7 +25808,7 @@
         "logos-package": "logos-package_14",
         "nix-bundle-dir": "nix-bundle-dir_24",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "nix-bundle-logos-module-install",
           "nix-bundle-lgx",
@@ -25866,7 +25866,7 @@
         "logos-package-manager": "logos-package-manager",
         "nix-bundle-lgx": "nix-bundle-lgx_2",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -25897,7 +25897,7 @@
         "logos-package-manager": "logos-package-manager_2",
         "nix-bundle-lgx": "nix-bundle-lgx_4",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -25932,7 +25932,7 @@
         "logos-package-manager": "logos-package-manager_4",
         "nix-bundle-lgx": "nix-bundle-lgx_6",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -25963,7 +25963,7 @@
         "logos-package-manager": "logos-package-manager_6",
         "nix-bundle-lgx": "nix-bundle-lgx_8",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "nix-bundle-logos-module-install",
           "logos-nix",
@@ -26107,19 +26107,19 @@
     "nix-bundle-macos-app": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-design-system",
           "logos-nix"
         ],
         "nix-bundle-dir": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-design-system",
           "nix-bundle-dir"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-design-system",
           "nixpkgs"
@@ -26142,7 +26142,7 @@
     "nix-bundle-macos-app_2": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -26152,7 +26152,7 @@
           "logos-nix"
         ],
         "nix-bundle-dir": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -26162,7 +26162,7 @@
           "nix-bundle-dir"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -26189,7 +26189,7 @@
     "nix-bundle-macos-app_3": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -26199,7 +26199,7 @@
           "logos-nix"
         ],
         "nix-bundle-dir": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -26209,7 +26209,7 @@
           "nix-bundle-dir"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -26236,7 +26236,7 @@
     "nix-bundle-macos-app_4": {
       "inputs": {
         "logos-nix": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -26250,7 +26250,7 @@
           "logos-nix"
         ],
         "nix-bundle-dir": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -26264,7 +26264,7 @@
           "nix-bundle-dir"
         ],
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -36232,7 +36232,7 @@
       "inputs": {
         "logos-nix": "logos-nix_109",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -36263,7 +36263,7 @@
       "inputs": {
         "logos-nix": "logos-nix_140",
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -36344,14 +36344,14 @@
     },
     "root": {
       "inputs": {
-        "el_anon_chat_core": "el_anon_chat_core",
+        "e-cloak-core": "e-cloak-core",
         "logos-module-builder": "logos-module-builder_5"
       }
     },
     "rust-overlay": {
       "inputs": {
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -36377,7 +36377,7 @@
     "rust-overlay_2": {
       "inputs": {
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -36407,7 +36407,7 @@
     "rust-overlay_3": {
       "inputs": {
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "logos-standalone-app",
           "logos-liblogos",
@@ -36433,7 +36433,7 @@
     "rust-overlay_4": {
       "inputs": {
         "nixpkgs": [
-          "el_anon_chat_core",
+          "e-cloak-core",
           "logos-module-builder",
           "nixpkgs"
         ]

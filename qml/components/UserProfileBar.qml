@@ -13,6 +13,7 @@ Item {
 
     signal openIdentitySettings()
     signal copyCommitmentRequested()
+    signal clearInputsRequested()
 
     Theme { id: theme }
 
@@ -28,6 +29,11 @@ Item {
         color: theme.bgCard
         border.color: theme.borderSubtle
         border.width: 1
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: profileBar.clearInputsRequested()
+        }
 
         RowLayout {
             anchors.fill: parent
@@ -53,14 +59,35 @@ Item {
                 }
 
                 MouseArea {
+                    id: avatarMouse
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     hoverEnabled: true
                     onClicked: profileBar.openIdentitySettings()
                 }
 
-                ToolTip.delay: 200
-                ToolTip.text: "Manage ZK Identity"
+                ToolTip {
+                    id: avatarTip
+                    visible: avatarMouse.containsMouse
+                    delay: 200
+                    text: "Manage ZK Identity"
+                    topPadding: 6
+                    bottomPadding: 6
+                    leftPadding: 10
+                    rightPadding: 10
+                    contentItem: Text {
+                        text: avatarTip.text
+                        font.family: theme.fontFamily
+                        font.pixelSize: 12
+                        color: theme.textHeader
+                    }
+                    background: Rectangle {
+                        color: theme.bgCard
+                        border.color: theme.borderSubtle
+                        border.width: 1
+                        radius: 6
+                    }
+                }
             }
 
             // Username & Public Commitment in a single horizontal row
@@ -100,7 +127,7 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                         text: parent.justCopied ? "✔ Copied!" : (profileBar.myCommitment ?
                             (profileBar.myCommitment.substring(0, 6) + "..." + profileBar.myCommitment.substring(profileBar.myCommitment.length - 4)) :
-                            "0x00...00")
+                            "No Identity")
                         font.pixelSize: 10
                         font.family: theme.fontFamilyMono
                         font.underline: true
@@ -154,20 +181,30 @@ Item {
                     onClicked: profileBar.openIdentitySettings()
                 }
 
-                ToolTip.visible: gearProfileMouse.containsMouse
-                ToolTip.delay: 200
-                ToolTip.text: "Identity & Security Settings"
+                ToolTip {
+                    id: gearTip
+                    visible: gearProfileMouse.containsMouse
+                    delay: 200
+                    text: "Identity & Security Settings"
+                    topPadding: 6
+                    bottomPadding: 6
+                    leftPadding: 10
+                    rightPadding: 10
+                    contentItem: Text {
+                        text: gearTip.text
+                        font.family: theme.fontFamily
+                        font.pixelSize: 12
+                        color: theme.textHeader
+                    }
+                    background: Rectangle {
+                        color: theme.bgCard
+                        border.color: theme.borderSubtle
+                        border.width: 1
+                        radius: 6
+                    }
+                }
             }
         }
-    }
-
-    // Top horizontal divider
-    Rectangle {
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: 1
-        color: theme.borderSubtle
     }
 
     // Right vertical divider 

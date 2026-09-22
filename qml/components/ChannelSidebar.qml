@@ -8,10 +8,10 @@ Rectangle {
     color: theme.bgSidebar
 
     property string activeView: "room" // "room" or "dm"
-    property string activeRoomName: "General Room"
+    property string activeRoomName: ""
     property string activeRoomId: ""
     property bool isRoomMature: true
-    property string activeChannel: "general-chat"
+    property string activeChannel: ""
     property string activeDmUser: ""
     property var dmsModel: []
     property var knownUsersModel: []
@@ -20,8 +20,16 @@ Rectangle {
 
     signal channelSelected(string channelName)
     signal dmSelected(string targetUsername)
+    signal deleteDmRequested(string targetUsername)
     signal copyRoomIdRequested(string roomId)
     signal leaveRoomRequested(string roomId)
+    signal inputFocusGained()
+    signal clearOtherFocusRequested()
+
+    function clearInputFocus() {
+        searchInput.focus = false;
+        sidebar.isSearching = false;
+    }
 
     Theme { id: theme }
 
@@ -57,12 +65,6 @@ Rectangle {
                 pushUser(sidebar.dmsModel[j].username, sidebar.dmsModel[j].commitment);
             }
         }
-
-        // Default known network peers
-        pushUser("Satoshi99", "0x7f8a9b1c2d3e4f5061728394a5b6c7d8e9f0123456789abcdef0123456789abc");
-        pushUser("Alice_ZK", "0x4b5c6d7e8f90123456789abcdef0123456789abc7f8a9b1c2d3e4f506172839");
-        pushUser("Bob_Anon", "0x123456789abcdef0123456789abc7f8a9b1c2d3e4f5061728394b5c6d7e8f90");
-        pushUser("Vitalik_Echo", "0x9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba");
 
         return res;
     }
@@ -130,13 +132,19 @@ Rectangle {
         anchors.fill: parent
         spacing: 0
 
-        // ==========================================
         // TOP HEADER BAR (48px)
-        // ==========================================
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 48
             color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    sidebar.clearInputFocus();
+                    sidebar.clearOtherFocusRequested();
+                }
+            }
 
             Rectangle {
                 anchors.bottom: parent.bottom
@@ -168,11 +176,11 @@ Rectangle {
 
                     Rectangle {
                         visible: sidebar.activeRoomId !== ""
-                        height: 16
-                        width: matureLabel.implicitWidth + 8
-                        radius: 3
-                        color: sidebar.isRoomMature ? theme.accentSuccessBg : theme.accentWarningBg
-                        border.color: sidebar.isRoomMature ? theme.accentSuccess : theme.accentWarning
+                        height: 18
+                        width: matureLabel.implicitWidth + 12
+                        radius: 9
+                        color: theme.bgCard
+                        border.color: theme.borderSubtle
                         border.width: 1
 
                         Text {
@@ -204,13 +212,58 @@ Rectangle {
                     Menu {
                         id: roomMenu
                         y: parent.height
+                        topPadding: 4
+                        bottomPadding: 4
+                        leftPadding: 4
+                        rightPadding: 4
+
+                        background: Rectangle {
+                            implicitWidth: 160
+                            color: theme.bgCard
+                            border.color: theme.borderSubtle
+                            border.width: 1
+                            radius: 8
+                        }
 
                         MenuItem {
+                            id: itemCopyRoom
                             text: "Copy Room ID"
+                            contentItem: Text {
+                                text: itemCopyRoom.text
+                                font.family: theme.fontFamily
+                                font.pixelSize: 13
+                                color: itemCopyRoom.highlighted ? "#ffffff" : theme.textHeader
+                                verticalAlignment: Text.AlignVCenter
+                                leftPadding: 8
+                                rightPadding: 8
+                            }
+                            background: Rectangle {
+                                implicitWidth: 152
+                                implicitHeight: 32
+                                color: itemCopyRoom.highlighted ? theme.bgHover : "transparent"
+                                radius: 6
+                            }
                             onTriggered: sidebar.copyRoomIdRequested(sidebar.activeRoomId)
                         }
+
                         MenuItem {
+                            id: itemLeaveRoom
                             text: "Leave Room"
+                            contentItem: Text {
+                                text: itemLeaveRoom.text
+                                font.family: theme.fontFamily
+                                font.pixelSize: 13
+                                color: itemLeaveRoom.highlighted ? theme.accentDanger : theme.textHeader
+                                verticalAlignment: Text.AlignVCenter
+                                leftPadding: 8
+                                rightPadding: 8
+                            }
+                            background: Rectangle {
+                                implicitWidth: 152
+                                implicitHeight: 32
+                                color: itemLeaveRoom.highlighted ? theme.bgHover : "transparent"
+                                radius: 6
+                            }
                             onTriggered: sidebar.leaveRoomRequested(sidebar.activeRoomId)
                         }
                     }
@@ -258,6 +311,12 @@ Rectangle {
                             color: theme.textMuted
                         }
 
+                        onActiveFocusChanged: {
+                            if (searchInput.activeFocus) {
+                                sidebar.inputFocusGained();
+                            }
+                        }
+
                         onTextChanged: {
                             sidebar.performUserSearch(text);
                         }
@@ -270,6 +329,8 @@ Rectangle {
                             searchInput.text = "";
                             sidebar.matchingUsersList = [];
                             sidebar.isSearching = false;
+                            sidebar.clearInputFocus();
+                            sidebar.clearOtherFocusRequested();
                         }
                     }
 
@@ -290,7 +351,8 @@ Rectangle {
                                 searchInput.text = "";
                                 sidebar.matchingUsersList = [];
                                 sidebar.isSearching = false;
-                                searchInput.forceActiveFocus();
+                                sidebar.clearInputFocus();
+                                sidebar.clearOtherFocusRequested();
                             }
                         }
                     }
@@ -308,7 +370,7 @@ Rectangle {
                 width: sidebar.width
                 spacing: 2
 
-                // --- ROOM MODE CHANNELS ---
+                // ROOM MODE CHANNELS
                 ColumnLayout {
                     width: sidebar.width
                     visible: sidebar.activeView === "room"
@@ -320,6 +382,14 @@ Rectangle {
                         height: 90
                         Layout.alignment: Qt.AlignHCenter
                         visible: !sidebar.activeRoomId || sidebar.activeRoomId === ""
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: {
+                                sidebar.clearInputFocus();
+                                sidebar.clearOtherFocusRequested();
+                            }
+                        }
 
                         ColumnLayout {
                             anchors.centerIn: parent
@@ -348,6 +418,14 @@ Rectangle {
                         width: sidebar.width
                         height: 32
                         visible: sidebar.activeRoomId !== ""
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: {
+                                sidebar.clearInputFocus();
+                                sidebar.clearOtherFocusRequested();
+                            }
+                        }
 
                         Text {
                             anchors.left: parent.left
@@ -419,15 +497,17 @@ Rectangle {
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
-                                    sidebar.activeChannel = modelData.name
-                                    sidebar.channelSelected(modelData.name)
+                                    sidebar.clearInputFocus();
+                                    sidebar.clearOtherFocusRequested();
+                                    sidebar.activeChannel = modelData.name;
+                                    sidebar.channelSelected(modelData.name);
                                 }
                             }
                         }
                     }
                 }
 
-                // --- DM MODE DIRECT MESSAGES ---
+                // DM MODE DIRECT MESSAGES
                 ColumnLayout {
                     width: sidebar.width
                     visible: sidebar.activeView === "dm"
@@ -436,6 +516,14 @@ Rectangle {
                     Item {
                         width: sidebar.width
                         height: 32
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: {
+                                sidebar.clearInputFocus();
+                                sidebar.clearOtherFocusRequested();
+                            }
+                        }
 
                         Text {
                             anchors.left: parent.left
@@ -466,7 +554,7 @@ Rectangle {
                             RowLayout {
                                 anchors.fill: parent
                                 anchors.leftMargin: 8
-                                anchors.rightMargin: 8
+                                anchors.rightMargin: 34
                                 spacing: 10
 
                                 // Avatar
@@ -494,12 +582,14 @@ Rectangle {
                                         font.bold: dmItem.isSelected
                                         font.pixelSize: 13
                                         color: dmItem.isSelected ? theme.textInteractiveActive : theme.textInteractive
+                                        elide: Text.ElideRight
                                     }
 
                                     Text {
                                         text: "Epoch HKDF active"
                                         font.pixelSize: 10
                                         color: theme.textMuted
+                                        elide: Text.ElideRight
                                     }
                                 }
                             }
@@ -510,8 +600,75 @@ Rectangle {
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
-                                    sidebar.activeDmUser = modelData.username
-                                    sidebar.dmSelected(modelData.username)
+                                    sidebar.clearInputFocus();
+                                    sidebar.clearOtherFocusRequested();
+                                    sidebar.activeDmUser = modelData.username;
+                                    sidebar.dmSelected(modelData.username);
+                                }
+                            }
+
+                            // Delete Conversation Button (X)
+                            Rectangle {
+                                id: deleteDmBtn
+                                z: 3
+                                anchors.right: parent.right
+                                anchors.rightMargin: 8
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 22
+                                height: 22
+                                radius: 11
+                                color: deleteDmMouse.containsMouse ? theme.bgHover : "transparent"
+                                border.color: deleteDmMouse.containsMouse ? theme.borderSubtle : "transparent"
+                                border.width: 1
+                                opacity: (dmUserMouse.containsMouse || deleteDmMouse.containsMouse) ? 1.0 : 0.0
+                                visible: opacity > 0
+
+                                Behavior on opacity { NumberAnimation { duration: theme.animFast } }
+                                Behavior on color { ColorAnimation { duration: theme.animFast } }
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                    text: "✕"
+                                    font.pixelSize: 11
+                                    font.bold: true
+                                    font.family: theme.fontFamily
+                                    color: deleteDmMouse.containsMouse ? theme.textHeader : theme.textMuted
+                                }
+
+                                MouseArea {
+                                    id: deleteDmMouse
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: function(mouse) {
+                                        mouse.accepted = true;
+                                        sidebar.deleteDmRequested(modelData.username);
+                                    }
+                                }
+
+                                ToolTip {
+                                    id: deleteDmTip
+                                    visible: deleteDmMouse.containsMouse
+                                    delay: 250
+                                    text: "Delete Conversation"
+                                    topPadding: 6
+                                    bottomPadding: 6
+                                    leftPadding: 10
+                                    rightPadding: 10
+                                    contentItem: Text {
+                                        text: deleteDmTip.text
+                                        font.family: theme.fontFamily
+                                        font.pixelSize: 12
+                                        color: theme.textHeader
+                                    }
+                                    background: Rectangle {
+                                        color: theme.bgCard
+                                        border.color: theme.borderSubtle
+                                        border.width: 1
+                                        radius: 6
+                                    }
                                 }
                             }
                         }
@@ -523,12 +680,35 @@ Rectangle {
                         height: 60
                         visible: !sidebar.dmsModel || sidebar.dmsModel.length === 0
 
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: {
+                                sidebar.clearInputFocus();
+                                sidebar.clearOtherFocusRequested();
+                            }
+                        }
+
                         Text {
                             anchors.centerIn: parent
                             text: "No conversations yet.\nClick above to start a DM."
                             font.pixelSize: 11
                             color: theme.textMuted
                             horizontalAlignment: Text.AlignHCenter
+                        }
+                    }
+                }
+
+                // Spacer capturing clicks in empty space of ScrollView
+                Item {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.minimumHeight: 60
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            sidebar.clearInputFocus();
+                            sidebar.clearOtherFocusRequested();
                         }
                     }
                 }
@@ -543,6 +723,8 @@ Rectangle {
         visible: suggestionDropdown.visible
         onClicked: {
             sidebar.isSearching = false;
+            sidebar.clearInputFocus();
+            sidebar.clearOtherFocusRequested();
         }
     }
 
@@ -662,6 +844,8 @@ Rectangle {
                                 searchInput.text = "";
                                 sidebar.isSearching = false;
                                 sidebar.matchingUsersList = [];
+                                sidebar.clearInputFocus();
+                                sidebar.clearOtherFocusRequested();
                             }
                         }
                     }

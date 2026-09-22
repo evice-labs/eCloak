@@ -1,9 +1,9 @@
 {
-  description = "eCloak — Zero-Knowledge Anonymous Chat for Logos Basecamp by Evice Labs";
+  description = "Zero-Knowledge Anonymous Chat with Cryptographic Moderation by Evice Labs";
 
   inputs = {
     logos-module-builder.url = "github:logos-co/logos-module-builder";
-    el_anon_chat_core.url = "github:evice-labs/el-anon-chat-core";
+    "e-cloak-core".url = "github:evice-labs/e-cloak-core";
   };
 
   outputs = inputs@{ logos-module-builder, ... }:

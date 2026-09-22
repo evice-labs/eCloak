@@ -10,20 +10,6 @@ Item {
 
     ListModel {
         id: roomsModel
-        ListElement {
-            name: "Logos Core Governance"
-            roomId: "4387847341ba4199b858e82e6d2114e8ef00611ae38bfce0ead60983e2fda6ca"
-            nThreshold: 2
-            mModerators: 3
-            memberCount: 14
-        }
-        ListElement {
-            name: "Zero-Knowledge Devs"
-            roomId: "0102030405060708091011121314151617181920212223242526272829303132"
-            nThreshold: 1
-            mModerators: 2
-            memberCount: 28
-        }
     }
 
     ColumnLayout {
@@ -131,7 +117,7 @@ Item {
             TextField {
                 id: newRoomNameField
                 Layout.fillWidth: true
-                placeholderText: "Room Name (e.g. Logos Builders)"
+                placeholderText: "Room Name (e.g. Evice Builders)"
             }
 
             RowLayout {
@@ -147,9 +133,14 @@ Item {
 
         onAccepted: {
             if (newRoomNameField.text.length > 0) {
+                var randomHex = "";
+                var hexChars = "0123456789abcdef";
+                for (var i = 0; i < 64; i++) {
+                    randomHex += hexChars.charAt(Math.floor(Math.random() * hexChars.length));
+                }
                 roomsModel.append({
                     name: newRoomNameField.text,
-                    roomId: "8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a",
+                    roomId: randomHex,
                     nThreshold: nThresholdSpin.value,
                     mModerators: mTotalSpin.value,
                     memberCount: 1

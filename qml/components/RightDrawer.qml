@@ -21,6 +21,8 @@ Rectangle {
 
     signal executeSlashingRequested(string targetComm)
     signal issueStrikeRequested()
+    signal memberStrikeRequested(string username, string pubkey)
+    signal clearInputsRequested()
 
     Behavior on width {
         NumberAnimation { duration: 150; easing.type: Easing.InOutQuad }
@@ -28,14 +30,27 @@ Rectangle {
 
     Theme { id: theme }
 
+    MouseArea {
+        anchors.fill: parent
+        onClicked: drawer.clearInputsRequested()
+    }
+
+    // Left Border Divider
+    Rectangle {
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width: 1
+        color: theme.borderSubtle
+        z: 2
+    }
+
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: 12
         spacing: 12
 
-        // ==========================================
         // SECTION: MODERATORS
-        // ==========================================
         Text {
             text: "MODERATORS — " + (drawer.moderatorsList ? drawer.moderatorsList.length : 0)
             font.bold: true
@@ -56,9 +71,9 @@ Rectangle {
 
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 36
+                Layout.preferredHeight: 34
                 radius: theme.radiusSmall
-                color: modMouse.containsMouse ? theme.bgHover : "transparent"
+                color: "transparent"
 
                 RowLayout {
                     anchors.fill: parent
@@ -67,15 +82,17 @@ Rectangle {
                     spacing: 8
 
                     Rectangle {
-                        width: 26
-                        height: 26
-                        radius: 13
+                        width: 24
+                        height: 24
+                        radius: 12
                         color: theme.primary
 
                         Text {
                             anchors.centerIn: parent
-                            text: "👑"
+                            text: modelData.username ? modelData.username.substring(0, 1).toUpperCase() : "M"
+                            font.bold: true
                             font.pixelSize: 11
+                            color: "#ffffff"
                         }
                     }
 
@@ -83,50 +100,27 @@ Rectangle {
                         Layout.fillWidth: true
                         spacing: 0
 
-                        RowLayout {
-                            spacing: 4
-                            Text {
-                                text: modelData.username
-                                font.bold: true
-                                font.pixelSize: 12
-                                color: theme.textHeader
-                                elide: Text.ElideRight
-                            }
-
-                            Rectangle {
-                                height: 12
-                                width: 30
-                                radius: 2
-                                color: theme.primary
-                                Text {
-                                    anchors.centerIn: parent
-                                    text: "MOD"
-                                    font.pixelSize: 8
-                                    font.bold: true
-                                    color: "#ffffff"
-                                }
-                            }
+                        Text {
+                            text: modelData.username
+                            font.bold: true
+                            font.pixelSize: 12
+                            color: theme.textHeader
+                            elide: Text.ElideRight
                         }
 
                         Text {
-                            text: modelData.pubkey
+                            text: modelData.pubkey || ""
                             font.pixelSize: 9
                             color: theme.textMuted
+                            elide: Text.ElideRight
+                            visible: text.length > 0
                         }
                     }
-                }
-
-                MouseArea {
-                    id: modMouse
-                    anchors.fill: parent
-                    hoverEnabled: true
                 }
             }
         }
 
-        // ==========================================
         // SECTION: MEMBERS
-        // ==========================================
         Text {
             Layout.topMargin: 8
             text: "MEMBERS — " + (drawer.membersList ? drawer.membersList.length : 0)
@@ -159,7 +153,7 @@ Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 34
                         radius: theme.radiusSmall
-                        color: memMouse.containsMouse ? theme.bgHover : "transparent"
+                        color: "transparent"
 
                         RowLayout {
                             anchors.fill: parent
@@ -190,20 +184,23 @@ Rectangle {
                                 elide: Text.ElideRight
                             }
                         }
+                    }
+                }
 
-                        MouseArea {
-                            id: memMouse
-                            anchors.fill: parent
-                            hoverEnabled: true
-                        }
+                // Filler spacer in members ScrollView
+                Item {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.minimumHeight: 30
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: drawer.clearInputsRequested()
                     }
                 }
             }
         }
 
-        // ==========================================
         // SECTION: SLASHING RADAR (BOTTOM CARD)
-        // ==========================================
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 154
@@ -299,6 +296,7 @@ Rectangle {
                         enabled: drawer.radarTargetUser !== ""
                         cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
                         onClicked: {
+                            drawer.clearInputsRequested();
                             if (drawer.radarStrikes >= drawer.radarStrikesRequired) {
                                 drawer.executeSlashingRequested(drawer.radarTargetCommitment)
                             } else {

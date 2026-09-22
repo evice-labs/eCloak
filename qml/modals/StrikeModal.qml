@@ -68,11 +68,11 @@ Dialog {
                     Text { text: "Target User:"; font.bold: true; font.pixelSize: 12; color: theme.textHeader }
                     Text { text: modal.targetAuthor || "Anonymous"; font.pixelSize: 12; color: theme.accentWarning }
                     Item { Layout.fillWidth: true }
-                    Text { text: "Tag: " + (modal.tracingTag ? ("#" + modal.tracingTag.substring(0, 8)) : "#00000000"); font.pixelSize: 11; font.family: "monospace"; color: theme.accentLogos }
+                    Text { text: "Tag: " + (modal.tracingTag ? ("#" + modal.tracingTag.substring(0, 8)) : "—"); font.pixelSize: 11; font.family: "monospace"; color: theme.accentLogos }
                 }
 
                 Text {
-                    text: "Commitment: " + (modal.targetCommitment || "0x3f1a...4e2b")
+                    text: "Commitment: " + (modal.targetCommitment || "—")
                     font.pixelSize: 10
                     font.family: "monospace"
                     color: theme.textMuted
@@ -106,7 +106,7 @@ Dialog {
                     clip: true
                     Text {
                         width: parent.width
-                        text: modal.messageSnippet || "(Flagged message content)"
+                        text: modal.messageSnippet || "—"
                         color: theme.textNormal
                         font.pixelSize: 12
                         wrapMode: Text.Wrap
@@ -135,7 +135,7 @@ Dialog {
 
                 Text {
                     anchors.centerIn: parent
-                    text: modal.evidenceHash || "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                    text: modal.evidenceHash || "—"
                     font.family: "monospace"
                     font.pixelSize: 10
                     color: theme.textInteractive

@@ -29,6 +29,7 @@ Dialog {
     readonly property bool isQuorumMet: totalSelectedMods >= mVal
 
     signal roomCreated(string name, int nThreshold, int mTotal, string modKeysJson, int minMembers)
+    signal joinRoomRequested()
 
     Theme { id: theme }
 
@@ -62,7 +63,7 @@ Dialog {
     }
 
     onOpened: {
-        nameField.text = "Logos Anonymous Lounge";
+        nameField.text = "";
         modal.selectedPreset = 0;
         modal.nVal = 2;
         modal.mVal = 3;
@@ -84,6 +85,27 @@ Dialog {
                 font.bold: true
                 font.pixelSize: 17
                 color: theme.textHeader
+            }
+
+            Item { Layout.fillWidth: true }
+
+            Text {
+                text: "Join existing room →"
+                font.family: theme.fontFamily
+                font.pixelSize: 12
+                color: joinLinkMouse.containsMouse ? theme.accentBlurple : theme.primary
+                font.underline: joinLinkMouse.containsMouse
+
+                MouseArea {
+                    id: joinLinkMouse
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        modal.reject();
+                        modal.joinRoomRequested();
+                    }
+                }
             }
         }
 
@@ -116,7 +138,6 @@ Dialog {
                 color: theme.textHeader
                 font.family: theme.fontFamily
                 font.pixelSize: 13
-                text: "Logos Anonymous Lounge"
                 selectByMouse: true
                 leftPadding: 12
                 rightPadding: 12
@@ -340,17 +361,15 @@ Dialog {
                                 Rectangle {
                                     height: 16
                                     width: 44
-                                    radius: 3
-                                    color: Qt.rgba(theme.primary.r, theme.primary.g, theme.primary.b, 0.15)
-                                    border.color: theme.primary
-                                    border.width: 1
+                                    radius: 8
+                                    color: theme.primary
                                     Text {
                                         anchors.centerIn: parent
                                         text: "OWNER"
                                         font.family: theme.fontFamily
                                         font.pixelSize: 8
                                         font.bold: true
-                                        color: theme.primary
+                                        color: "#ffffff"
                                     }
                                 }
                             }
@@ -505,6 +524,7 @@ Dialog {
                 RowLayout {
                     Layout.fillWidth: true
                     spacing: 6
+                    visible: (modal.knownUsers && modal.knownUsers.length > 0) && !modal.isQuorumMet
 
                     Text {
                         text: "Suggested:"
@@ -514,11 +534,7 @@ Dialog {
                     }
 
                     Repeater {
-                        model: [
-                            { username: "Satoshi99", commitment: "0x7f8a9b1c2d3e4f5061728394a5b6c7d8e9f0123456789abcdef0123456789abc" },
-                            { username: "Alice_ZK", commitment: "0x4b5c6d7e8f90123456789abcdef0123456789abc7f8a9b1c2d3e4f506172839" },
-                            { username: "Bob_Anon", commitment: "0x123456789abcdef0123456789abc7f8a9b1c2d3e4f5061728394b5c6d7e8f90" }
-                        ]
+                        model: modal.knownUsers || []
 
                         Rectangle {
                             height: 20

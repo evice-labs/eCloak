@@ -41,7 +41,7 @@ Item {
 
         function onViewModuleReadyChanged(moduleName, isReady) {
             console.log("eCloak onViewModuleReadyChanged:", moduleName, isReady);
-            if (isReady && (moduleName === "ecloak" || moduleName === "ecloakcore")) {
+            if (isReady && (moduleName === "e-cloak" || moduleName === "ecloak" || moduleName === "ecloakcore" || moduleName === "e_cloak_core")) {
                 root.isCoreReady = true;
                 root.syncIdentityFromCore();
                 root.loadChatStoreFromCore();
@@ -50,7 +50,7 @@ Item {
 
         function onModuleEventReceived(moduleName, eventName, data) {
             console.log("eCloak onModuleEventReceived:", moduleName, eventName, JSON.stringify(data));
-            if (moduleName === "ecloakcore") {
+            if (moduleName === "ecloakcore" || moduleName === "e_cloak_core") {
                 root.syncIdentityFromCore();
             }
         }
@@ -63,29 +63,33 @@ Item {
         // 1. Logos Basecamp IPC (logos.callModule)
         if (typeof logos !== "undefined" && logos && typeof logos.callModule === "function") {
             try {
-                // Try official ecloakcore identifier first
+                // Primary: official installed module in Basecamp runtime (ecloakcore)
                 var res = logos.callModule("ecloakcore", method, args);
                 if (typeof res !== "undefined" && res !== null && res !== "") {
                     if (typeof res === "string" && res.startsWith("{")) {
                         try {
                             var checkErr = JSON.parse(res);
                             if (checkErr.error && checkErr.error.indexOf("unreachable") !== -1) {
-                                return null;
+                                res = null;
                             }
                         } catch(ignore) {}
                     }
+                    if (res !== null) return res;
+                }
+
+                // Fallback if deployed under e_cloak_core identifier
+                res = logos.callModule("e_cloak_core", method, args);
+                if (typeof res !== "undefined" && res !== null && res !== "") {
                     return res;
                 }
-                // Fallback for legacy el_anon_chat_core identifier
-                return logos.callModule("el_anon_chat_core", method, args);
             } catch(e) {
                 console.log("Logos IPC callModule error (" + method + "): " + e);
                 return null;
             }
         }
 
-        // 2. Direct QObject injection (ecloakcore or el_anon_chat_core)
-        var coreObj = (typeof ecloakcore !== "undefined" && ecloakcore) ? ecloakcore : ((typeof el_anon_chat_core !== "undefined" && el_anon_chat_core) ? el_anon_chat_core : null);
+        // 2. Direct QObject injection (ecloakcore or e_cloak_core)
+        var coreObj = (typeof window !== "undefined") ? (window.ecloakcore || window.e_cloak_core || null) : null;
         if (coreObj) {
             try {
                 if (typeof coreObj[method] === "function") {
@@ -227,7 +231,7 @@ Item {
         return JSON.stringify({ commitment: comm, nsk: nsk });
     }
 
-    // Room Model (Persisted to disk via ecloakcore)
+    // Room Model (Persisted to disk via e_cloak_core)
     property var roomsList: []
 
     // Dynamic Conversation Messages Store: { "convKey": [msg1, msg2, ...] } (Persisted to disk)
@@ -276,10 +280,7 @@ Item {
         return "";
     }
 
-    // -------------------------------------------------------------
-    // Persistent Chat Store (Disk-backed via ecloakcore)
-    // -------------------------------------------------------------
-
+    // Persistent Chat Store (Disk-backed via e_cloak_core)
     // Load entire chat store from core disk storage
     function loadChatStoreFromCore() {
         console.log("eCloak: Loading chat store from core module...");
@@ -287,147 +288,136 @@ Item {
             var parsed = safeJsonParse(res);
             if (parsed && typeof parsed === "object" && (parsed.rooms || parsed.conversations || parsed.dms)) {
                 console.log("eCloak: Hydrating chat store from disk...");
-                if (Array.isArray(parsed.rooms) && parsed.rooms.length > 0) {
-                    root.roomsList = parsed.rooms;
+
+                var isPlaceholderUser = function(name) {
+                    if (!name) return false;
+                    var n = name.trim().toLowerCase();
+                    return (n === "satoshi99" || n === "alice_zk" || n === "bob_anon" || n === "vitalik_echo");
+                };
+
+                var isPlaceholderRoom = function(rm) {
+                    if (!rm) return false;
+                    var rId = rm.id ? rm.id.toLowerCase() : "";
+                    var rNm = rm.name ? rm.name.toLowerCase() : "";
+                    return (rId === "room_1" || rNm === "zk cypherpunks");
+                };
+
+                var sanitizedRooms = [];
+                var needsStoreRewrite = false;
+
+                if (Array.isArray(parsed.rooms)) {
+                    for (var r = 0; r < parsed.rooms.length; r++) {
+                        var rm = parsed.rooms[r];
+                        if (isPlaceholderRoom(rm)) {
+                            needsStoreRewrite = true;
+                            continue;
+                        }
+                        if (Array.isArray(rm.moderators)) {
+                            var origModLen = rm.moderators.length;
+                            rm.moderators = rm.moderators.filter(function(m) { return !isPlaceholderUser(m.username); });
+                            if (rm.moderators.length !== origModLen) needsStoreRewrite = true;
+                        }
+                        if (Array.isArray(rm.members)) {
+                            var origMemLen = rm.members.length;
+                            rm.members = rm.members.filter(function(m) { return !isPlaceholderUser(m.username); });
+                            if (rm.members.length !== origMemLen) needsStoreRewrite = true;
+                        }
+                        sanitizedRooms.push(rm);
+                    }
+                }
+
+                var sanitizedDms = [];
+                if (Array.isArray(parsed.dms)) {
+                    for (var d = 0; d < parsed.dms.length; d++) {
+                        var dm = parsed.dms[d];
+                        if (isPlaceholderUser(dm.username)) {
+                            needsStoreRewrite = true;
+                            continue;
+                        }
+                        sanitizedDms.push(dm);
+                    }
+                }
+
+                root.roomsList = sanitizedRooms;
+                root.dmsList = sanitizedDms;
+
+                if (sanitizedRooms.length > 0) {
                     if (!root.activeRoomId || root.activeRoomId.length === 0) {
-                        var firstRoom = parsed.rooms[0];
-                        root.activeRoomId = firstRoom.id || "room_1";
-                        root.activeRoomName = firstRoom.name || "ZK Cypherpunks";
+                        var firstRoom = sanitizedRooms[0];
+                        root.activeRoomId = firstRoom.id || "";
+                        root.activeRoomName = firstRoom.name || "";
                         root.activeRoomN = firstRoom.nMod || 2;
                         root.activeRoomM = firstRoom.mMod || 3;
                         root.isRoomMature = (firstRoom.mature !== undefined) ? firstRoom.mature : true;
                         root.activeChannel = "general-chat";
                         root.activeView = "room";
-                        root.roomModerators = firstRoom.moderators || [
-                            { username: "Alice_ZK", pubkey: "0x4b5c6d7e8f90...", role: "Threshold Mod" },
-                            { username: "Bob_Anon", pubkey: "0x123456789a...", role: "Threshold Mod" }
-                        ];
-                        root.roomMembers = firstRoom.members || [
-                            { username: "Satoshi99", pubkey: "0x7f8a9b1c2d..." },
-                            { username: "Vitalik_Echo", pubkey: "0x9876543210..." }
-                        ];
+                        root.roomModerators = firstRoom.moderators || [];
+                        root.roomMembers = firstRoom.members || [];
                     }
+                } else {
+                    root.activeRoomId = "";
+                    root.activeRoomName = "";
+                    root.roomModerators = [];
+                    root.roomMembers = [];
                 }
-                if (Array.isArray(parsed.dms)) {
-                    root.dmsList = parsed.dms;
-                }
+
                 if (parsed.conversations && typeof parsed.conversations === "object") {
                     var boundedConvs = {};
-                    var hasMigrated = false;
                     for (var cKey in parsed.conversations) {
+                        var cKeyLower = cKey.toLowerCase();
+                        if (cKeyLower.indexOf("room_1") !== -1 || cKeyLower.indexOf("satoshi") !== -1 ||
+                            cKeyLower.indexOf("alice") !== -1 || cKeyLower.indexOf("bob_anon") !== -1 ||
+                            cKeyLower.indexOf("vitalik") !== -1) {
+                            needsStoreRewrite = true;
+                            continue;
+                        }
                         var list = parsed.conversations[cKey];
                         if (Array.isArray(list)) {
+                            var cleanMsgs = [];
                             for (var idx = 0; idx < list.length; idx++) {
                                 var msg = list[idx];
+                                if (isPlaceholderUser(msg.author)) {
+                                    needsStoreRewrite = true;
+                                    continue;
+                                }
                                 if (msg.tracingTag) {
                                     msg.tracingTag = root.formatBytesToHex(msg.tracingTag);
                                 }
-                                // Auto-heal legacy messages that don't have createdAt
-                                if (!msg.createdAt || msg.createdAt <= 0) {
-                                    hasMigrated = true;
-                                    if (msg.timestamp === "10:42 AM") {
-                                        var d1 = new Date(); d1.setHours(10, 42, 0, 0);
-                                        msg.createdAt = d1.getTime();
-                                    } else if (msg.timestamp === "10:45 AM") {
-                                        var d2 = new Date(); d2.setHours(10, 45, 0, 0);
-                                        msg.createdAt = d2.getTime();
-                                    } else if (msg.timestamp === "Just now") {
-                                        // Legacy message sent earlier by user (~2 hours ago)
-                                        msg.createdAt = Date.now() - (2 * 60 * 60 * 1000);
-                                    } else {
-                                        msg.createdAt = Date.now() - 3600000;
-                                    }
-                                }
+                                cleanMsgs.push(msg);
                             }
-                            boundedConvs[cKey] = (list.length > root.maxActiveMessagesPerConv) ?
-                                list.slice(-root.maxActiveMessagesPerConv) : list;
+                            if (cleanMsgs.length > 0) {
+                                boundedConvs[cKey] = (cleanMsgs.length > root.maxActiveMessagesPerConv) ?
+                                    cleanMsgs.slice(-root.maxActiveMessagesPerConv) : cleanMsgs;
+                            }
                         }
                     }
                     root.conversationMessages = boundedConvs;
-                    if (hasMigrated) {
-                        root.persistChatState();
-                    }
                 }
+
                 root.chatStoreLoaded = true;
+                if (needsStoreRewrite) {
+                    console.log("eCloak: Purged legacy test artifacts from chat store. Persisting clean state...");
+                    root.persistChatState();
+                }
                 console.log("eCloak: Chat store restored (" + root.roomsList.length + " rooms, " + root.dmsList.length + " DMs).");
             } else {
-                console.log("eCloak: No existing chat store on disk. Seeding default state...");
+                console.log("eCloak: No existing chat store on disk. Initializing fresh clean state...");
                 seedDefaultChatState();
             }
         });
     }
 
-    // Seed default rooms, channels, and introductory cypherpunk messages if fresh install
+    // Fresh install state initialization (clean slate for real testing)
     function seedDefaultChatState() {
-        if (!root.roomsList || root.roomsList.length === 0) {
-            var defaultRooms = [
-                {
-                    id: "room_1",
-                    name: "ZK Cypherpunks",
-                    iconText: "ZK",
-                    nMod: 2,
-                    mMod: 3,
-                    mature: true,
-                    unread: false,
-                    moderators: [
-                        { username: "Alice_ZK", pubkey: "0x4b5c6d7e8f90123456789abcdef0123456789abc7f8a9b1c2d3e4f506172839", role: "Threshold Mod" },
-                        { username: "Bob_Anon", pubkey: "0x123456789abcdef0123456789abc7f8a9b1c2d3e4f5061728394b5c6d7e8f90", role: "Threshold Mod" }
-                    ],
-                    members: [
-                        { username: "Satoshi99", pubkey: "0x7f8a9b1c2d3e4f5061728394a5b6c7d8e9f0123456789abcdef0123456789abc" },
-                        { username: "Vitalik_Echo", pubkey: "0x9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba" }
-                    ]
-                }
-            ];
-            root.roomsList = defaultRooms;
-            root.activeRoomId = "room_1";
-            root.activeRoomName = "ZK Cypherpunks";
-            root.activeRoomN = 2;
-            root.activeRoomM = 3;
-            root.isRoomMature = true;
-            root.activeChannel = "general-chat";
-            root.activeView = "room";
-            root.roomModerators = defaultRooms[0].moderators;
-            root.roomMembers = defaultRooms[0].members;
-        }
-
-        if (!root.dmsList || root.dmsList.length === 0) {
-            root.dmsList = [
-                { username: "Alice_ZK", online: true, commitment: "0x4b5c6d7e8f90123456789abcdef0123456789abc7f8a9b1c2d3e4f506172839" },
-                { username: "Satoshi99", online: false, commitment: "0x7f8a9b1c2d3e4f5061728394a5b6c7d8e9f0123456789abcdef0123456789abc" }
-            ];
-        }
-
-        var convs = Object.assign({}, root.conversationMessages);
-        if (!convs["room_1:general-chat"] || convs["room_1:general-chat"].length === 0) {
-            var nowTime = Date.now();
-            convs["room_1:general-chat"] = [
-                {
-                    author: "Alice_ZK",
-                    commitment: "0x4b5c6d7e8f90123456789abcdef0123456789abc7f8a9b1c2d3e4f506172839",
-                    createdAt: nowTime - 3600000,
-                    timestamp: "10:42 AM",
-                    text: "Welcome to eCloak! All chat history and rooms are cryptographically signed and persisted to your local disk.",
-                    tracingTag: "a1b2c3d4e5f60718",
-                    isMod: true,
-                    postPoint: { x: 1, y: "share_alpha" }
-                },
-                {
-                    author: "Bob_Anon",
-                    commitment: "0x123456789abcdef0123456789abc7f8a9b1c2d3e4f5061728394b5c6d7e8f90",
-                    createdAt: nowTime - 1800000,
-                    timestamp: "10:45 AM",
-                    text: "Threshold SSS moderation is active (2-of-3). Fully anonymous and metadata-resistant.",
-                    tracingTag: "b2c3d4e5f6071829",
-                    isMod: true,
-                    postPoint: { x: 2, y: "share_beta" }
-                }
-            ];
-            root.conversationMessages = convs;
-        }
-
+        root.roomsList = [];
+        root.dmsList = [];
+        root.conversationMessages = {};
+        root.activeRoomId = "";
+        root.activeRoomName = "";
+        root.roomModerators = [];
+        root.roomMembers = [];
+        root.activeChannel = "";
         root.chatStoreLoaded = true;
-        // Persist default state to core disk immediately
         persistChatState();
     }
 
@@ -443,6 +433,40 @@ Item {
         callCoreAsync("saveChatStore", [serialized], function(res) {
             console.log("eCloak: Chat store save result:", res);
         });
+    }
+
+    // Delete a Direct Message conversation and remove its message history
+    function deleteDmConversation(username) {
+        if (!username) return;
+
+        // 1. Remove from dmsList
+        var updatedDms = [];
+        for (var i = 0; i < root.dmsList.length; i++) {
+            if (root.dmsList[i].username !== username) {
+                updatedDms.push(root.dmsList[i]);
+            }
+        }
+        root.dmsList = updatedDms;
+
+        // 2. Remove conversation messages from in-memory map
+        var convKey = "dm:" + username;
+        var updatedMsgs = Object.assign({}, root.conversationMessages);
+        delete updatedMsgs[convKey];
+        root.conversationMessages = updatedMsgs;
+
+        // 3. Persist updated chat state to disk
+        root.persistChatState();
+
+        // 4. Update active DM view if the deleted one was currently active
+        if (root.activeView === "dm" && root.activeDmUser === username) {
+            if (updatedDms.length > 0) {
+                root.activeDmUser = updatedDms[0].username;
+            } else {
+                root.activeDmUser = "";
+            }
+        }
+
+        notificationToast.showNotification("Conversation with " + username + " has been deleted.");
     }
 
     // Sliding Window Pagination: Load previous message batch from disk on demand
@@ -474,6 +498,77 @@ Item {
     function getCurrentMessages() {
         var key = currentConvKey();
         return (root.conversationMessages && root.conversationMessages[key]) ? root.conversationMessages[key] : [];
+    }
+
+    function toggleReaction(msgIndex, emoji) {
+        var key = currentConvKey();
+        var store = Object.assign({}, root.conversationMessages);
+        var curMsgs = (store[key] ? store[key].slice() : []);
+        if (msgIndex < 0 || msgIndex >= curMsgs.length) return;
+
+        var msg = Object.assign({}, curMsgs[msgIndex]);
+        var reacts = msg.reactions ? msg.reactions.slice() : [];
+        var myUser = root.myUsername || "You";
+
+        var found = false;
+        for (var i = 0; i < reacts.length; i++) {
+            if (reacts[i].emoji === emoji) {
+                var users = reacts[i].users ? reacts[i].users.slice() : [];
+                var userIdx = users.indexOf(myUser);
+                if (userIdx !== -1) {
+                    users.splice(userIdx, 1);
+                    reacts[i] = {
+                        emoji: emoji,
+                        count: Math.max(0, reacts[i].count - 1),
+                        users: users,
+                        hasReacted: false
+                    };
+                } else {
+                    users.push(myUser);
+                    reacts[i] = {
+                        emoji: emoji,
+                        count: reacts[i].count + 1,
+                        users: users,
+                        hasReacted: true
+                    };
+                }
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            reacts.push({
+                emoji: emoji,
+                count: 1,
+                users: [myUser],
+                hasReacted: true
+            });
+        }
+
+        var activeReacts = [];
+        for (var r = 0; r < reacts.length; r++) {
+            if (reacts[r].count > 0) {
+                activeReacts.push(reacts[r]);
+            }
+        }
+
+        msg.reactions = activeReacts;
+        curMsgs[msgIndex] = msg;
+        store[key] = curMsgs;
+        root.conversationMessages = store;
+        root.persistChatState();
+    }
+
+    Item {
+        id: neutralFocusTarget
+        focus: true
+    }
+
+    function clearAllInputsFocus() {
+        if (sidebarComp) sidebarComp.clearInputFocus();
+        if (chatAreaComp) chatAreaComp.clearInputFocus();
+        neutralFocusTarget.forceActiveFocus();
     }
 
     // Aggregated list of all known users across identity, rooms, DMs, and messages
@@ -534,12 +629,6 @@ Item {
             }
         }
 
-        // 5. Default Known Network Peers (LEZ Testnet)
-        add("Satoshi99", "0x7f8a9b1c2d3e4f5061728394a5b6c7d8e9f0123456789abcdef0123456789abc");
-        add("Alice_ZK", "0x4b5c6d7e8f90123456789abcdef0123456789abc7f8a9b1c2d3e4f506172839");
-        add("Bob_Anon", "0x123456789abcdef0123456789abc7f8a9b1c2d3e4f5061728394b5c6d7e8f90");
-        add("Vitalik_Echo", "0x9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba");
-
         return list;
     }
 
@@ -579,7 +668,7 @@ Item {
 
         // Check if replica/bridge is already Valid
         if (typeof logos !== "undefined" && logos && typeof logos.isViewModuleReady === "function") {
-            if (logos.isViewModuleReady("ecloak") || logos.isViewModuleReady("ecloakcore")) {
+            if (logos.isViewModuleReady("e-cloak") || logos.isViewModuleReady("ecloak") || logos.isViewModuleReady("ecloakcore") || logos.isViewModuleReady("e_cloak_core")) {
                 root.isCoreReady = true;
             }
         }
@@ -617,6 +706,18 @@ Item {
                 root.lezConnected = true;
             }
         });
+    }
+
+    // Permanent Dark Canvas Background (Eliminates white canvas flash during drawer animations)
+    Rectangle {
+        anchors.fill: parent
+        color: theme.bgRail
+        z: -1
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: root.forceActiveFocus()
+        }
     }
 
     // Main 4-Column Layout Coordinator
@@ -673,13 +774,26 @@ Item {
                             createRoomModal.open();
                         }
 
+                        onCreateRoomClicked: {
+                            createRoomModal.open();
+                        }
+
+                        onJoinRoomClicked: {
+                            joinRoomModal.open();
+                        }
+
                         onIdentitySettingsClicked: {
                             identityModal.open();
+                        }
+
+                        onClearInputsRequested: {
+                            root.clearAllInputsFocus();
                         }
                     }
 
                     // Column 2: Channel / DM Sidebar (240px)
                     ChannelSidebar {
+                        id: sidebarComp
                         Layout.preferredWidth: 240
                         Layout.fillHeight: true
                         activeView: root.activeView
@@ -690,6 +804,14 @@ Item {
                         activeDmUser: root.activeDmUser
                         dmsModel: root.dmsList
                         knownUsersModel: root.getKnownUsersList()
+
+                        onClearOtherFocusRequested: {
+                            if (chatAreaComp) chatAreaComp.clearInputFocus();
+                        }
+
+                        onInputFocusGained: {
+                            if (chatAreaComp) chatAreaComp.clearInputFocus();
+                        }
 
                         onChannelSelected: function(chan) {
                             root.activeChannel = chan;
@@ -720,6 +842,11 @@ Item {
                                 root.dmsList = updated;
                                 root.persistChatState();
                             }
+                        }
+
+                        onDeleteDmRequested: function(targetUser) {
+                            confirmDeleteModal.targetUsername = targetUser;
+                            confirmDeleteModal.open();
                         }
 
                         onCopyRoomIdRequested: function(roomId) {
@@ -767,23 +894,34 @@ Item {
                     onOpenIdentitySettings: {
                         identityModal.open();
                     }
+
+                    onClearInputsRequested: {
+                        root.clearAllInputsFocus();
+                    }
                 }
             }
         }
 
-        // ==========================================
         // COLUMN 3: ACTIVE CHAT FEED & COMPOSER (FLEX)
-        // ==========================================
         ChatArea {
+            id: chatAreaComp
             Layout.fillWidth: true
             Layout.fillHeight: true
             activeView: root.activeView
             activeTargetName: (root.activeView === "dm") ? root.activeDmUser : root.activeChannel
-            activeTopic: (root.activeView === "dm") ?
+            activeTopic: (root.activeView === "dm" || !root.activeRoomName) ?
                 "" :
                 (root.activeRoomName + " • N=" + root.activeRoomN + "/M=" + root.activeRoomM + " Threshold SSS")
             messagesModel: root.getCurrentMessages()
             isDrawerOpen: root.isRightDrawerOpen
+
+            onClearOtherFocusRequested: {
+                if (sidebarComp) sidebarComp.clearInputFocus();
+            }
+
+            onInputFocusGained: {
+                if (sidebarComp) sidebarComp.clearInputFocus();
+            }
 
             onToggleDrawer: {
                 root.isRightDrawerOpen = !root.isRightDrawerOpen;
@@ -889,12 +1027,6 @@ Item {
                 store[key] = curMsgs;
                 root.conversationMessages = store;
                 root.persistChatState();
-
-                if (attachment) {
-                    notificationToast.showNotification("Sent with attachment: " + attachment.name + " (" + attachment.sizeText + ")");
-                } else {
-                    notificationToast.showNotification("Message posted with 2-Tier SSS! (Tag #" + newTag.substring(0, 6) + ")");
-                }
             }
 
             onFlagMessage: function(author, comm, tag, text) {
@@ -910,14 +1042,12 @@ Item {
                 strikeModal.open();
             }
 
-            onInspectMessage: function(tag, point) {
-                notificationToast.showNotification("SSS Point: (" + (point ? point.x : 1) + ", " + (point ? point.y : "share") + ") • Tag: #" + tag.substring(0, 8));
+            onReactMessage: function(index, emoji) {
+                root.toggleReaction(index, emoji);
             }
         }
 
-        // ==========================================
         // COLUMN 4: MEMBER & SLASHING DRAWER (240px, COLLAPSIBLE)
-        // ==========================================
         RightDrawer {
             Layout.fillHeight: true
             visible: root.activeView !== "dm"
@@ -951,12 +1081,27 @@ Item {
             onIssueStrikeRequested: {
                 strikeModal.open();
             }
+
+            onMemberStrikeRequested: function(username, pubkey) {
+                root.radarTargetUser = username;
+                root.radarTargetCommitment = pubkey;
+                root.radarStrikes = 1;
+
+                strikeModal.targetAuthor = username;
+                strikeModal.targetCommitment = pubkey;
+                strikeModal.tracingTag = "MANUAL_MOD_STRIKE";
+                strikeModal.messageSnippet = "Reported from member directory";
+                strikeModal.evidenceHash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
+                strikeModal.open();
+            }
+
+            onClearInputsRequested: {
+                root.clearAllInputsFocus();
+            }
         }
     }
 
-    // ==========================================
     // OVERLAY DIALOGS & NOTIFICATION TOAST
-    // ==========================================
     CreateRoomModal {
         id: createRoomModal
         adminCommitment: root.myCommitment
@@ -972,6 +1117,7 @@ Item {
             }
 
             var result = root.callCore("createRoom", [root.myCommitment, nVal, mVal, modKeys, 1, minMembers]);
+            var newId = "";
             if (result) {
                 try {
                     var parsed = JSON.parse(result);
@@ -979,13 +1125,19 @@ Item {
                         notificationToast.showNotification("⚠ " + parsed.error);
                         return;
                     }
+                    if (parsed.room_id) {
+                        newId = root.formatBytesToHex(parsed.room_id);
+                    }
                 } catch(e) {
                     notificationToast.showNotification("⚠ Room creation failed: " + e);
                     return;
                 }
             }
 
-            var newId = "room_" + (root.roomsList.length + 1);
+            if (!newId || newId.length === 0) {
+                newId = "room_" + (root.roomsList.length + 1);
+            }
+
             var roomMods = [
                 { username: root.myUsername, pubkey: root.myCommitment.substring(0, 10) + "...", role: "Room Creator" }
             ];
@@ -1016,40 +1168,93 @@ Item {
 
             notificationToast.showNotification("Room '" + name + "' created successfully! (Status: New/Probation)");
         }
+
+        onJoinRoomRequested: {
+            joinRoomModal.open();
+        }
     }
 
     JoinRoomModal {
         id: joinRoomModal
         memberCommitment: root.myCommitment
 
+        onCreateRoomRequested: {
+            createRoomModal.open();
+        }
+
         onRoomJoined: function(roomIdHex, consentSig) {
+            joinRoomModal.isSubmitting = true;
+            joinRoomModal.errorMessage = "";
+
             // Guard: require identity
             if (!root.myCommitment || root.myCommitment.length === 0) {
+                joinRoomModal.isSubmitting = false;
+                joinRoomModal.errorMessage = "Identity required — please generate identity first.";
                 notificationToast.showNotification("⚠ Identity required — please generate identity first.");
                 identityModal.open();
                 return;
             }
 
-            var result = root.callCore("joinRoom", [roomIdHex, root.myCommitment, root.myCommitment, consentSig, 1]);
-            if (result) {
-                try {
-                    var parsed = JSON.parse(result);
-                    if (parsed.error) {
-                        notificationToast.showNotification("⚠ " + parsed.error);
-                        return;
-                    }
-                } catch(e) {
-                    notificationToast.showNotification("⚠ Join room failed: " + e);
+            var cleanHex = roomIdHex.trim().toLowerCase();
+            if (cleanHex.startsWith("0x")) cleanHex = cleanHex.substring(2);
+
+            // 1. Strict validation: exactly 64 hexadecimal characters (32 bytes)
+            if (cleanHex.length !== 64 || !/^[0-9a-fA-F]{64}$/.test(cleanHex)) {
+                joinRoomModal.isSubmitting = false;
+                joinRoomModal.errorMessage = "Invalid Room ID: must be exactly 64 hexadecimal characters (32 bytes).";
+                notificationToast.showNotification("⚠ Invalid Room ID: must be 64 hexadecimal characters.");
+                return;
+            }
+
+            // 2. Check if user already joined this room
+            for (var r = 0; r < root.roomsList.length; r++) {
+                var existingId = (root.roomsList[r].id || "").toLowerCase();
+                if (existingId.startsWith("0x")) existingId = existingId.substring(2);
+                if (existingId === cleanHex) {
+                    joinRoomModal.isSubmitting = false;
+                    joinRoomModal.close();
+                    root.activeRoomId = root.roomsList[r].id;
+                    root.activeRoomName = root.roomsList[r].name;
+                    root.activeChannel = "general-chat";
+                    root.activeView = "room";
+                    notificationToast.showNotification("Switched to already joined room '" + root.roomsList[r].name + "'");
                     return;
                 }
             }
 
-            var newId = "room_" + (root.roomsList.length + 1);
-            var roomName = "Room #" + (roomIdHex.length > 6 ? roomIdHex.substring(0, 6) : "Group");
+            // 3. Cryptographic join via Core Module
+            var result = root.callCore("joinRoom", [cleanHex, root.myCommitment, root.myCommitment, consentSig, 1]);
+            if (!result) {
+                joinRoomModal.isSubmitting = false;
+                joinRoomModal.errorMessage = "Core module returned null or disconnected.";
+                notificationToast.showNotification("⚠ Join room failed: core module unreachable.");
+                return;
+            }
+
+            try {
+                var parsed = JSON.parse(result);
+                if (parsed.error) {
+                    joinRoomModal.isSubmitting = false;
+                    joinRoomModal.errorMessage = parsed.error;
+                    notificationToast.showNotification("⚠ " + parsed.error);
+                    return;
+                }
+            } catch(e) {
+                joinRoomModal.isSubmitting = false;
+                joinRoomModal.errorMessage = "Core response error: " + e;
+                notificationToast.showNotification("⚠ Join room failed: " + e);
+                return;
+            }
+
+            // 4. Success: close modal and add room
+            joinRoomModal.isSubmitting = false;
+            joinRoomModal.close();
+
+            var roomName = "Room #" + cleanHex.substring(0, 6).toUpperCase();
             var newRoom = {
-                id: newId,
+                id: cleanHex,
                 name: roomName,
-                iconText: roomName.substring(0, 2).toUpperCase(),
+                iconText: cleanHex.substring(0, 2).toUpperCase(),
                 nMod: 2,
                 mMod: 3,
                 mature: false,
@@ -1064,15 +1269,17 @@ Item {
             root.roomsList = updated;
             root.persistChatState();
 
-            root.activeRoomId = newId;
+            root.activeRoomId = cleanHex;
             root.activeRoomName = roomName;
             root.activeRoomN = 2;
             root.activeRoomM = 3;
             root.isRoomMature = false;
             root.activeChannel = "general-chat";
             root.activeView = "room";
+            root.roomModerators = [];
+            root.roomMembers = newRoom.members;
 
-            notificationToast.showNotification("Joined room with Signed Join Consent!");
+            notificationToast.showNotification("Successfully joined room '" + roomName + "' with signed consent!");
         }
     }
 
@@ -1097,6 +1304,19 @@ Item {
             }
 
             newUsername = newUsername.trim();
+            if (newUsername.length < 3 || newUsername.length > 32) {
+                identityModal.usernameStatus = "taken";
+                identityModal.validationMessage = "3-32 chars";
+                notificationToast.showNotification("⚠ Username must be between 3 and 32 characters.");
+                return;
+            }
+            if (!/^[a-zA-Z0-9_]+$/.test(newUsername)) {
+                identityModal.usernameStatus = "taken";
+                identityModal.validationMessage = "letters, numbers, _ only";
+                notificationToast.showNotification("⚠ Username can only contain letters, numbers, and underscores.");
+                return;
+            }
+
             var previousUsername = root.myUsername;
             root.myUsername = newUsername;
 
@@ -1106,7 +1326,8 @@ Item {
                 if (parsed && parsed.error) {
                     root.myUsername = previousUsername; // rollback
                     identityModal.usernameStatus = "taken";
-                    identityModal.validationMessage = "username taken";
+                    identityModal.validationMessage = parsed.error.indexOf("taken") !== -1 ? "username taken" : parsed.error;
+                    notificationToast.showNotification("⚠ " + parsed.error);
                     return;
                 }
             }
@@ -1166,6 +1387,14 @@ Item {
         onStrikeSigned: function(comm, tag, evid) {
             root.radarStrikes += 1;
             notificationToast.showNotification("Strike certificate signed & broadcasted! (N-of-M recorded)");
+        }
+    }
+
+    ConfirmDeleteModal {
+        id: confirmDeleteModal
+
+        onConfirmed: function(username) {
+            root.deleteDmConversation(username);
         }
     }
 
